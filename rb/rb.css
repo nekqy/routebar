@@ -1,0 +1,33 @@
+#rb {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.rb__loading {
+    background: #ccc;
+}
+.rb__center {
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+}
+.rb__left {
+    display: none;
+}
+.rb__top {
+    display: none;
+}
+.rb__right {
+    display: none;
+}
+.rb__bottom {
+    display: none;
+}
+.animate {
+    transition-property: margin-left, margin-top, margin-right, margin-bottom;
+    transition-duration: 0.5s;
+    transition-timing-function: ease;
+}

@@ -1,0 +1,263 @@
+(function($) {
+    function Screen(html, children) {
+        mainScreen = this;
+
+        this.html = html;
+        this.parents = [];
+
+        this.setChildren(children);
+    }
+    Screen.prototype.setChildren = function(children) {
+        if (children) {
+            this.children = children;
+            for (var i = 0; i < children.length; i++) {
+                var child = children[i];
+                child.parents.push(this);
+
+                if (children.length === 1) {
+                    child.next = child;
+                    child.prev = child;
+                } else if (i === 0) {
+                    child.next = children[1];
+                    child.prev = children[children.length - 1];
+                } else if (i === (children.length - 1)) {
+                    child.next = children[0];
+                    child.prev = children[children.length - 2];
+                } else {
+                    child.next = children[i+1];
+                    child.prev = children[i-1];
+                }
+            }
+        } else {
+            this.children = [];
+        }
+    };
+    Screen.prototype.getChildren = function() {
+        return this.children;
+    };
+
+    function move(side, screen) {
+        function handler(e) {
+            $(this).off('transitionend', handler);
+            renderHtml(curScreen);
+        }
+        function opposite(side) {
+            if (side === 'left') return 'right';
+            if (side === 'right') return 'left';
+            if (side === 'top') return 'bottom';
+            if (side === 'bottom') return 'top';
+            if (side === 'center') return 'center';
+            throw new Error('move function', 'wrong side');
+        }
+        function getStartSide(side) {
+            if (side === 'left') return 'left';
+            if (side === 'right') return 'left';
+            if (side === 'top') return 'top';
+            if (side === 'bottom') return 'top';
+            throw new Error('move function', 'wrong side');
+        }
+        function makeLoading(div, except) {
+            if (!except || except && div !== except && !except.includes(div)) {
+                $(div).html('Загрузка...');
+                $(div).toggleClass('rb__loading', true);
+            }
+        }
+
+        var
+            rbSide = 'rb__' + side,
+            $newElement = $('.' + rbSide);
+
+        if ($newElement.is('.rb__empty')) {
+            return;
+        }
+
+        var
+            oppositeSide = opposite(side),
+            rbCenter = 'rb__center',
+            rbOppositeSide = 'rb__' + oppositeSide,
+            $oldElement = $('.' + rbCenter),
+            oppositeScreen = $('.' + rbOppositeSide),
+            startSide,
+            $rbLeft = $('.rb__left'),
+            $rbTop = $('.rb__top'),
+            $rbRight = $('.rb__right'),
+            $rbBottom = $('.rb__bottom');
+
+        if (side === 'center') {
+            $oldElement.toggleClass('animate', false);
+            $oldElement.css({'margin-left': $oldElement.width(), 'margin-top': $oldElement.height()});
+            setTimeout(function() {
+                $oldElement.toggleClass('animate', true);
+            }, 0);
+
+            makeLoading($oldElement[0]);
+            makeLoading($rbLeft[0]);
+            makeLoading($rbTop[0]);
+            makeLoading($rbRight[0]);
+            makeLoading($rbBottom[0]);
+
+            updateScreens(undefined, screen);
+            renderHtml(screen);
+        } else {
+            startSide = getStartSide(side);
+
+            var width = $oldElement.width(),
+                height = $oldElement.height();
+
+            oppositeScreen.toggleClass(rbOppositeSide, false);
+            oppositeScreen.toggleClass(rbSide, true);
+
+            $oldElement.toggleClass(rbCenter, false);
+            $oldElement.toggleClass(rbOppositeSide, true);
+
+            makeLoading($oldElement[0]);
+            makeLoading($rbLeft[0], [$newElement[0]]);
+            makeLoading($rbTop[0], [$oldElement[0],$newElement[0]]);
+            makeLoading($rbRight[0], [$newElement[0]]);
+            makeLoading($rbBottom[0], [$oldElement[0],$newElement[0]]);
+
+            if (side === 'left') {
+                $newElement.css({'margin-left': 0, 'margin-top': height});
+            } else if (side === 'right') {
+                $newElement.css({'margin-left': 2*width, 'margin-top': height});
+            } else if (side === 'top') {
+                $newElement.css({'margin-left': width, 'margin-top': 0});
+            } else if (side === 'bottom') {
+                $newElement.css({'margin-left': width, 'margin-top': 2*height});
+            }
+
+            $newElement.toggleClass(rbSide, false);
+            $newElement.toggleClass(rbCenter, true);
+
+            $newElement.off('transitionend', handler);
+            setTimeout(function() {
+                $newElement.on('transitionend', handler);
+                $newElement.css('margin-' + startSide, startSide === 'left' ? width : height);
+            }, 0);
+            updateScreens(side);
+
+        }
+    }
+
+    var curScreen;
+
+    function updateScreens(nextScreen, screen) {
+        var prevScreen = curScreen;
+        if (screen) {
+            curScreen = screen;
+        } else if (nextScreen === 'right' && curScreen.children.length) {
+            curScreen = curScreen._rightScreen ? curScreen._rightScreen : curScreen.children[0];
+            curScreen._leftScreen = prevScreen;
+        } else if (nextScreen === 'left' && curScreen.parents.length) {
+            curScreen = curScreen._leftScreen ? curScreen._leftScreen : curScreen.parents[0];
+            curScreen._rightScreen = prevScreen;
+        } else if (nextScreen === 'bottom' && curScreen.next) {
+            curScreen = curScreen._bottomScreen ? curScreen._bottomScreen : curScreen.next;
+            curScreen._topScreen = prevScreen;
+        } else if (nextScreen === 'top' && curScreen.prev) {
+            curScreen = curScreen._topScreen ? curScreen._topScreen : curScreen.prev;
+            curScreen._bottomScreen = prevScreen;
+        }
+
+        if (prevScreen !== curScreen) {
+            var
+                rbLeft = $('.rb__left'),
+                rbTop = $('.rb__top'),
+                rbRight = $('.rb__right'),
+                rbBottom = $('.rb__bottom');
+
+            rbRight.toggleClass('rb__empty', !curScreen.children.length);
+            rbLeft.toggleClass('rb__empty', !curScreen.parents.length);
+            rbBottom.toggleClass('rb__empty', !curScreen.next);
+            rbTop.toggleClass('rb__empty', !curScreen.prev);
+            if (!curScreen.children.length) {
+                curScreen._rightScreen = null;
+            }
+            if (!curScreen.parents.length) {
+                curScreen._leftScreen = null;
+            }
+            if (!curScreen.next) {
+                curScreen._bottomScreen = null;
+            }
+            if (!curScreen.prev) {
+                curScreen._topScreen = null;
+            }
+        }
+    }
+    function renderHtml(screen) {
+        function renderSide(side, checkFn, htmlFn) {
+            var rbSide = $('.rb__' + side);
+            if (rbSide.is('.rb__loading')) {
+                rbSide.toggleClass('rb__loading', false);
+                if (checkFn()) {
+                    rbSide.html(htmlFn());
+                }
+            }
+        }
+        renderSide('center', function() {
+            return screen;
+        }, function() {
+            return curScreen.html;
+        });
+        renderSide('left', function() {
+            return curScreen.parents.length;
+        }, function() {
+            return curScreen._leftScreen ? curScreen._leftScreen.html : curScreen.parents[0].html;
+        });
+        renderSide('top', function() {
+            return curScreen.prev;
+        }, function() {
+            return curScreen._topScreen ? curScreen._topScreen.html : curScreen.prev.html;
+        });
+        renderSide('right', function() {
+            return curScreen.children.length;
+        }, function() {
+            return curScreen._rightScreen ? curScreen._rightScreen.html : curScreen.children[0].html;
+        });
+        renderSide('bottom', function() {
+            return curScreen.next;
+        }, function() {
+            return curScreen._bottomScreen ? curScreen._bottomScreen.html : curScreen.next.html;
+        });
+    }
+
+    $(function() {
+        var $rb = $('#rb'),
+            $body = $('body');
+        if (!$rb.length) {
+            $body.append('<div id="rb"></div>');
+        }
+
+        var html = '<div class="animate rb__center"></div>';
+        html += '<div class="animate rb__left"></div>';
+        html += '<div class="animate rb__top"></div>';
+        html += '<div class="animate rb__right"></div>';
+        html += '<div class="animate rb__bottom"></div>';
+        $rb.html(html);
+
+        $body.on('keydown', function(e) {
+            if (e.which === 37) { //left
+                move('left');
+            }
+            if (e.which === 38) { // up
+                move('top');
+            }
+            if (e.which === 39) { // right
+                move('right');
+            }
+            if (e.which === 40) { // down
+                move('bottom');
+            }
+        });
+        move('center', mainScreen);
+    });
+
+    var mainScreen;
+
+    window.rb = {
+        Screen: Screen,
+        start: function(screen) {
+            mainScreen = screen;
+        }
+    }
+})(jQuery);

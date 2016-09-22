@@ -84,10 +84,10 @@
             $rbBottom = $('.rb__bottom');
 
         if (side === 'center') {
-            $oldElement.toggleClass('animate', false);
+            $oldElement.toggleClass('rb__animate', false);
             $oldElement.css({'margin-left': $oldElement.width(), 'margin-top': $oldElement.height()});
             setTimeout(function() {
-                $oldElement.toggleClass('animate', true);
+                $oldElement.toggleClass('rb__animate', true);
             }, 0);
 
             makeLoading($oldElement[0]);
@@ -228,11 +228,15 @@
             $body.append('<div id="rb"></div>');
         }
 
-        var html = '<div class="animate rb__center"></div>';
-        html += '<div class="animate rb__left"></div>';
-        html += '<div class="animate rb__top"></div>';
-        html += '<div class="animate rb__right"></div>';
-        html += '<div class="animate rb__bottom"></div>';
+        var html = '<div class="rb__animate rb__center"></div>';
+        html += '<div class="rb__animate rb__left"></div>';
+        html += '<div class="rb__animate rb__top"></div>';
+        html += '<div class="rb__animate rb__right"></div>';
+        html += '<div class="rb__animate rb__bottom"></div>';
+        html += '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_left"><div class="rb__arrow rb__arrow_left"></div></div>';
+        html += '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_top"><div class="rb__arrow rb__arrow_top"></div></div>';
+        html += '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_right"><div class="rb__arrow rb__arrow_right"></div></div>';
+        html += '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_bottom"><div class="rb__arrow rb__arrow_bottom"></div></div>';
         $rb.html(html);
 
         $body.on('keydown', function(e) {
@@ -248,6 +252,65 @@
             if (e.which === 40) { // down
                 move('bottom');
             }
+        });
+
+        function clearArrowTimeout(container) {
+            container.toggleClass('rb__arrow-hide', false);
+            container.toggleClass('rb__arrow-cursor', true);
+            if (container.length) {
+                clearTimeout(container[0].hideArrowId);
+                container[0].hideArrowId = null;
+            }
+        }
+        function hideArrowTimeout(container) {
+            function hideArrow() {
+                container.toggleClass('rb__arrow-hide', true);
+                container.toggleClass('rb__arrow-cursor', false);
+            }
+
+            clearArrowTimeout(container);
+            if (container.length) {
+                container[0].hideArrowId = setTimeout(hideArrow, 3000);
+            }
+        }
+        var $rbArrowContainer = $('.rb__arrow-container');
+        $rbArrowContainer.on('click', function(e) {
+            var container = $(this);
+            if (!container.is('.rb__arrow-hide')) {
+
+                hideArrowTimeout(container);
+                if (container.is('.rb__arrow-container_left')) {
+                    move('left');
+                }
+                if (container.is('.rb__arrow-container_top')) {
+                    move('top');
+                }
+                if (container.is('.rb__arrow-container_right')) {
+                    move('right');
+                }
+                if (container.is('.rb__arrow-container_bottom')) {
+                    move('bottom');
+                }
+            } else {
+                container.css('display', 'none');
+                try {
+                    var behindElem = document.elementFromPoint(e.clientX, e.clientY);
+                    if (behindElem.tagName.toLowerCase() === 'iframe') {
+                        var doc = behindElem.contentDocument || behindElem.contentWindow.document;
+                        behindElem = doc.elementFromPoint(e.clientX, e.clientY);
+                    }
+                    $(behindElem).trigger(e);
+                }
+                finally {
+                    container.css('display', '');
+                }
+            }
+        });
+        $rbArrowContainer.on('mouseenter', function() {
+            hideArrowTimeout($(this));
+        });
+        $rbArrowContainer.on('mouseleave', function() {
+            clearArrowTimeout($(this));
         });
         move('center', mainScreen);
     });

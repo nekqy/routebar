@@ -56,10 +56,21 @@
             if (side === 'bottom') return 'top';
             throw new Error('move function', 'wrong side');
         }
-        function makeLoading(div, except) {
-            if (!except || except && div !== except && !except.includes(div)) {
-                $(div).html('Загрузка...');
-                $(div).toggleClass('rb__loading', true);
+        function makeLoading($div, except) {
+            function includes($elem, arr) {
+                if (!Array.isArray(arr)) {
+                    return false;
+                }
+                for (var i = 0; i < arr.length; i++) {
+                    if ($elem.is(arr[i])) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            if (!except || except && !$div.is(except) && !includes($div, except)) {
+                $div.html('Загрузка...');
+                $div.toggleClass('rb__loading', true);
             }
         }
 
@@ -90,11 +101,11 @@
                 $oldElement.toggleClass('rb__animate', true);
             }, 0);
 
-            makeLoading($oldElement[0]);
-            makeLoading($rbLeft[0]);
-            makeLoading($rbTop[0]);
-            makeLoading($rbRight[0]);
-            makeLoading($rbBottom[0]);
+            makeLoading($oldElement);
+            makeLoading($rbLeft);
+            makeLoading($rbTop);
+            makeLoading($rbRight);
+            makeLoading($rbBottom);
 
             updateScreens(undefined, screen);
             renderHtml(screen);
@@ -110,11 +121,11 @@
             $oldElement.toggleClass(rbCenter, false);
             $oldElement.toggleClass(rbOppositeSide, true);
 
-            makeLoading($oldElement[0]);
-            makeLoading($rbLeft[0], [$newElement[0]]);
-            makeLoading($rbTop[0], [$oldElement[0],$newElement[0]]);
-            makeLoading($rbRight[0], [$newElement[0]]);
-            makeLoading($rbBottom[0], [$oldElement[0],$newElement[0]]);
+            makeLoading($oldElement, [$oldElement, $newElement]);
+            makeLoading($rbLeft, [$oldElement, $newElement]);
+            makeLoading($rbTop, [$oldElement, $newElement]);
+            makeLoading($rbRight, [$oldElement, $newElement]);
+            makeLoading($rbBottom, [$oldElement, $newElement]);
 
             if (side === 'left') {
                 $newElement.css({'margin-left': 0, 'margin-top': height});

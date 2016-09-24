@@ -12,6 +12,16 @@
     transition-duration: 0.5s;
     transition-timing-function: ease;
 }
+.rb__animate2 {
+    transition-property: margin-left, margin-top, margin-right, margin-bottom;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-in;
+}
+.rb__animate3 {
+    transition-property: margin-left, margin-top, margin-right, margin-bottom;
+    transition-duration: 0.25s;
+    transition-timing-function: ease;
+}
 
 .rb__center {
     position: absolute;

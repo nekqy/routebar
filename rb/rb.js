@@ -1,4 +1,28 @@
 (function($) {
+    // debouncing function from John Hann
+    // http://unscriptable.com/index.php/2009/03/20/debouncing-javascript-methods/
+    function debounce(func, threshold, execAsap) {
+        var timeout;
+
+        return function debounced () {
+            var obj = this, args = arguments;
+            function delayed () {
+                if (!execAsap)
+                    func.apply(obj, args);
+                timeout = null;
+            }
+
+            if (timeout)
+                clearTimeout(timeout);
+            else if (execAsap)
+                func.apply(obj, args);
+
+            timeout = setTimeout(delayed, threshold || 100);
+        };
+    }
+    // smartresize
+    //jQuery.fn['smartresize'] = function(fn){  return fn ? this.bind('resize', debounce(fn)) : this.trigger('smartresize'); };
+
     function Screen(html, children) {
         mainScreen = this;
 
@@ -37,10 +61,6 @@
     };
 
     function move(side, screen) {
-        function handler(e) {
-            $(this).off('transitionend', handler);
-            renderHtml(curScreen);
-        }
         function opposite(side) {
             if (side === 'left') return 'right';
             if (side === 'right') return 'left';
@@ -54,6 +74,7 @@
             if (side === 'right') return 'left';
             if (side === 'top') return 'top';
             if (side === 'bottom') return 'top';
+            if (side === 'center') return 'center';
             throw new Error('move function', 'wrong side');
         }
         function makeLoading($div, except) {
@@ -74,21 +95,88 @@
             }
         }
 
+        function doTransition(prevElem, elem, transitionClass, beforeFn, transitionFn, afterFn, needAfter) {
+            function subscribeTransitionEnd(elem, handler) {
+                if (elem && elem.length) {
+                    elem.on('transitionend', handler);
+                    elem[0]._transitionHandler = handler;
+                    elem[0]._needAfter = needAfter;
+                    elem.toggleClass(transitionClass, true);
+                }
+            }
+            function unsubscribeTransitionEnd(elem) {
+                if (elem && elem.length) {
+                    elem.off('transitionend', elem[0]._transitionHandler);
+                    if (elem[0]._needAfter) {
+                        delete elem[0]._needAfter;
+                        elem[0]._transitionHandler();
+                    }
+                    delete elem[0]._transitionHandler;
+                    elem.toggleClass(transitionClass, false);
+                }
+            }
+
+            beforeFn && beforeFn();
+
+            unsubscribeTransitionEnd(prevElem);
+            unsubscribeTransitionEnd(elem);
+
+            setTimeout(function() {
+                subscribeTransitionEnd(elem, function() {
+                    unsubscribeTransitionEnd(elem);
+                    afterFn && afterFn();
+                });
+
+                // todo могут быть проблемы, если transitionFn не делает transition, тогда transitionend не сработает
+                transitionFn && transitionFn();
+            }, 0);
+        }
+
         var
+            rbCenter = 'rb__center',
             rbSide = 'rb__' + side,
-            $newElement = $('.' + rbSide);
+            $oldElement = $('.' + rbCenter),
+            $newElement = $('.' + rbSide),
+            $rb = $('#rb'),
+            startSide = getStartSide(side),
+            width = $rb.width(),
+            height = $rb.height();
 
         if ($newElement.is('.rb__empty')) {
+            doTransition($oldElement, $oldElement, 'rb__animate2', function() {
+                $oldElement.css({'margin-left': width, 'margin-top': height});
+            }, function() {
+                var dw = width/10, dh = height/10;
+
+                // fix lags. transitionend must be dispatched.
+                if (Math.abs($oldElement[0].offsetLeft) === dw) {
+                    dw++;
+                } else if (Math.abs($oldElement[0].offsetTop) === dh) {
+                    dh++;
+                }
+
+                if (side === 'left') {
+                    $oldElement.css({'margin-left': width - dw, 'margin-top': height});
+                } else if (side === 'right') {
+                    $oldElement.css({'margin-left': width + dw, 'margin-top': height});
+                } else if (side === 'top') {
+                    $oldElement.css({'margin-left': width, 'margin-top': height - dh});
+                } else if (side === 'bottom') {
+                    $oldElement.css({'margin-left': width, 'margin-top': height + dh});
+                }
+            }, function() {
+                doTransition($oldElement, $oldElement, 'rb__animate3', undefined, function() {
+                    $oldElement.css('margin-' + startSide, startSide === 'left' ? width : height);
+                }, undefined, true);
+            }, true);
+
             return;
         }
 
         var
             oppositeSide = opposite(side),
-            rbCenter = 'rb__center',
             rbOppositeSide = 'rb__' + oppositeSide,
-            $oldElement = $('.' + rbCenter),
             oppositeScreen = $('.' + rbOppositeSide),
-            startSide,
             $rbLeft = $('.rb__left'),
             $rbTop = $('.rb__top'),
             $rbRight = $('.rb__right'),
@@ -110,11 +198,6 @@
             updateScreens(undefined, screen);
             renderHtml(screen);
         } else {
-            startSide = getStartSide(side);
-
-            var width = $oldElement.width(),
-                height = $oldElement.height();
-
             oppositeScreen.toggleClass(rbOppositeSide, false);
             oppositeScreen.toggleClass(rbSide, true);
 
@@ -127,26 +210,25 @@
             makeLoading($rbRight, [$oldElement, $newElement]);
             makeLoading($rbBottom, [$oldElement, $newElement]);
 
-            if (side === 'left') {
-                $newElement.css({'margin-left': 0, 'margin-top': height});
-            } else if (side === 'right') {
-                $newElement.css({'margin-left': 2*width, 'margin-top': height});
-            } else if (side === 'top') {
-                $newElement.css({'margin-left': width, 'margin-top': 0});
-            } else if (side === 'bottom') {
-                $newElement.css({'margin-left': width, 'margin-top': 2*height});
-            }
+            doTransition($oldElement, $newElement, 'rb__animate', function() {
+                if (side === 'left') {
+                    $newElement.css({'margin-left': 0, 'margin-top': height});
+                } else if (side === 'right') {
+                    $newElement.css({'margin-left': 2*width, 'margin-top': height});
+                } else if (side === 'top') {
+                    $newElement.css({'margin-left': width, 'margin-top': 0});
+                } else if (side === 'bottom') {
+                    $newElement.css({'margin-left': width, 'margin-top': 2*height});
+                }
 
-            $newElement.toggleClass(rbSide, false);
-            $newElement.toggleClass(rbCenter, true);
+                $newElement.toggleClass(rbSide, false);
+                $newElement.toggleClass(rbCenter, true);
 
-            $newElement.off('transitionend', handler);
-            setTimeout(function() {
-                $newElement.on('transitionend', handler);
+                updateScreens(side);
+            }, function() {
                 $newElement.css('margin-' + startSide, startSide === 'left' ? width : height);
-            }, 0);
-            updateScreens(side);
-
+                renderHtml(curScreen);
+            }, undefined);
         }
     }
 
@@ -195,7 +277,7 @@
             }
         }
     }
-    function renderHtml(screen) {
+    var renderHtml = debounce(function (screen) {
         function renderSide(side, checkFn, htmlFn) {
             var rbSide = $('.rb__' + side);
             if (rbSide.is('.rb__loading')) {
@@ -230,20 +312,24 @@
         }, function() {
             return curScreen._bottomScreen ? curScreen._bottomScreen.html : curScreen.next.html;
         });
-    }
+    }, 500);
 
     $(function() {
         var $rb = $('#rb'),
             $body = $('body');
         if (!$rb.length) {
             $body.append('<div id="rb"></div>');
+            $rb = $('#rb');
         }
 
-        var html = '<div class="rb__animate rb__center"></div>';
-        html += '<div class="rb__animate rb__left"></div>';
-        html += '<div class="rb__animate rb__top"></div>';
-        html += '<div class="rb__animate rb__right"></div>';
-        html += '<div class="rb__animate rb__bottom"></div>';
+        var width = $rb.width(),
+            height = $rb.height();
+
+        var html = '<div style="margin-left: ' + width + 'px; margin-top: ' + height + 'px;" class="rb__center"></div>';
+        html += '<div style="margin-left: ' + width + 'px; margin-top: ' + height + 'px;" class="rb__left"></div>';
+        html += '<div style="margin-left: ' + width + 'px; margin-top: ' + height + 'px;" class="rb__top"></div>';
+        html += '<div style="margin-left: ' + width + 'px; margin-top: ' + height + 'px;" class="rb__right"></div>';
+        html += '<div style="margin-left: ' + width + 'px; margin-top: ' + height + 'px;" class="rb__bottom"></div>';
         html += '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_left"><div class="rb__arrow rb__arrow_left"></div></div>';
         html += '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_top"><div class="rb__arrow rb__arrow_top"></div></div>';
         html += '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_right"><div class="rb__arrow rb__arrow_right"></div></div>';
@@ -332,6 +418,9 @@
         Screen: Screen,
         start: function(screen) {
             mainScreen = screen;
+        },
+        setScreen: function(screen) {
+            move('center', screen);
         }
     }
 })(jQuery);

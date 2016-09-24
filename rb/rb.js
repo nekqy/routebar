@@ -23,6 +23,10 @@
     // smartresize
     //jQuery.fn['smartresize'] = function(fn){  return fn ? this.bind('resize', debounce(fn)) : this.trigger('smartresize'); };
 
+    var loadingHtml = '<div class="rb__loading_wrapper">' +
+        '<div class="cssload-loader"></div>' +
+        '</div>';
+
     function Screen(html, children) {
         mainScreen = this;
 
@@ -89,9 +93,30 @@
                 }
                 return false;
             }
+            if ($div.is('.rb__empty')) {
+                return;
+            }
             if (!except || except && !$div.is(except) && !includes($div, except)) {
-                $div.html('Загрузка...');
-                $div.toggleClass('rb__loading', true);
+                if ($div.is('.rb__left') && ($div[0].screen !== (curScreen._leftScreen ? curScreen._leftScreen : curScreen.parents[0]))) {
+                    $div.toggleClass('rb__loading', true);
+                    $div.html(loadingHtml);
+                }
+                if ($div.is('.rb__top') && ($div[0].screen !== (curScreen._topScreen ? curScreen._topScreen : curScreen.prev))) {
+                    $div.toggleClass('rb__loading', true);
+                    $div.html(loadingHtml);
+                }
+                if ($div.is('.rb__right') && ($div[0].screen !== (curScreen._rightScreen ? curScreen._rightScreen : curScreen.children[0]))) {
+                    $div.toggleClass('rb__loading', true);
+                    $div.html(loadingHtml);
+                }
+                if ($div.is('.rb__bottom') && ($div[0].screen !== (curScreen._bottomScreen ? curScreen._bottomScreen : curScreen.next))) {
+                    $div.toggleClass('rb__loading', true);
+                    $div.html(loadingHtml);
+                }
+                if ($div.is('.rb__center') && $div[0].screen !== curScreen) {
+                    $div.toggleClass('rb__loading', true);
+                    $div.html(loadingHtml);
+                }
             }
         }
 
@@ -164,6 +189,8 @@
                 } else if (side === 'bottom') {
                     $oldElement.css({'margin-left': width, 'margin-top': height + dh});
                 }
+
+                renderHtml(curScreen);
             }, function() {
                 doTransition($oldElement, $oldElement, 'rb__animate3', undefined, function() {
                     $oldElement.css('margin-' + startSide, startSide === 'left' ? width : height);
@@ -189,13 +216,18 @@
                 $oldElement.toggleClass('rb__animate', true);
             }, 0);
 
+            updateScreens(undefined, screen);
+            $rbLeft = $('.rb__left');
+            $rbTop = $('.rb__top');
+            $rbRight = $('.rb__right');
+            $rbBottom = $('.rb__bottom');
+
             makeLoading($oldElement);
             makeLoading($rbLeft);
             makeLoading($rbTop);
             makeLoading($rbRight);
             makeLoading($rbBottom);
 
-            updateScreens(undefined, screen);
             renderHtml(screen);
         } else {
             oppositeScreen.toggleClass(rbOppositeSide, false);
@@ -204,6 +236,14 @@
             $oldElement.toggleClass(rbCenter, false);
             $oldElement.toggleClass(rbOppositeSide, true);
 
+            $newElement.toggleClass(rbSide, false);
+            $newElement.toggleClass(rbCenter, true);
+
+            updateScreens(side);
+            $rbLeft = $('.rb__left');
+            $rbTop = $('.rb__top');
+            $rbRight = $('.rb__right');
+            $rbBottom = $('.rb__bottom');
             makeLoading($oldElement, [$oldElement, $newElement]);
             makeLoading($rbLeft, [$oldElement, $newElement]);
             makeLoading($rbTop, [$oldElement, $newElement]);
@@ -221,10 +261,6 @@
                     $newElement.css({'margin-left': width, 'margin-top': 2*height});
                 }
 
-                $newElement.toggleClass(rbSide, false);
-                $newElement.toggleClass(rbCenter, true);
-
-                updateScreens(side);
             }, function() {
                 $newElement.css('margin-' + startSide, startSide === 'left' ? width : height);
                 renderHtml(curScreen);
@@ -278,39 +314,42 @@
         }
     }
     var renderHtml = debounce(function (screen) {
-        function renderSide(side, checkFn, htmlFn) {
-            var rbSide = $('.rb__' + side);
+        function renderSide(side, checkFn, getScreen) {
+            var rbSide = $('.rb__' + side),
+                screenToApply;
             if (rbSide.is('.rb__loading')) {
                 rbSide.toggleClass('rb__loading', false);
                 if (checkFn()) {
-                    rbSide.html(htmlFn());
+                    screenToApply = getScreen();
+                    rbSide.html(screenToApply.html);
+                    rbSide[0].screen = screenToApply;
                 }
             }
         }
         renderSide('center', function() {
             return screen;
         }, function() {
-            return curScreen.html;
+            return curScreen;
         });
         renderSide('left', function() {
             return curScreen.parents.length;
         }, function() {
-            return curScreen._leftScreen ? curScreen._leftScreen.html : curScreen.parents[0].html;
+            return curScreen._leftScreen ? curScreen._leftScreen : curScreen.parents[0];
         });
         renderSide('top', function() {
             return curScreen.prev;
         }, function() {
-            return curScreen._topScreen ? curScreen._topScreen.html : curScreen.prev.html;
+            return curScreen._topScreen ? curScreen._topScreen : curScreen.prev;
         });
         renderSide('right', function() {
             return curScreen.children.length;
         }, function() {
-            return curScreen._rightScreen ? curScreen._rightScreen.html : curScreen.children[0].html;
+            return curScreen._rightScreen ? curScreen._rightScreen : curScreen.children[0];
         });
         renderSide('bottom', function() {
             return curScreen.next;
         }, function() {
-            return curScreen._bottomScreen ? curScreen._bottomScreen.html : curScreen.next.html;
+            return curScreen._bottomScreen ? curScreen._bottomScreen : curScreen.next;
         });
     }, 500);
 

@@ -26,9 +26,12 @@
     var loadingHtml = '<div class="rb__loading_wrapper">' +
         '<div class="cssload-loader"></div>' +
         '</div>';
+    var mainScreenSetted = false;
 
     function Screen(html, children) {
-        mainScreen = this;
+        if (!mainScreenSetted) {
+            mainScreen = this;
+        }
 
         this.html = html;
         this.parents = [];
@@ -204,17 +207,10 @@
             oppositeSide = opposite(side),
             rbOppositeSide = 'rb__' + oppositeSide,
             oppositeScreen = $('.' + rbOppositeSide),
-            $rbLeft = $('.rb__left'),
-            $rbTop = $('.rb__top'),
-            $rbRight = $('.rb__right'),
-            $rbBottom = $('.rb__bottom');
+            $rbLeft, $rbTop, $rbRight, $rbBottom;
 
         if (side === 'center') {
-            $oldElement.toggleClass('rb__animate', false);
             $oldElement.css({'margin-left': $oldElement.width(), 'margin-top': $oldElement.height()});
-            setTimeout(function() {
-                $oldElement.toggleClass('rb__animate', true);
-            }, 0);
 
             updateScreens(undefined, screen);
             $rbLeft = $('.rb__left');
@@ -462,6 +458,7 @@
         Screen: Screen,
         start: function(screen) {
             mainScreen = screen;
+            mainScreenSetted = true;
         },
         setScreen: function(screen) {
             move('center', screen);

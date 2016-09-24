@@ -1,3 +1,4 @@
+
 var
     children = [
         new rb.Screen('<div class="child1">child1</div>'),
@@ -9,4 +10,10 @@ var
 
 mainScreen.getChildren()[2].setChildren([mainScreen, mainScreen2]);
 
-//rb.start(mainScreen);
+$.get('examples/example2.html', function(data) {
+    var children = mainScreen.getChildren();
+    children.push(new rb.Screen(data));
+    mainScreen.setChildren(children);
+});
+
+rb.start(mainScreen);

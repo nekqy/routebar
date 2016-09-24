@@ -299,6 +299,11 @@
             rbLeft.toggleClass('rb__empty', !curScreen.parents.length);
             rbBottom.toggleClass('rb__empty', !curScreen.next);
             rbTop.toggleClass('rb__empty', !curScreen.prev);
+            $('.rb__arrow-container_right').toggleClass('rb__arrow-none', !curScreen.children.length);
+            $('.rb__arrow-container_left').toggleClass('rb__arrow-none', !curScreen.parents.length);
+            $('.rb__arrow-container_bottom').toggleClass('rb__arrow-none', !curScreen.next);
+            $('.rb__arrow-container_top').toggleClass('rb__arrow-none', !curScreen.prev);
+
             if (!curScreen.children.length) {
                 curScreen._rightScreen = null;
             }

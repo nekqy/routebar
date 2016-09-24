@@ -46,6 +46,9 @@
     display: none;
 }
 
+.rb__arrow-none {
+    display: none !important;
+}
 .rb__arrow-hide {
     opacity: 0 !important;
 }

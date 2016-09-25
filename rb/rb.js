@@ -25,7 +25,9 @@
 
     var loadingHtml = '<div class="rb__loading_wrapper">' +
         '<div class="cssload-loader"></div>' +
-        '</div>';
+        '</div>',
+        loadingDiv = $('<div class="rb__loading">' + loadingHtml + '</div>');
+
     var mainScreenSetted = false;
 
     function Screen(html, children) {
@@ -170,6 +172,9 @@
             width = $rb.width(),
             height = $rb.height();
 
+        updateScreens();
+        makeLoading($newElement);
+
         if ($newElement.is('.rb__empty')) {
             doTransition($oldElement, $oldElement, 'rb__animate2', function() {
                 $oldElement.css({'margin-left': width, 'margin-top': height});
@@ -284,7 +289,7 @@
             curScreen._bottomScreen = prevScreen;
         }
 
-        if (prevScreen !== curScreen) {
+        if (curScreen) {
             var
                 rbLeft = $('.rb__left'),
                 rbTop = $('.rb__top'),
@@ -313,6 +318,7 @@
                 curScreen._topScreen = null;
             }
         }
+
     }
     var renderHtml = debounce(function (screen) {
         function renderSide(side, checkFn, getScreen) {
@@ -354,6 +360,57 @@
         });
     }, 500);
 
+    function BaseDispatcher() {
+        this._actions = {};
+        this._index = 0;
+    }
+    BaseDispatcher.prototype.add = function(action, once) {
+        if (typeof action === 'function') {
+            this._actions[this._index++] = {
+                action: action,
+                once: once
+            };
+            return this._index-1;
+        }
+        return null;
+    };
+    BaseDispatcher.prototype.remove = function(index) {
+        if (this._actions.hasOwnProperty(index)) {
+            delete this._actions[index];
+        }
+    };
+    BaseDispatcher.prototype._runActions = function(fn, actionArgs) {
+        var actions = [];
+        if (Object.keys(this._actions).length) {
+            $('#rb').append(loadingDiv);
+
+            Object.keys(this._actions).map(function(index) {
+                var value = this._actions[index],
+                    result = value.action.apply(undefined, actionArgs);
+
+                if (result instanceof Promise) {
+                    if (value.once) {
+                        delete this._actions[index];
+                    }
+                    actions.push(result);
+                }
+            }.bind(this));
+
+            Promise.all(actions).then(function() {
+                loadingDiv.remove();
+                fn();
+            }, function(error) {
+                loadingDiv.remove();
+                console.error(error);
+                fn();
+            });
+        } else {
+            fn();
+        }
+    };
+
+    var beforeMoveDispatcher = new BaseDispatcher();
+
     $(function() {
         var $rb = $('#rb'),
             $body = $('body');
@@ -378,16 +435,16 @@
 
         $body.on('keydown', function(e) {
             if (e.which === 37) { //left
-                move('left');
+                beforeMoveDispatcher._runActions(move.bind(undefined, 'left'), ['left', curScreen]);
             }
             if (e.which === 38) { // up
-                move('top');
+                beforeMoveDispatcher._runActions(move.bind(undefined, 'top'), ['top', curScreen]);
             }
             if (e.which === 39) { // right
-                move('right');
+                beforeMoveDispatcher._runActions(move.bind(undefined, 'right'), ['right', curScreen]);
             }
             if (e.which === 40) { // down
-                move('bottom');
+                beforeMoveDispatcher._runActions(move.bind(undefined, 'bottom'), ['bottom', curScreen]);
             }
         });
 
@@ -417,16 +474,16 @@
 
                 hideArrowTimeout(container);
                 if (container.is('.rb__arrow-container_left')) {
-                    move('left');
+                    beforeMoveDispatcher._runActions(move.bind(undefined, 'left'), ['left', curScreen]);
                 }
                 if (container.is('.rb__arrow-container_top')) {
-                    move('top');
+                    beforeMoveDispatcher._runActions(move.bind(undefined, 'top'), ['top', curScreen]);
                 }
                 if (container.is('.rb__arrow-container_right')) {
-                    move('right');
+                    beforeMoveDispatcher._runActions(move.bind(undefined, 'right'), ['right', curScreen]);
                 }
                 if (container.is('.rb__arrow-container_bottom')) {
-                    move('bottom');
+                    beforeMoveDispatcher._runActions(move.bind(undefined, 'bottom'), ['bottom', curScreen]);
                 }
             } else {
                 container.css('display', 'none');
@@ -456,6 +513,7 @@
 
     window.rb = {
         Screen: Screen,
+        beforeMoveDispatcher: beforeMoveDispatcher,
         start: function(screen) {
             mainScreen = screen;
             mainScreenSetted = true;

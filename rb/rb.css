@@ -5,9 +5,13 @@
     overflow: hidden;
 }
 .rb__loading {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: #f6f6f6;
 }
 
 .rb__animate {

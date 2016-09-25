@@ -39,36 +39,35 @@
 
         this.html = html;
         this.parents = [];
+        this.next = this;
+        this.prev = this;
 
         this.setChildren(children);
     }
     Screen.prototype.setChildren = function(children) {
-        if (children) {
-            this.children = children;
+        if (children && Array.isArray(children)) {
+            this.children = [];
             for (var i = 0; i < children.length; i++) {
-                var child = children[i];
-                child.parents.push(this);
-
-                if (children.length === 1) {
-                    child.next = child;
-                    child.prev = child;
-                } else if (i === 0) {
-                    child.next = children[1];
-                    child.prev = children[children.length - 1];
-                } else if (i === (children.length - 1)) {
-                    child.next = children[0];
-                    child.prev = children[children.length - 2];
-                } else {
-                    child.next = children[i+1];
-                    child.prev = children[i-1];
-                }
+                this.addChild(children[i]);
             }
         } else {
             this.children = [];
         }
+        return this;
     };
     Screen.prototype.getChildren = function() {
         return this.children;
+    };
+    Screen.prototype.addChild = function(child) {
+        var children = this.children;
+        child.parents.push(this);
+        child.next = children.length ? children[0] : child;
+        child.prev = children.length ? children[children.length-1] : child;
+        child.next.prev = child;
+        child.prev.next = child;
+
+        children.push(child);
+        return this;
     };
 
     function move(side, screen) {

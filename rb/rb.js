@@ -21,7 +21,9 @@
         };
     }
     // smartresize
-    //jQuery.fn['smartresize'] = function(fn){  return fn ? this.bind('resize', debounce(fn)) : this.trigger('smartresize'); };
+    $.fn['smartresize'] = function(fn){
+        return fn ? this.bind('resize', debounce(fn)) : this.trigger('smartresize');
+    };
 
     var loadingHtml = '<div class="rb__loading_wrapper">' +
         '<div class="cssload-loader"></div>' +
@@ -412,12 +414,41 @@
     var beforeMoveDispatcher = new BaseDispatcher();
 
     $(function() {
-        var $rb = $('#rb'),
-            $body = $('body');
-        if (!$rb.length) {
-            $body.append('<div id="rb"></div>');
-            $rb = $('#rb');
+        function smartResizeHandler() {
+            var
+                $window = $(window),
+                bodyWidth = $window.width(),
+                bodyHeight = $window.height();
+
+            var
+                rbCenter = $('.rb__center'),
+                rbLeft = $('.rb__left'),
+                rbTop = $('.rb__top'),
+                rbRight = $('.rb__right'),
+                rbBottom = $('.rb__bottom'),
+                newWidth, newHeight, scale;
+
+            scale = Math.min(1, bodyWidth/width, bodyHeight/height);
+            newWidth = width * scale;
+            newHeight = height * scale;
+
+            $rb.css({'width': newWidth, 'height': newHeight});
+            rbCenter.css({'margin-left': newWidth, 'margin-top': newHeight});
+            rbLeft.css({'margin-left': newWidth, 'margin-top': newHeight});
+            rbTop.css({'margin-left': newWidth, 'margin-top': newHeight});
+            rbRight.css({'margin-left': newWidth, 'margin-top': newHeight});
+            rbBottom.css({'margin-left': newWidth, 'margin-top': newHeight});
         }
+
+        var
+            $rbWrapper = $('#rb-wrapper'),
+            $body = $('body');
+        if (!$rbWrapper.length) {
+            $body.append('<div id="rb-wrapper"></div>');
+            $rbWrapper = $('#rb-wrapper');
+        }
+        $rbWrapper.html('<div id="rb"></div>');
+        var $rb = $rbWrapper.find('#rb');
 
         var width = $rb.width(),
             height = $rb.height();
@@ -432,6 +463,9 @@
         html += '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_right"><div class="rb__arrow rb__arrow_right"></div></div>';
         html += '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_bottom"><div class="rb__arrow rb__arrow_bottom"></div></div>';
         $rb.html(html);
+
+        smartResizeHandler();
+        $(window).smartresize(smartResizeHandler);
 
         $body.on('keydown', function(e) {
             if (e.which === 37) { //left

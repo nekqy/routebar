@@ -11,10 +11,13 @@ var
 var mainScreen = new rb.Screen(mainScreenHtml);
 
 // children screens adding
+var firstScreen = new rb.Screen(firstHtml),
+    secondScreen = new rb.Screen(secondHtml),
+    thirdScreen = new rb.Screen(thirdHtml, [mainScreen]);
 mainScreen
-    .addChild(new rb.Screen(firstHtml))
-    .addChild(new rb.Screen(secondHtml))
-    .addChild(new rb.Screen(thirdHtml, [mainScreen]));
+    .addChild(firstScreen)
+    .addChild(secondScreen)
+    .addChild(thirdScreen);
 
 // start screen setting.
 rb.start(mainScreen);
@@ -30,7 +33,7 @@ function loadPage(resolve, reject) {
         if (++count >= 5) {
             rb.beforeMoveDispatcher.remove(index); // action unregistration
         }
-        resolve();
+        resolve(true);
     }).fail(function() {
         var error = new Error('Данные не загружены');
         reject(error);
@@ -46,3 +49,13 @@ function action(side, curScreen) {
 var count = 0,
     newScreen = mainScreen.getChildren()[0],
     index = rb.beforeMoveDispatcher.add(action); // action registration
+
+// firstScreen removing
+// здесь чтоб была анимация можно не false возвращать а true, и перед переходом убрать children, а после анимации вернуть
+//rb.beforeMoveDispatcher.add(function(side, curScreen) {
+//    if (side === 'right' && curScreen === mainScreen) {
+//        mainScreen.removeChild(firstScreen);
+//        return false;
+//    }
+//    return true;
+//}, true);

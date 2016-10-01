@@ -69,6 +69,16 @@
         children.push(child);
         return this;
     };
+    Screen.prototype.removeChild = function(child) {
+        var children = this.children,
+            index = children.indexOf(child),
+            removed;
+        if (index !== -1) {
+            removed = children.splice(index, 1)[0];
+            removed.prev.next = removed.next;
+            removed.next.prev = removed.prev;
+        }
+    };
 
     function move(side, screen) {
         function opposite(side) {
@@ -381,7 +391,7 @@
         }
     };
     BaseDispatcher.prototype._runActions = function(fn, actionArgs) {
-        var actions = [];
+        var actions = [], results = [];
         if (Object.keys(this._actions).length) {
             $('#rb').append(loadingDiv);
 
@@ -389,21 +399,35 @@
                 var value = this._actions[index],
                     result = value.action.apply(undefined, actionArgs);
 
+                if (value.once) {
+                    delete this._actions[index];
+                }
                 if (result instanceof Promise) {
-                    if (value.once) {
-                        delete this._actions[index];
-                    }
                     actions.push(result);
+                } else {
+                    results.push(result);
                 }
             }.bind(this));
 
-            Promise.all(actions).then(function() {
+            Promise.all(actions).then(function(promiseResult) {
                 loadingDiv.remove();
-                fn();
+
+                var isOk = results.concat(promiseResult).every(function(res) {
+                    return res !== false;
+                });
+                if (isOk) {
+                    fn();
+                }
             }, function(error) {
                 loadingDiv.remove();
                 console.error(error);
-                fn();
+
+                var isOk = results.every(function(res) {
+                    return res !== false;
+                });
+                if (isOk) {
+                    fn();
+                }
             });
         } else {
             fn();

@@ -1,4 +1,4 @@
-define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'smartResizer'], function($, Utils, Screen, BaseDispatcher, ScreenManager, SmartResizer) {
+define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'smartResizer', 'animation'], function($, Utils, Screen, BaseDispatcher, ScreenManager, SmartResizer, Animation) {
     "use strict";
 
     var loadingHtml = '<div class="rb__loading_wrapper">' +
@@ -23,9 +23,11 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
                 if ($div.is('.rb__' + side) && $div[0].screen !== ScreenManager.getRelativeScreen(side)) {
                     $div.toggleClass('rb__loading', true);
                     $div.html(loadingHtml);
+                    $div[0].screen = null;
                 }
             }
             if ($div.is('.rb__empty')) {
+                $div.toggleClass('rb__loading', false);
                 return;
             }
 
@@ -38,44 +40,8 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
             }
         }
 
-        function doTransition(prevElem, elem, transitionClass, beforeFn, transitionFn, afterFn, needAfter) {
-            function subscribeTransitionEnd(elem, handler) {
-                if (elem && elem.length) {
-                    elem.on('transitionend', handler);
-                    elem[0]._transitionHandler = handler;
-                    elem[0]._needAfter = needAfter;
-                    elem.toggleClass(transitionClass, true);
-                }
-            }
-            function unsubscribeTransitionEnd(elem) {
-                if (elem && elem.length) {
-                    elem.off('transitionend', elem[0]._transitionHandler);
-                    if (elem[0]._needAfter) {
-                        delete elem[0]._needAfter;
-                        elem[0]._transitionHandler();
-                    }
-                    delete elem[0]._transitionHandler;
-                    elem.toggleClass(transitionClass, false);
-                }
-            }
-
-            beforeFn && beforeFn();
-
-            unsubscribeTransitionEnd(prevElem);
-            unsubscribeTransitionEnd(elem);
-
-            setTimeout(function() {
-                subscribeTransitionEnd(elem, function() {
-                    unsubscribeTransitionEnd(elem);
-                    afterFn && afterFn();
-                });
-
-                // todo могут быть проблемы, если transitionFn не делает transition, тогда transitionend не сработает
-                transitionFn && transitionFn();
-            }, 0);
-        }
-        function update(side, screen) {
-            var isLeft, isTop, isRight, isBottom;
+        function update(side, screen, except) {
+            var isLeft, isTop, isRight, isBottom, $rbLeft, $rbTop, $rbRight, $rbBottom;
 
             ScreenManager.updateScreens(side, screen);
 
@@ -101,70 +67,29 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
                 throw new Error('Current screen not found');
             }
 
-            makeLoading($oldElement);
-            makeLoading($rbLeft);
-            makeLoading($rbTop);
-            makeLoading($rbRight);
-            makeLoading($rbBottom);
+            makeLoading($oldElement, except);
+            makeLoading($rbLeft, except);
+            makeLoading($rbTop, except);
+            makeLoading($rbRight, except);
+            makeLoading($rbBottom, except);
         }
 
         var
             rbCenter = 'rb__center',
             rbSide = 'rb__' + side,
             $oldElement = $('.' + rbCenter),
-            $newElement = $('.' + rbSide),
-            $rb = $('#rb'),
-            startSide = Utils.getStartSide(side),
-            width = $rb.width(),
-            height = $rb.height();
+            $newElement = $('.' + rbSide);
 
         update(undefined, screen);
 
         if ($newElement.is('.rb__empty')) {
-            doTransition($oldElement, $oldElement, 'rb__animate2', function() {
-                $oldElement.css({'margin-left': width, 'margin-top': height});
-            }, function() {
-                var dw = width/10, dh = height/10;
-
-                // fix lags. transitionend must be dispatched.
-                if (Math.abs($oldElement[0].offsetLeft) === dw) {
-                    dw++;
-                } else if (Math.abs($oldElement[0].offsetTop) === dh) {
-                    dh++;
-                }
-
-                if (side === 'left') {
-                    $oldElement.css({'margin-left': width - dw, 'margin-top': height});
-                } else if (side === 'right') {
-                    $oldElement.css({'margin-left': width + dw, 'margin-top': height});
-                } else if (side === 'top') {
-                    $oldElement.css({'margin-left': width, 'margin-top': height - dh});
-                } else if (side === 'bottom') {
-                    $oldElement.css({'margin-left': width, 'margin-top': height + dh});
-                }
-
-                renderHtml();
-            }, function() {
-                doTransition($oldElement, $oldElement, 'rb__animate3', undefined, function() {
-                    $oldElement.css('margin-' + startSide, startSide === 'left' ? width : height);
-                }, undefined, true);
-            }, true);
-
-            return;
-        }
-
-        var
-            oppositeSide = Utils.oppositeSide(side),
-            rbOppositeSide = 'rb__' + oppositeSide,
-            oppositeScreen = $('.' + rbOppositeSide),
-            $rbLeft, $rbTop, $rbRight, $rbBottom;
-
-        if (side === 'center') {
-            $oldElement.css({'margin-left': $oldElement.width(), 'margin-top': $oldElement.height()});
-
-            update(undefined, screen);
-            renderHtml();
+            Animation.goToWrongSide($oldElement, side);
+        } else if (side === 'center') {
+            Animation.goToCenter($oldElement);
         } else {
+            var oppositeSide = Utils.oppositeSide(side),
+                rbOppositeSide = 'rb__' + oppositeSide,
+                oppositeScreen = $('.' + rbOppositeSide);
             oppositeScreen.toggleClass(rbOppositeSide, false);
             oppositeScreen.toggleClass(rbSide, true);
 
@@ -174,36 +99,22 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
             $newElement.toggleClass(rbSide, false);
             $newElement.toggleClass(rbCenter, true);
 
-            update(side);
+            update(side, undefined, [$oldElement, $newElement]);
 
-            doTransition($oldElement, $newElement, 'rb__animate', function() {
-                if (side === 'left') {
-                    $newElement.css({'margin-left': 0, 'margin-top': height});
-                } else if (side === 'right') {
-                    $newElement.css({'margin-left': 2*width, 'margin-top': height});
-                } else if (side === 'top') {
-                    $newElement.css({'margin-left': width, 'margin-top': 0});
-                } else if (side === 'bottom') {
-                    $newElement.css({'margin-left': width, 'margin-top': 2*height});
-                }
-
-            }, function() {
-                $newElement.css('margin-' + startSide, startSide === 'left' ? width : height);
-                renderHtml();
-            }, undefined);
+            Animation.goToCorrectSide($oldElement, $newElement, side);
         }
     }
 
-    var renderHtml = Utils.debounce(function () {
+    function renderHtml() {
         function renderSide(side) {
             var rbSide = $('.rb__' + side),
-                loadingScreen = ScreenManager.getRelativeScreen(side);
+                screenToApply = ScreenManager.getRelativeScreen(side);
 
             if (rbSide.is('.rb__loading')) {
                 rbSide.toggleClass('rb__loading', false);
-                if (loadingScreen) {
-                    rbSide.html(loadingScreen.html);
-                    rbSide[0].screen = loadingScreen;
+                if (screenToApply) {
+                    rbSide.html(screenToApply.html);
+                    rbSide[0].screen = screenToApply;
                 }
             }
         }
@@ -213,7 +124,7 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
         renderSide('top');
         renderSide('right');
         renderSide('bottom');
-    }, 500);
+    }
 
     var beforeMoveDispatcher = new BaseDispatcher(loadingDiv);
 
@@ -248,6 +159,7 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
         $rb.html(html);
 
         SmartResizer($rb.width(), $rb.height());
+        Animation.init($rb, renderHtml, 0);
 
         $body.on('keydown', function(e) {
             var curScreen = ScreenManager.getCurScreen();

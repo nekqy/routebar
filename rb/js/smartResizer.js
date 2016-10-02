@@ -37,8 +37,12 @@ define(['jquery', 'utils'], function($, Utils) {
     $(window).smartresize(smartResizeHandler);
 
     return function initSmartResizer(width, height) {
-        _width = width;
-        _height = height;
-        smartResizeHandler();
+        if (typeof width === 'number' && typeof height === 'number' && width > 0 && height > 0) {
+            _width = width;
+            _height = height;
+            smartResizeHandler();
+        } else {
+            throw new Error('SmartResizer module - init - wrong args, width: ' + width + ', height: ' + height);
+        }
     };
 });

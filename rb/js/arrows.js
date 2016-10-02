@@ -1,6 +1,8 @@
 define([], function() {
     "use strict";
 
+    var _mainDiv;
+
     function clearArrowTimeout(container) {
         container.toggleClass('rb__arrow-hide', false);
         container.toggleClass('rb__arrow-cursor', true);
@@ -21,8 +23,18 @@ define([], function() {
         }
     }
 
-    return function ($rb, actionFn) {
-        $rb.append($(
+    return function (mainDiv, actionFn) {
+        if (mainDiv instanceof $) {
+            _mainDiv = mainDiv;
+        } else {
+            throw new Error('Arrows module - init - wrong mainDiv arg: ' + mainDiv);
+        }
+
+        if (typeof actionFn !== 'function') {
+            throw new Error('Arrows module - init - wrong actionFn arg: ' + actionFn);
+        }
+
+        mainDiv.append($(
             '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_left">' +
             '<div class="rb__arrow rb__arrow_left"></div>' +
             '</div>' +
@@ -36,13 +48,16 @@ define([], function() {
             '<div class="rb__arrow rb__arrow_bottom"></div>'
         ));
 
-        var $rbArrowContainer = $rb.find('.rb__arrow-container');
+        var $rbArrowContainer = mainDiv.find('.rb__arrow-container');
         $rbArrowContainer.on('click', function(e) {
             var container = $(this);
 
             if (!container.is('.rb__arrow-hide')) {
                 hideArrowTimeout(container);
-                actionFn(container);
+
+                actionFn(container, function(container, defValue) {
+                    return container.is('.rb__arrow-container_' + defValue);
+                });
             } else {
                 container.css('display', 'none');
                 try {

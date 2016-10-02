@@ -1,11 +1,3 @@
-requirejs.config({
-    baseUrl: 'rb/js',
-    paths: {
-        jquery: '../vendor/jquery-3.1.1'
-    }
-});
-
-define(['rb'], function(rb) {
     // BASIC
 
     // markups of screens
@@ -67,4 +59,3 @@ define(['rb'], function(rb) {
     //    }
     //    return true;
     //}, true);
-});

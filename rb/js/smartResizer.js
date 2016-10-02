@@ -1,4 +1,4 @@
-define(['jquery', 'utils'], function($, Utils) {
+define(['./utils'], function(Utils) {
     "use strict";
     var _width, _height, _mainDiv;
 
@@ -28,7 +28,7 @@ define(['jquery', 'utils'], function($, Utils) {
 
     // smartresize
     $.fn['smartresize'] = function(fn){
-        return fn ? this.bind('resize', Utils.debounce(fn)) : this.trigger('smartresize');
+        return fn ? this.on('resize', Utils.debounce(fn)) : this.trigger('smartresize');
     };
 
     $(window).smartresize(smartResizeHandler);

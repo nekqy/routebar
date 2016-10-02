@@ -1,4 +1,4 @@
-define(['animation', 'screenManager', 'utils'], function(Animation, ScreenManager, Utils) {
+define(['./animation', './screenManager', './utils'], function(Animation, ScreenManager, Utils) {
     "use strict";
 
     var sides = ['center', 'left', 'top', 'right', 'bottom'],

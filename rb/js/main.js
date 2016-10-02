@@ -1,5 +1,5 @@
-define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'smartResizer', 'animation', 'arrows', 'moving'], function(
-    $, Utils, Screen, BaseDispatcher, ScreenManager, SmartResizer, Animation, Arrows, Moving) {
+define(['./utils', './screenModel', './baseDispatcher', './screenManager', './smartResizer', './animation', './arrows', './moving'], function(
+    Utils, Screen, BaseDispatcher, ScreenManager, SmartResizer, Animation, Arrows, Moving) {
     "use strict";
 
     var loadingHtml = '<div class="rb__loading_wrapper">' +
@@ -69,7 +69,7 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
         });
     });
 
-    window.rb = {
+    return {
         Screen: Screen,
         beforeMoveDispatcher: beforeMoveDispatcher,
         start: function(screen) {
@@ -79,5 +79,4 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
             Moving.move('center', screen);
         }
     };
-    return window.rb;
 });

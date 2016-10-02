@@ -1,4 +1,4 @@
-define(['utils'], function(Utils) {
+define(['./utils'], function(Utils) {
     "use strict";
 
     var _time, transitionCss1, transitionCss2, transitionCss3, _mainDiv;

@@ -1,10 +1,12 @@
-define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'smartResizer', 'animation'], function($, Utils, Screen, BaseDispatcher, ScreenManager, SmartResizer, Animation) {
+define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'smartResizer', 'animation', 'arrows'], function($, Utils, Screen, BaseDispatcher, ScreenManager, SmartResizer, Animation, Arrows) {
     "use strict";
 
     var loadingHtml = '<div class="rb__loading_wrapper">' +
         '<div class="cssload-loader"></div>' +
         '</div>',
-        loadingDiv = '<div class="rb__loading">' + loadingHtml + '</div>';
+        loadingDiv = '<div class="rb__loading">' + loadingHtml + '</div>',
+        sides = ['center', 'left', 'top', 'right', 'bottom'],
+        $rb;
 
     function move(side, screen) {
         function makeLoading($div, except) {
@@ -32,11 +34,7 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
             }
 
             if (!except || except && !$div.is(except) && !includes($div, except)) {
-                checkAndLoad('left');
-                checkAndLoad('top');
-                checkAndLoad('right');
-                checkAndLoad('bottom');
-                checkAndLoad('center');
+                sides.forEach(checkAndLoad);
             }
         }
 
@@ -45,10 +43,10 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
 
             ScreenManager.updateScreens(side, screen);
 
-            $rbLeft = $('.rb__left');
-            $rbTop = $('.rb__top');
-            $rbRight = $('.rb__right');
-            $rbBottom = $('.rb__bottom');
+            $rbLeft = $rb.find('.rb__left');
+            $rbTop = $rb.find('.rb__top');
+            $rbRight = $rb.find('.rb__right');
+            $rbBottom = $rb.find('.rb__bottom');
 
             if (ScreenManager.getCurScreen()) {
                 isLeft = ScreenManager.getRelativeScreen('left');
@@ -59,10 +57,10 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
                 $rbTop.toggleClass('rb__empty', !isTop);
                 $rbRight.toggleClass('rb__empty', !isRight);
                 $rbBottom.toggleClass('rb__empty', !isBottom);
-                $('.rb__arrow-container_left').toggleClass('rb__arrow-none', !isLeft);
-                $('.rb__arrow-container_top').toggleClass('rb__arrow-none', !isTop);
-                $('.rb__arrow-container_right').toggleClass('rb__arrow-none', !isRight);
-                $('.rb__arrow-container_bottom').toggleClass('rb__arrow-none', !isBottom);
+                //$rb.find('.rb__arrow-container_left').toggleClass('rb__arrow-none', !isLeft);
+                //$rb.find('.rb__arrow-container_top').toggleClass('rb__arrow-none', !isTop);
+                //$rb.find('.rb__arrow-container_right').toggleClass('rb__arrow-none', !isRight);
+                //$rb.find('.rb__arrow-container_bottom').toggleClass('rb__arrow-none', !isBottom);
             } else {
                 throw new Error('Current screen not found');
             }
@@ -77,8 +75,8 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
         var
             rbCenter = 'rb__center',
             rbSide = 'rb__' + side,
-            $oldElement = $('.' + rbCenter),
-            $newElement = $('.' + rbSide);
+            $oldElement = $rb.find('.' + rbCenter),
+            $newElement = $rb.find('.' + rbSide);
 
         update(undefined, screen);
 
@@ -89,7 +87,7 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
         } else {
             var oppositeSide = Utils.oppositeSide(side),
                 rbOppositeSide = 'rb__' + oppositeSide,
-                oppositeScreen = $('.' + rbOppositeSide);
+                oppositeScreen = $rb.find('.' + rbOppositeSide);
             oppositeScreen.toggleClass(rbOppositeSide, false);
             oppositeScreen.toggleClass(rbSide, true);
 
@@ -104,10 +102,21 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
             Animation.goToCorrectSide($oldElement, $newElement, side);
         }
     }
+    function moveByActionValue(value, ltrbValues, mapFn) {
+        var curScreen = ScreenManager.getCurScreen(),
+            side;
+        if (mapFn(value, ltrbValues[0])) side = 'left';
+        else if (mapFn(value, ltrbValues[1])) side = 'top';
+        else if (mapFn(value, ltrbValues[2])) side = 'right';
+        else if (mapFn(value, ltrbValues[3])) side = 'bottom';
 
+        if (side) {
+            beforeMoveDispatcher._runActions(move.bind(undefined, side), [side, curScreen]);
+        }
+    }
     function renderHtml() {
-        function renderSide(side) {
-            var rbSide = $('.rb__' + side),
+        sides.forEach(function(side) {
+            var rbSide = $rb.find('.rb__' + side),
                 screenToApply = ScreenManager.getRelativeScreen(side);
 
             if (rbSide.is('.rb__loading')) {
@@ -117,127 +126,49 @@ define(['jquery', 'utils', 'screenModel', 'baseDispatcher', 'screenManager', 'sm
                     rbSide[0].screen = screenToApply;
                 }
             }
-        }
-
-        renderSide('center');
-        renderSide('left');
-        renderSide('top');
-        renderSide('right');
-        renderSide('bottom');
+        });
     }
-
-    var beforeMoveDispatcher = new BaseDispatcher(loadingDiv);
-
-    $(function() {
+    function initLayout(wrapperName) {
         var
-            $rbWrapper = $('#rb-wrapper'),
+            $rbWrapper = $('#' + wrapperName),
             $body = $('body');
         if (!$rbWrapper.length) {
-            $body.append('<div id="rb-wrapper"></div>');
-            $rbWrapper = $('#rb-wrapper');
+            $body.append('<div id="' + wrapperName + '"></div>');
+            $rbWrapper = $('#' + wrapperName);
         }
-        $rbWrapper.html('<div id="rb"></div>');
-        var $rb = $rbWrapper.find('#rb');
+        $rbWrapper.html('<div class="rb"></div>');
+        $rb = $rbWrapper.find('.rb');
 
         var html = '<div class="rb__center"></div>' +
             '<div class="rb__left"></div>' +
             '<div class="rb__top"></div>' +
             '<div class="rb__right"></div>' +
             '<div class="rb__bottom"></div>' +
-            '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_left">' +
-                '<div class="rb__arrow rb__arrow_left"></div>' +
-            '</div>' +
-            '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_top">' +
-                '<div class="rb__arrow rb__arrow_top"></div>' +
-            '</div>' +
-            '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_right">' +
-                '<div class="rb__arrow rb__arrow_right"></div>' +
-            '</div>' +
-            '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_bottom">' +
-                '<div class="rb__arrow rb__arrow_bottom"></div>' +
-            '</div>';
+        '</div>';
         $rb.html(html);
 
-        SmartResizer($rb.width(), $rb.height());
-        Animation.init($rb, renderHtml, 0);
+        SmartResizer($rb, $rb.width(), $rb.height());
+        Animation.init($rb, renderHtml, 0.5);
+    }
 
-        $body.on('keydown', function(e) {
-            var curScreen = ScreenManager.getCurScreen();
-            if (e.which === 37) { //left
-                beforeMoveDispatcher._runActions(move.bind(undefined, 'left'), ['left', curScreen]);
-            }
-            if (e.which === 38) { // up
-                beforeMoveDispatcher._runActions(move.bind(undefined, 'top'), ['top', curScreen]);
-            }
-            if (e.which === 39) { // right
-                beforeMoveDispatcher._runActions(move.bind(undefined, 'right'), ['right', curScreen]);
-            }
-            if (e.which === 40) { // down
-                beforeMoveDispatcher._runActions(move.bind(undefined, 'bottom'), ['bottom', curScreen]);
-            }
-        });
+    var beforeMoveDispatcher = new BaseDispatcher(loadingDiv);
 
-        function clearArrowTimeout(container) {
-            container.toggleClass('rb__arrow-hide', false);
-            container.toggleClass('rb__arrow-cursor', true);
-            if (container.length) {
-                clearTimeout(container[0].hideArrowId);
-                container[0].hideArrowId = null;
-            }
-        }
-        function hideArrowTimeout(container) {
-            function hideArrow() {
-                container.toggleClass('rb__arrow-hide', true);
-                container.toggleClass('rb__arrow-cursor', false);
-            }
-
-            clearArrowTimeout(container);
-            if (container.length) {
-                container[0].hideArrowId = setTimeout(hideArrow, 3000);
-            }
-        }
-        var $rbArrowContainer = $('.rb__arrow-container');
-        $rbArrowContainer.on('click', function(e) {
-            var container = $(this),
-                curScreen = ScreenManager.getCurScreen();
-
-            if (!container.is('.rb__arrow-hide')) {
-
-                hideArrowTimeout(container);
-                if (container.is('.rb__arrow-container_left')) {
-                    beforeMoveDispatcher._runActions(move.bind(undefined, 'left'), ['left', curScreen]);
-                }
-                if (container.is('.rb__arrow-container_top')) {
-                    beforeMoveDispatcher._runActions(move.bind(undefined, 'top'), ['top', curScreen]);
-                }
-                if (container.is('.rb__arrow-container_right')) {
-                    beforeMoveDispatcher._runActions(move.bind(undefined, 'right'), ['right', curScreen]);
-                }
-                if (container.is('.rb__arrow-container_bottom')) {
-                    beforeMoveDispatcher._runActions(move.bind(undefined, 'bottom'), ['bottom', curScreen]);
-                }
-            } else {
-                container.css('display', 'none');
-                try {
-                    var behindElem = document.elementFromPoint(e.clientX, e.clientY);
-                    if (behindElem.tagName.toLowerCase() === 'iframe') {
-                        var doc = behindElem.contentDocument || behindElem.contentWindow.document;
-                        behindElem = doc.elementFromPoint(e.clientX, e.clientY);
-                    }
-                    $(behindElem).trigger(e);
-                }
-                finally {
-                    container.css('display', '');
-                }
-            }
-        });
-        $rbArrowContainer.on('mouseenter', function() {
-            hideArrowTimeout($(this));
-        });
-        $rbArrowContainer.on('mouseleave', function() {
-            clearArrowTimeout($(this));
-        });
+    $(function() {
+        initLayout('rb-wrapper');
         move('center', Screen.getMainScreen());
+
+        $('body').on('keydown', function(e) {
+            moveByActionValue(e.which, [37, 38, 39, 40], function(value, defValue) {
+                return value === defValue;
+            });
+        });
+
+        Arrows($rb, function(container) {
+            moveByActionValue(container, ['left', 'top', 'right', 'bottom'], function(container, defValue) {
+                return container.is('.rb__arrow-container_' + defValue);
+            });
+
+        });
     });
 
     window.rb = {

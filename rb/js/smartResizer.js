@@ -1,27 +1,24 @@
 define(['jquery', 'utils'], function($, Utils) {
     "use strict";
-    var _width, _height;
+    var _width, _height, _mainDiv;
 
     function smartResizeHandler() {
         var
             $window = $(window),
             bodyWidth = $window.width(),
-            bodyHeight = $window.height();
-
-        var
-            $rb = $('#rb'),
-            rbCenter = $('.rb__center'),
-            rbLeft = $('.rb__left'),
-            rbTop = $('.rb__top'),
-            rbRight = $('.rb__right'),
-            rbBottom = $('.rb__bottom'),
+            bodyHeight = $window.height(),
+            rbCenter = _mainDiv.find('.rb__center'),
+            rbLeft = _mainDiv.find('.rb__left'),
+            rbTop = _mainDiv.find('.rb__top'),
+            rbRight = _mainDiv.find('.rb__right'),
+            rbBottom = _mainDiv.find('.rb__bottom'),
             newWidth, newHeight, scale;
 
         scale = Math.min(1, bodyWidth / _width, bodyHeight / _height);
         newWidth = _width * scale;
         newHeight = _height * scale;
 
-        $rb.css({'width': newWidth, 'height': newHeight});
+        _mainDiv.css({'width': newWidth, 'height': newHeight});
         rbCenter.css({'margin-left': newWidth, 'margin-top': newHeight});
         rbLeft.css({'margin-left': newWidth, 'margin-top': newHeight});
         rbTop.css({'margin-left': newWidth, 'margin-top': newHeight});
@@ -36,7 +33,13 @@ define(['jquery', 'utils'], function($, Utils) {
 
     $(window).smartresize(smartResizeHandler);
 
-    return function initSmartResizer(width, height) {
+    return function initSmartResizer(mainDiv, width, height) {
+        if (mainDiv instanceof $) {
+            _mainDiv = mainDiv;
+        } else {
+            throw new Error('SmartResizer module - init - wrong mainDiv arg: ' + mainDiv);
+        }
+
         if (typeof width === 'number' && typeof height === 'number' && width > 0 && height > 0) {
             _width = width;
             _height = height;

@@ -1,4 +1,5 @@
 define(['utils'], function(Utils) {
+    "use strict";
 
     var _time, transitionCss1, transitionCss2, transitionCss3, _mainDiv;
 
@@ -136,7 +137,7 @@ define(['utils'], function(Utils) {
         }
 
         if (typeof renderFn === 'function') {
-            _renderFn = Utils.debounce(renderFn, time*1000 + 10);
+            _renderFn = Utils.debounce(renderFn, time*1000);
         } else {
             throw new Error('Animation module - init - wrong renderFn arg: ' + renderFn);
         }

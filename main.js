@@ -19,8 +19,10 @@
         .addChild(secondScreen)
         .addChild(thirdScreen);
 
-    // start screen setting.
-    rb.start(mainScreen);
+    // configuring.
+    rb.configure({
+        startScreen: mainScreen
+    });
 
     // ADVANCED
 

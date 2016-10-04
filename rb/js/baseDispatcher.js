@@ -51,7 +51,7 @@ define([], function() {
                     return res !== false;
                 });
                 if (isOk) {
-                    fn();
+                    fn && fn();
                 }
             }, function(error) {
                 self._loadingDiv.remove();
@@ -61,11 +61,11 @@ define([], function() {
                     return res !== false;
                 });
                 if (isOk) {
-                    fn();
+                    fn && fn();
                 }
             });
         } else {
-            fn();
+            fn && fn();
         }
     };
 

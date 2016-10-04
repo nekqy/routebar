@@ -1,9 +1,13 @@
-define(['./animation', './screenManager', './utils'], function(Animation, ScreenManager, Utils) {
+define(['./animation', './screenManager', './baseDispatcher', './utils'], function(Animation, ScreenManager, BaseDispatcher, Utils) {
     "use strict";
 
-    var sides = ['center', 'left', 'top', 'right', 'bottom'],
-        _mainDiv,
-        _loadingHtml;
+    var
+        loadingHtml = '<div class="rb__loading_wrapper">' +
+            '<div class="cssload-loader"></div>' +
+            '</div>',
+        loadingDiv = '<div class="rb__loading">' + loadingHtml + '</div>',
+        sides = ['center', 'left', 'top', 'right', 'bottom'],
+        _mainDiv, _side, _moveResolve, _moveReject;
 
     function makeLoading($div, except) {
         function includes($elem, arr) {
@@ -20,7 +24,7 @@ define(['./animation', './screenManager', './utils'], function(Animation, Screen
         function checkAndLoad(side) {
             if ($div.is('.rb__' + side) && $div[0].screen !== ScreenManager.getRelativeScreen(side)) {
                 $div.toggleClass('rb__loading', true);
-                $div.html(_loadingHtml);
+                $div.html(loadingHtml);
                 $div[0].screen = null;
             }
         }
@@ -53,12 +57,16 @@ define(['./animation', './screenManager', './utils'], function(Animation, Screen
             $rbTop.toggleClass('rb__empty', !isTop);
             $rbRight.toggleClass('rb__empty', !isRight);
             $rbBottom.toggleClass('rb__empty', !isBottom);
+            // todo восстановить
             //$rb.find('.rb__arrow-container_left').toggleClass('rb__arrow-none', !isLeft);
             //$rb.find('.rb__arrow-container_top').toggleClass('rb__arrow-none', !isTop);
             //$rb.find('.rb__arrow-container_right').toggleClass('rb__arrow-none', !isRight);
             //$rb.find('.rb__arrow-container_bottom').toggleClass('rb__arrow-none', !isBottom);
         } else {
-            throw new Error('Current screen not found');
+            var reject = _moveReject;
+            _moveResolve = null;
+            _moveReject = null;
+            reject(new Error('Current screen not found'));
         }
 
         makeLoading($rbCenter, except);
@@ -67,6 +75,19 @@ define(['./animation', './screenManager', './utils'], function(Animation, Screen
         makeLoading($rbRight, except);
         makeLoading($rbBottom, except);
     }
+    function moveAsync(fn) {
+        if (_moveResolve) {
+            _moveResolve(false);
+            _moveResolve = null;
+            _moveReject = null;
+        }
+        return new Promise(function (resolve, reject) {
+            _moveResolve = resolve;
+            _moveReject = reject;
+
+            fn();
+        });
+    }
     function move(side, screen) {
         var
             rbCenter = 'rb__center',
@@ -74,42 +95,81 @@ define(['./animation', './screenManager', './utils'], function(Animation, Screen
             $oldElement = _mainDiv.find('.' + rbCenter),
             $newElement = _mainDiv.find('.' + rbSide);
 
+        _side = side;
+
         update(undefined, screen);
 
-        if ($newElement.is('.rb__empty')) {
-            Animation.goToWrongSide($oldElement, side);
-        } else if (side === 'center') {
-            Animation.goToCenter($oldElement);
-        } else {
-            var oppositeSide = Utils.oppositeSide(side),
-                rbOppositeSide = 'rb__' + oppositeSide,
-                oppositeScreen = _mainDiv.find('.' + rbOppositeSide);
-            oppositeScreen.toggleClass(rbOppositeSide, false);
-            oppositeScreen.toggleClass(rbSide, true);
+        return moveAsync(function() {
+            if ($newElement.is('.rb__empty')) {
+                Animation.goToWrongSide($oldElement, side);
+            } else if (side === 'center') {
+                Animation.goToCenter($oldElement);
+            } else {
+                var oppositeSide = Utils.oppositeSide(side),
+                    rbOppositeSide = 'rb__' + oppositeSide,
+                    oppositeScreen = _mainDiv.find('.' + rbOppositeSide);
+                oppositeScreen.toggleClass(rbOppositeSide, false);
+                oppositeScreen.toggleClass(rbSide, true);
 
-            $oldElement.toggleClass(rbCenter, false);
-            $oldElement.toggleClass(rbOppositeSide, true);
+                $oldElement.toggleClass(rbCenter, false);
+                $oldElement.toggleClass(rbOppositeSide, true);
 
-            $newElement.toggleClass(rbSide, false);
-            $newElement.toggleClass(rbCenter, true);
+                $newElement.toggleClass(rbSide, false);
+                $newElement.toggleClass(rbCenter, true);
 
-            update(side, undefined, [$oldElement, $newElement]);
+                update(side, undefined, [$oldElement, $newElement]);
 
-            Animation.goToCorrectSide($oldElement, $newElement, side);
+                Animation.goToCorrectSide($oldElement, $newElement, side);
+            }
+        });
+    }
+    function moveByActionValue(value, ltrbValues, mapFn) {
+        var curScreen = ScreenManager.getCurScreen(),
+            side;
+        if (mapFn(value, ltrbValues[0])) side = 'left';
+        else if (mapFn(value, ltrbValues[1])) side = 'top';
+        else if (mapFn(value, ltrbValues[2])) side = 'right';
+        else if (mapFn(value, ltrbValues[3])) side = 'bottom';
+
+        if (side) {
+            return beforeMoveDispatcher._runActions(move.bind(undefined, side), [side, curScreen]);
         }
     }
 
-    function init(mainDiv, loadingHtml) {
+    function renderHtml() {
+        sides.forEach(function(side) {
+            var rbSide = _mainDiv.find('.rb__' + side),
+                screenToApply = ScreenManager.getRelativeScreen(side);
+
+            if (rbSide.is('.rb__loading')) {
+                rbSide.toggleClass('rb__loading', false);
+                if (screenToApply) {
+                    rbSide.html(screenToApply.html);
+                    rbSide[0].screen = screenToApply;
+                }
+            }
+        });
+
+        if (_moveResolve) {
+            _moveResolve(true);
+            _moveResolve = null;
+            _moveReject = null;
+        }
+        // todo нужно найти во вставляемых верстках ифреймы и дождаться их событий окончания рендеринга, и только потом стрельнуть
+        // но надо быть осторожным с ожиданием событий которые могут и не наступить. если тут отложится, а там сработает move и удалит ифреймы
+        afterRenderDispatcher._runActions(Utils.nop, [_side, ScreenManager.getCurScreen()]);
+    }
+
+    var beforeMoveDispatcher = new BaseDispatcher(loadingDiv),
+        afterRenderDispatcher = new BaseDispatcher(loadingDiv);
+
+    function init(mainDiv) {
+        Animation.init(mainDiv, renderHtml, 0.5);
+
         if (mainDiv instanceof $) {
             _mainDiv = mainDiv;
         } else {
             throw new Error('Moving module - init - wrong mainDiv arg: ' + mainDiv);
-        }
-
-        if (typeof loadingHtml === 'string') {
-            _loadingHtml = loadingHtml;
-        } else {
-            throw new Error('Moving module - init - wrong loadingHtml arg: ' + loadingHtml);
         }
 
         mainDiv.append($(
@@ -123,6 +183,9 @@ define(['./animation', './screenManager', './utils'], function(Animation, Screen
 
     return {
         init: init,
-        move: move
+        move: move,
+        moveByActionValue: moveByActionValue,
+        beforeMoveDispatcher: beforeMoveDispatcher,
+        afterRenderDispatcher: afterRenderDispatcher
     }
 });

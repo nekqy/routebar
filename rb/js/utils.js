@@ -39,10 +39,14 @@ define([], function() {
         if (side === 'center') return 'center';
         throw new Error('move function', 'wrong side');
     }
+    function nop() {
+
+    }
 
     return {
         debounce: debounce,
         oppositeSide: oppositeSide,
-        getStartSide: getStartSide
+        getStartSide: getStartSide,
+        nop: nop
     };
 });

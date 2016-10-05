@@ -44,14 +44,14 @@ define([], function() {
                 }
             }.bind(this));
 
-            Promise.all(actions).then(function(promiseResult) {
+            return Promise.all(actions).then(function(promiseResult) {
                 self._loadingDiv.remove();
 
                 var isOk = results.concat(promiseResult).every(function(res) {
                     return res !== false;
                 });
                 if (isOk) {
-                    fn && fn();
+                    return fn && fn();
                 }
             }, function(error) {
                 self._loadingDiv.remove();
@@ -61,11 +61,11 @@ define([], function() {
                     return res !== false;
                 });
                 if (isOk) {
-                    fn && fn();
+                    return fn && fn();
                 }
             });
         } else {
-            fn && fn();
+            return fn && fn();
         }
     };
 

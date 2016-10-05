@@ -89,6 +89,14 @@ define(['./animation', './screenManager', './baseDispatcher', './utils'], functi
         });
     }
     function move(side, screen) {
+        if (side) {
+            return Promise.race([ beforeMoveDispatcher._runActions(
+                moveInner.bind(undefined, side, screen),
+                [side, ScreenManager.getCurScreen()]
+            ) ]);
+        }
+    }
+    function moveInner(side, screen) {
         var
             rbCenter = 'rb__center',
             rbSide = 'rb__' + side,
@@ -124,30 +132,42 @@ define(['./animation', './screenManager', './baseDispatcher', './utils'], functi
         });
     }
     function moveByActionValue(value, ltrbValues, mapFn) {
-        var curScreen = ScreenManager.getCurScreen(),
-            side;
+        var side;
         if (mapFn(value, ltrbValues[0])) side = 'left';
         else if (mapFn(value, ltrbValues[1])) side = 'top';
         else if (mapFn(value, ltrbValues[2])) side = 'right';
         else if (mapFn(value, ltrbValues[3])) side = 'bottom';
-
-        if (side) {
-            return beforeMoveDispatcher._runActions(move.bind(undefined, side), [side, curScreen]);
-        }
+        return move(side);
     }
 
     function renderHtml() {
+        beforeRenderDispatcher._runActions(Utils.nop, [_side, ScreenManager.getCurScreen()]);
+
+        var iframeCount = 0, loadedIframeCount = 0;
         sides.forEach(function(side) {
             var rbSide = _mainDiv.find('.rb__' + side),
-                screenToApply = ScreenManager.getRelativeScreen(side);
+                screenToApply = ScreenManager.getRelativeScreen(side),
+                loading, iframes;
 
             if (rbSide.is('.rb__loading')) {
                 rbSide.toggleClass('rb__loading', false);
+                loading = true;
                 if (screenToApply) {
                     rbSide.html(screenToApply.html);
                     rbSide[0].screen = screenToApply;
                 }
             }
+
+            if (loading) {
+                iframes = rbSide.find('iframe');
+                iframeCount += iframes.length;
+            }
+            rbSide.find('iframe').one('load', function() {
+                loadedIframeCount++;
+                if (iframeCount === loadedIframeCount) {
+                    afterRenderDispatcher._runActions(Utils.nop, [_side, ScreenManager.getCurScreen()]);
+                }
+            })
         });
 
         if (_moveResolve) {
@@ -155,12 +175,16 @@ define(['./animation', './screenManager', './baseDispatcher', './utils'], functi
             _moveResolve = null;
             _moveReject = null;
         }
-        // todo нужно найти во вставляемых верстках ифреймы и дождаться их событий окончания рендеринга, и только потом стрельнуть
-        // но надо быть осторожным с ожиданием событий которые могут и не наступить. если тут отложится, а там сработает move и удалит ифреймы
-        afterRenderDispatcher._runActions(Utils.nop, [_side, ScreenManager.getCurScreen()]);
+
+        setTimeout(function() {
+            if (iframeCount === 0) {
+                afterRenderDispatcher._runActions(Utils.nop, [_side, ScreenManager.getCurScreen()]);
+            }
+        }, 0);
     }
 
     var beforeMoveDispatcher = new BaseDispatcher(loadingDiv),
+        beforeRenderDispatcher = new BaseDispatcher(loadingDiv),
         afterRenderDispatcher = new BaseDispatcher(loadingDiv);
 
     function init(mainDiv) {
@@ -186,6 +210,7 @@ define(['./animation', './screenManager', './baseDispatcher', './utils'], functi
         move: move,
         moveByActionValue: moveByActionValue,
         beforeMoveDispatcher: beforeMoveDispatcher,
+        beforeRenderDispatcher: beforeRenderDispatcher,
         afterRenderDispatcher: afterRenderDispatcher
     }
 });

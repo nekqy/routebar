@@ -52,6 +52,15 @@
         newScreen = mainScreen.getChildren()[0],
         index = rb.beforeMoveDispatcher.add(action); // action registration
 
+    // for testing
+    //var sides = ['left', 'top', 'right', 'bottom'];
+    //rb.afterRenderDispatcher.add(function() {
+    //   var index = Math.floor(Math.random()*4);
+    //   rb.move(sides[index]).then(function(isOk){
+    //       console.log('moved to ' + sides[index], isOk ? 'successfully' : 'failed')
+    //   });
+    //});
+
     // firstScreen removing
     // здесь чтоб была анимация можно не false возвращать а true, и перед переходом убрать children, а после анимации вернуть
     //rb.beforeMoveDispatcher.add(function(side, curScreen) {

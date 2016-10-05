@@ -55,6 +55,7 @@ define(['./utils', './screenModel', './baseDispatcher', './screenManager', './sm
     return {
         Screen: Screen,
         beforeMoveDispatcher: Moving.beforeMoveDispatcher,
+        beforeRenderDispatcher: Moving.afterRenderDispatcher,
         afterRenderDispatcher: Moving.afterRenderDispatcher,
         configure: configure,
         setScreen: setScreen,

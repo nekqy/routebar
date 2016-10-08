@@ -1,4 +1,4 @@
-define(['./utils'], function(Utils) {
+define(['utils'], function(Utils) {
     "use strict";
     var curScreen;
 

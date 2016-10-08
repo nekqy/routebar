@@ -54,19 +54,12 @@
 
     // for testing
     //var sides = ['left', 'top', 'right', 'bottom'];
-    //rb.afterRenderDispatcher.add(function() {
-    //   var index = Math.floor(Math.random()*4);
-    //   rb.move(sides[index]).then(function(isOk){
-    //       console.log('moved to ' + sides[index], isOk ? 'successfully' : 'failed')
-    //   });
-    //});
-
-    // firstScreen removing
-    // здесь чтоб была анимация можно не false возвращать а true, и перед переходом убрать children, а после анимации вернуть
-    //rb.beforeMoveDispatcher.add(function(side, curScreen) {
-    //    if (side === 'right' && curScreen === mainScreen) {
-    //        mainScreen.removeChild(firstScreen);
+    //rb.afterRenderDispatcher.add(function(side) {
+    //    var index = Math.floor(Math.random()*4);
+    //    rb.move(sides[index]).then(function(result){
+    //        console.log(result.how, result.isOk, 'moved to ' + sides[index], result.isOk ? 'successfully' : 'failed')
+    //    });
+    //    if (side !== 'center') {
     //        return false;
     //    }
-    //    return true;
-    //}, true);
+    //});

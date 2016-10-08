@@ -6,3 +6,4 @@
 .idea/vcs.xml
 .idea/workspace.xml
 rb/dist
+rb/node_modules

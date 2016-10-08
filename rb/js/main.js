@@ -1,4 +1,4 @@
-define(['./utils', './screenModel', './baseDispatcher', './screenManager', './smartResizer', './arrows', './moving'], function(
+define(['utils', 'screenModel', 'baseDispatcher', 'screenManager', 'smartResizer', 'arrows', 'moving'], function(
     Utils, Screen, BaseDispatcher, ScreenManager, SmartResizer, Arrows, Moving) {
     "use strict";
 
@@ -55,7 +55,7 @@ define(['./utils', './screenModel', './baseDispatcher', './screenManager', './sm
     return {
         Screen: Screen,
         beforeMoveDispatcher: Moving.beforeMoveDispatcher,
-        beforeRenderDispatcher: Moving.afterRenderDispatcher,
+        beforeRenderDispatcher: Moving.beforeRenderDispatcher,
         afterRenderDispatcher: Moving.afterRenderDispatcher,
         configure: configure,
         setScreen: setScreen,

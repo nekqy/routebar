@@ -1,5 +1,10 @@
+var webpack = require("webpack"),
+    NODE_ENV = process.env.NODE_ENV || 'development';
+
 module.exports = {
-    entry: "./js/main",
+    entry: {
+        main: "./js/main"
+    },
     output: {
         path: __dirname + "/dist",
         filename: "rb.js",
@@ -9,5 +14,20 @@ module.exports = {
         loaders: [
             { test: /\.css$/, loader: "style!css" }
         ]
-    }
+    },
+    resolve: { // как ищутся модули
+        modulesDirectories: [ // если путь неотносительный, где искать
+            './js/',
+            './vendor/',
+            './node_modules/'
+        ]
+    },
+    devtool: NODE_ENV == 'development' ? 'source-map' : null,
+
+    plugins: [
+        new webpack.NoErrorsPlugin(),
+        new webpack.DefinePlugin({
+            NODE_ENV: JSON.stringify(NODE_ENV)
+        })
+    ]
 };

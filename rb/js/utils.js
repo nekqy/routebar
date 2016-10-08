@@ -42,11 +42,15 @@ define([], function() {
     function nop() {
 
     }
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 
     return {
         debounce: debounce,
         oppositeSide: oppositeSide,
         getStartSide: getStartSide,
-        nop: nop
+        nop: nop,
+        capitalizeFirstLetter: capitalizeFirstLetter
     };
 });

@@ -1,46 +1,32 @@
-define(['./utils'], function(Utils) {
+define(['utils', 'jquery.easing'], function(Utils) {
     "use strict";
 
-    var _time, transitionCss1, transitionCss2, transitionCss3, _mainDiv;
+    var _time, _mainDiv, curElem;
 
-    function doTransition(prevElem, elem, transitionCss, beforeFn, transitionFn, afterFn, needAfter) {
-        function subscribeTransitionEnd(elem, handler) {
-            if (elem && elem.length) {
-                elem.on('transitionend', handler);
-                elem[0]._transitionHandler = handler;
-                elem[0]._needAfter = needAfter;
-                elem.css('transition', transitionCss);
-            }
+    function animate(elem, side, value, easing, time, beforeFn, afterFn, needAfter, res) {
+
+        if (curElem) {
+            curElem.stop();
         }
-        function unsubscribeTransitionEnd(elem) {
-            if (elem && elem.length) {
-                elem.off('transitionend', elem[0]._transitionHandler);
-                if (elem[0]._needAfter) {
-                    delete elem[0]._needAfter;
-                    elem[0]._transitionHandler();
-                }
-                delete elem[0]._transitionHandler;
-                elem.css('transition', '');
-            }
-        }
+        curElem = elem;
 
         beforeFn && beforeFn();
 
-        unsubscribeTransitionEnd(prevElem);
-        unsubscribeTransitionEnd(elem);
+        var css = {}, opts;
+        css['margin' + Utils.capitalizeFirstLetter(Utils.getStartSide(side))] = value;
+        opts = {
+            duration: time,
+            easing: easing,
+            queue: false,
+            fail: function() {
+                res(false);
+            }
+        };
 
-        setTimeout(function() {
-            subscribeTransitionEnd(elem, function() {
-                unsubscribeTransitionEnd(elem);
-                afterFn && afterFn();
-            });
+        if (needAfter) opts.always = afterFn;
+        else opts.done = afterFn;
 
-            // todo могут быть проблемы, если transitionFn не делает transition, тогда transitionend не сработает
-            // или если ничего не меняется в стилях а такое может быть
-            // а еще может быть, что transition прерван новой анимацией, и для старой не будет afterFn и отписки
-            // поэтому я передаю prevElem, чтобы отписаться. это бы все пофиксить
-            transitionFn && transitionFn();
-        }, 0);
+        elem.animate(css, opts);
     }
 
     function goToWrongSide($oldElement, side) {
@@ -48,56 +34,50 @@ define(['./utils'], function(Utils) {
             width = _mainDiv.width(),
             height = _mainDiv.height();
 
-        doTransition($oldElement, $oldElement, transitionCss2, function() {
-            $oldElement.css({'margin-left': width, 'margin-top': height});
-        }, function() {
-            var dw = width/10, dh = height/10;
+        return new Promise(function(res, rej) {
+            var dw = width/10, dh = height/10,
+                value;
+            if (side === 'left') value = width - dw;
+            else if (side === 'right') value = width + dw;
+            else if (side === 'top') value = height - dh;
+            else if (side === 'bottom') value = height + dh;
 
-            // fix lags. transitionend must be dispatched.
-            if (Math.abs($oldElement[0].offsetLeft) === dw) {
-                dw++;
-            } else if (Math.abs($oldElement[0].offsetTop) === dh) {
-                dh++;
-            }
-
-            if (side === 'left') {
-                $oldElement.css({'margin-left': width - dw, 'margin-top': height});
-            } else if (side === 'right') {
-                $oldElement.css({'margin-left': width + dw, 'margin-top': height});
-            } else if (side === 'top') {
-                $oldElement.css({'margin-left': width, 'margin-top': height - dh});
-            } else if (side === 'bottom') {
-                $oldElement.css({'margin-left': width, 'margin-top': height + dh});
-            }
-
-            _renderFn && _renderFn();
-        }, function() {
-            doTransition($oldElement, $oldElement, transitionCss3, undefined, function() {
-                $oldElement.css('margin-' + startSide, startSide === 'left' ? width : height);
-            }, undefined, true);
-        }, true);
+            animate($oldElement, side, value, 'easeInExpo', _time/2, function() {
+                $oldElement.css({'margin-left': width, 'margin-top': height});
+            }, function() {
+                animate($oldElement, side, startSide === 'left' ? width : height, 'easeOutElastic', _time/2, function() {
+                }, function() {
+                    res(true);
+                    _renderFn && _renderFn();
+                }, false, res)
+            }, false, res)
+        });
     }
 
-    function goToCorrectSide($oldElement, $newElement, side) {
-        var startSide = Utils.getStartSide(side),
-            width = _mainDiv.width(),
+    function goToCorrectSide($newElement, side) {
+        var width = _mainDiv.width(),
             height = _mainDiv.height();
 
-        doTransition($oldElement, $newElement, transitionCss1, function() {
-            if (side === 'left') {
-                $newElement.css({'margin-left': 0, 'margin-top': height});
-            } else if (side === 'right') {
-                $newElement.css({'margin-left': 2*width, 'margin-top': height});
-            } else if (side === 'top') {
-                $newElement.css({'margin-left': width, 'margin-top': 0});
-            } else if (side === 'bottom') {
-                $newElement.css({'margin-left': width, 'margin-top': 2*height});
-            }
+        return new Promise(function(res, rej) {
 
-        }, function() {
-            $newElement.css('margin-' + startSide, startSide === 'left' ? width : height);
-            _renderFn && _renderFn();
-        }, undefined);
+            var curScreen;
+            animate($newElement, side, side === 'left' || side === 'right' ? width : height, 'easeOutExpo', _time, function() {
+                if (side === 'left') {
+                    $newElement.css({'margin-left': 0, 'margin-top': height});
+                } else if (side === 'right') {
+                    $newElement.css({'margin-left': 2*width, 'margin-top': height});
+                } else if (side === 'top') {
+                    $newElement.css({'margin-left': width, 'margin-top': 0});
+                } else if (side === 'bottom') {
+                    $newElement.css({'margin-left': width, 'margin-top': 2*height});
+                }
+
+                curScreen = $newElement[0].screen;
+            }, function() {
+                res(true);
+                _renderFn && _renderFn();
+            }, false, res);
+        });
     }
 
     function goToCenter($oldElement) {
@@ -107,28 +87,15 @@ define(['./utils'], function(Utils) {
 
     var _renderFn = undefined;
     function init(mainDiv, renderFn, time) {
-        if (typeof time === 'number' && time >= 0) {
-            _time = time + 0.001; // todo если 0, чтоб все равно работало. надо по другому, чтоб был реально 0.
+        if (typeof time === 'number') {
+            _time = time > 0 ? time : 1;
         } else {
             if (time === undefined) {
-                _time = 0.5;
+                _time = 500;
             } else {
                 throw new Error('Animation module - init - wrong time arg: ' + time);
             }
         }
-
-        transitionCss1 = 'margin-left ' + _time + 's ease, ' +
-            'margin-top ' + _time + 's ease, ' +
-            'margin-right ' + _time + 's ease, ' +
-            'margin-bottom ' + _time + 's ease';
-        transitionCss2 = 'margin-left ' + _time/2 + 's ease-in, ' +
-            'margin-top ' + _time/2 + 's ease-in, ' +
-            'margin-right ' + _time/2 + 's ease-in, ' +
-            'margin-bottom ' + _time/2 + 's ease-in';
-        transitionCss3 = 'margin-left ' + _time/2 + 's ease, ' +
-            'margin-top ' + _time/2 + 's ease, ' +
-            'margin-right ' + _time/2 + 's ease, ' +
-            'margin-bottom ' + _time/2 + 's ease';
 
         if (mainDiv instanceof $) {
             _mainDiv = mainDiv;
@@ -137,7 +104,7 @@ define(['./utils'], function(Utils) {
         }
 
         if (typeof renderFn === 'function') {
-            _renderFn = Utils.debounce(renderFn, time*1000);
+            _renderFn = renderFn;
         } else {
             throw new Error('Animation module - init - wrong renderFn arg: ' + renderFn);
         }

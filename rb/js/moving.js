@@ -1,4 +1,4 @@
-define(['./animation', './screenManager', './baseDispatcher', './utils'], function(Animation, ScreenManager, BaseDispatcher, Utils) {
+define(['animation', 'screenManager', 'baseDispatcher', 'utils'], function(Animation, ScreenManager, BaseDispatcher, Utils) {
     "use strict";
 
     var
@@ -75,19 +75,7 @@ define(['./animation', './screenManager', './baseDispatcher', './utils'], functi
         makeLoading($rbRight, except);
         makeLoading($rbBottom, except);
     }
-    function moveAsync(fn) {
-        if (_moveResolve) {
-            _moveResolve(false);
-            _moveResolve = null;
-            _moveReject = null;
-        }
-        return new Promise(function (resolve, reject) {
-            _moveResolve = resolve;
-            _moveReject = reject;
-
-            fn();
-        });
-    }
+    
     function move(side, screen) {
         if (side) {
             return Promise.race([ beforeMoveDispatcher._runActions(
@@ -107,12 +95,22 @@ define(['./animation', './screenManager', './baseDispatcher', './utils'], functi
 
         update(undefined, screen);
 
-        return moveAsync(function() {
+        return new Promise(function (moveResolve, moveReject) {
+
             if ($newElement.is('.rb__empty')) {
-                Animation.goToWrongSide($oldElement, side);
+                Animation.goToWrongSide($oldElement, side).then(function(result) {
+                    moveResolve({
+                        how: 'wrongSide',
+                        isOk: result
+                    });
+                });
             } else if (side === 'center') {
                 Animation.goToCenter($oldElement);
-            } else {
+                moveResolve({
+                    how: 'center',
+                    isOk: true
+                });
+            } else if (sides.indexOf(side) !== -1) {
                 var oppositeSide = Utils.oppositeSide(side),
                     rbOppositeSide = 'rb__' + oppositeSide,
                     oppositeScreen = _mainDiv.find('.' + rbOppositeSide);
@@ -127,7 +125,14 @@ define(['./animation', './screenManager', './baseDispatcher', './utils'], functi
 
                 update(side, undefined, [$oldElement, $newElement]);
 
-                Animation.goToCorrectSide($oldElement, $newElement, side);
+                Animation.goToCorrectSide($newElement, side).then(function(result) {
+                    moveResolve({
+                        how: 'correctSide',
+                        isOk: result
+                    });
+                });
+            } else {
+                moveReject(new Error('Moving module - move - wrong side arg: ' + side));
             }
         });
     }
@@ -141,46 +146,42 @@ define(['./animation', './screenManager', './baseDispatcher', './utils'], functi
     }
 
     function renderHtml() {
-        beforeRenderDispatcher._runActions(Utils.nop, [_side, ScreenManager.getCurScreen()]);
+        var movingSide = _side;
+        beforeRenderDispatcher._runActions(function() {
 
-        var iframeCount = 0, loadedIframeCount = 0;
-        sides.forEach(function(side) {
-            var rbSide = _mainDiv.find('.rb__' + side),
-                screenToApply = ScreenManager.getRelativeScreen(side),
-                loading, iframes;
+            var iframeCount = 0, loadedIframeCount = 0;
+            sides.forEach(function(side) {
+                var rbSide = _mainDiv.find('.rb__' + side),
+                    screenToApply = ScreenManager.getRelativeScreen(side),
+                    loading, iframes;
 
-            if (rbSide.is('.rb__loading')) {
-                rbSide.toggleClass('rb__loading', false);
-                loading = true;
-                if (screenToApply) {
-                    rbSide.html(screenToApply.html);
-                    rbSide[0].screen = screenToApply;
+                if (rbSide.is('.rb__loading')) {
+                    rbSide.toggleClass('rb__loading', false);
+                    loading = true;
+                    if (screenToApply) {
+                        rbSide.html(screenToApply.html);
+                        rbSide[0].screen = screenToApply;
+                    }
                 }
-            }
 
-            if (loading) {
-                iframes = rbSide.find('iframe');
-                iframeCount += iframes.length;
-            }
-            rbSide.find('iframe').one('load', function() {
-                loadedIframeCount++;
-                if (iframeCount === loadedIframeCount) {
-                    afterRenderDispatcher._runActions(Utils.nop, [_side, ScreenManager.getCurScreen()]);
+                if (loading) {
+                    iframes = rbSide.find('iframe');
+                    iframeCount += iframes.length;
                 }
-            })
-        });
+                rbSide.find('iframe').one('load', function() {
+                    loadedIframeCount++;
+                    if (iframeCount === loadedIframeCount) {
+                        afterRenderDispatcher._runActions(Utils.nop, [movingSide, ScreenManager.getCurScreen()]);
+                    }
+                })
+            });
 
-        if (_moveResolve) {
-            _moveResolve(true);
-            _moveResolve = null;
-            _moveReject = null;
-        }
-
-        setTimeout(function() {
-            if (iframeCount === 0) {
-                afterRenderDispatcher._runActions(Utils.nop, [_side, ScreenManager.getCurScreen()]);
-            }
-        }, 0);
+            setTimeout(function() {
+                if (iframeCount === 0) {
+                    afterRenderDispatcher._runActions(Utils.nop, [movingSide, ScreenManager.getCurScreen()]);
+                }
+            }, 0);
+        }, [movingSide, ScreenManager.getCurScreen()]);
     }
 
     var beforeMoveDispatcher = new BaseDispatcher(loadingDiv),
@@ -188,7 +189,7 @@ define(['./animation', './screenManager', './baseDispatcher', './utils'], functi
         afterRenderDispatcher = new BaseDispatcher(loadingDiv);
 
     function init(mainDiv) {
-        Animation.init(mainDiv, renderHtml, 0.5);
+        Animation.init(mainDiv, renderHtml, 1000);
 
         if (mainDiv instanceof $) {
             _mainDiv = mainDiv;

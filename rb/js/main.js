@@ -18,7 +18,7 @@ define(['utils', 'screenModel', 'baseDispatcher', 'screenManager', 'smartResizer
         Moving.init($rb);
         SmartResizer($rb, $rb.width(), $rb.height());
 
-        Moving.move('center', Screen.getMainScreen());
+        Moving.move('center', Screen.getMainScreen(), false);
     }
 
     $(function() {
@@ -40,8 +40,8 @@ define(['utils', 'screenModel', 'baseDispatcher', 'screenManager', 'smartResizer
             Screen.setMainScreen(config.startScreen);
         }
     }
-    function setScreen(screen) {
-        return Moving.move('center', screen);
+    function setScreen(screen, isSaveHistory) {
+        return Moving.move('center', screen, isSaveHistory);
     }
     function reload(side) {
         var rbSide = $(side ? ('.rb__' + side) : '.rb__center');
@@ -54,12 +54,16 @@ define(['utils', 'screenModel', 'baseDispatcher', 'screenManager', 'smartResizer
 
     return {
         Screen: Screen,
+
         beforeMoveDispatcher: Moving.beforeMoveDispatcher,
         beforeRenderDispatcher: Moving.beforeRenderDispatcher,
         afterRenderDispatcher: Moving.afterRenderDispatcher,
+
         configure: configure,
         setScreen: setScreen,
         reload: reload,
-        move: Moving.move
+
+        move: Moving.move,
+        moveBack: Moving.moveBack
     };
 });

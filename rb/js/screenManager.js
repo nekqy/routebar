@@ -1,14 +1,34 @@
 define(['utils'], function(Utils) {
     "use strict";
-    var curScreen;
+    var historyLength = 10,
+        screens = [],
+        curScreen;
 
-    function updateScreens(nextScreen, screen) {
+    function updateScreens(side, screen, isSaveHistory) {
+        var updated = false;
         if (screen) {
+            if (curScreen !== screen) {
+                updated = true;
+            }
             curScreen = screen;
-        } else if (curScreen.getRelativeScreen(nextScreen)) {
+        } else if (curScreen.getRelativeScreen(side)) {
             var prevScreen = curScreen;
-            curScreen = curScreen.getRelativeScreen(nextScreen);
-            curScreen.setRelativeScreen(Utils.oppositeSide(nextScreen), prevScreen);
+            curScreen = curScreen.getRelativeScreen(side);
+
+            if (prevScreen !== curScreen) {
+                curScreen.setRelativeScreen(Utils.oppositeSide(side), prevScreen);
+                updated = true;
+            }
+        }
+
+        if (updated && isSaveHistory !== false) {
+            screens.push({
+                screen: curScreen,
+                side: Utils.oppositeSide(side)
+            });
+            if (screens.length > historyLength) {
+                screens.shift();
+            }
         }
     }
 
@@ -22,6 +42,12 @@ define(['utils'], function(Utils) {
     return {
         updateScreens: updateScreens,
         getCurScreen: getCurScreen,
-        getRelativeScreen: getRelativeScreen
+        getRelativeScreen: getRelativeScreen,
+        clearHistory: function() {
+            screens = [];
+        },
+        popHistory: function() {
+            return screens.pop();
+        }
     };
 });

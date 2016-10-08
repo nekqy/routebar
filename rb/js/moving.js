@@ -37,10 +37,10 @@ define(['animation', 'screenManager', 'baseDispatcher', 'utils'], function(Anima
             sides.forEach(checkAndLoad);
         }
     }
-    function update(side, screen, except) {
+    function update(side, screen, except, isSaveHistory) {
         var isLeft, isTop, isRight, isBottom, $rbLeft, $rbTop, $rbRight, $rbBottom, $rbCenter;
 
-        ScreenManager.updateScreens(side, screen);
+        ScreenManager.updateScreens(side, screen, isSaveHistory);
 
         $rbCenter = _mainDiv.find('.rb__center');
         $rbLeft = _mainDiv.find('.rb__left');
@@ -76,15 +76,15 @@ define(['animation', 'screenManager', 'baseDispatcher', 'utils'], function(Anima
         makeLoading($rbBottom, except);
     }
     
-    function move(side, screen) {
+    function move(side, screen, isSaveHistory) {
         if (side) {
             return Promise.race([ beforeMoveDispatcher._runActions(
-                moveInner.bind(undefined, side, screen),
+                moveInner.bind(undefined, side, screen, isSaveHistory),
                 [side, ScreenManager.getCurScreen()]
             ) ]);
         }
     }
-    function moveInner(side, screen) {
+    function moveInner(side, screen, isSaveHistory) {
         var
             rbCenter = 'rb__center',
             rbSide = 'rb__' + side,
@@ -93,7 +93,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'utils'], function(Anima
 
         _side = side;
 
-        update(undefined, screen);
+        update('center', screen, [], isSaveHistory);
 
         return new Promise(function (moveResolve, moveReject) {
 
@@ -123,7 +123,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'utils'], function(Anima
                 $newElement.toggleClass(rbSide, false);
                 $newElement.toggleClass(rbCenter, true);
 
-                update(side, undefined, [$oldElement, $newElement]);
+                update(side, undefined, [$oldElement, $newElement], isSaveHistory);
 
                 Animation.goToCorrectSide($newElement, side).then(function(result) {
                     moveResolve({
@@ -206,10 +206,20 @@ define(['animation', 'screenManager', 'baseDispatcher', 'utils'], function(Anima
         ));
     }
 
+    function moveBack() {
+        var lastStep = ScreenManager.popHistory();
+        if (lastStep) {
+            move(lastStep.side, lastStep.screen, false);
+            return true;
+        }
+        return false;
+    }
+
     return {
         init: init,
         move: move,
         moveByActionValue: moveByActionValue,
+        moveBack: moveBack,
         beforeMoveDispatcher: beforeMoveDispatcher,
         beforeRenderDispatcher: beforeRenderDispatcher,
         afterRenderDispatcher: afterRenderDispatcher

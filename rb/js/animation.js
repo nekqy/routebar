@@ -76,6 +76,7 @@ define(['utils', 'jquery.easing'], function(Utils) {
                 self._animate(elem, side, startSide === 'left' ? width : height, 'easeOutElastic', self._time/2, function() {
                 }, function() {
                     if (self._isAnimate) {
+                        self._isAnimate = false;
                         res(true);
                     }
                 })
@@ -127,8 +128,8 @@ define(['utils', 'jquery.easing'], function(Utils) {
                 curScreen = newElem[0].screen;
             }, function() {
                 if (self._isAnimate) {
-                    res(true);
                     self._isAnimate = false;
+                    res(true);
                 }
             });
         });

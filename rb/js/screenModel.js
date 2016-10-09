@@ -10,11 +10,13 @@ define([], function() {
         this.parents = [];
         this.next = this;
         this.prev = this;
-
-        this._relativeScreens = {};
+        this._id = 'screen_' + Screen._length++;
 
         this.setChildren(children);
     }
+    Screen.prototype.toString = function() {
+        return this._id;
+    };
     Screen.prototype.setChildren = function(children) {
         if (children && Array.isArray(children)) {
             this.children = [];
@@ -24,7 +26,7 @@ define([], function() {
         } else {
             this.children = [];
         }
-        this._updateRelativeScreen();
+        Screen._runRelativeUpdateFn(this);
         return this;
     };
     Screen.prototype.getChildren = function() {
@@ -39,7 +41,7 @@ define([], function() {
         child.prev.next = child;
 
         children.push(child);
-        this._updateRelativeScreen();
+        Screen._runRelativeUpdateFn(this);
         return this;
     };
     Screen.prototype.removeChild = function(child) {
@@ -51,78 +53,34 @@ define([], function() {
             removed.prev.next = removed.next;
             removed.next.prev = removed.prev;
         }
-        this._updateRelativeScreen();
+        Screen._runRelativeUpdateFn(this);
         return this;
     };
 
-    Screen.prototype.isRelativeScreen = function(side) {
-        return !!this.getRelativeScreen(side);
-    };
-    Screen.prototype.getRelativeScreen = function(side) {
-        if (side === 'center') {
-            return this;
-        }
-        if (side === 'left') {
-            if (this.parents.length) {
-                return this._relativeScreens['left'] || this.parents[0];
-            } else {
-                return null;
-            }
-        }
-        if (side === 'top') {
-            if (this.prev) {
-                return this._relativeScreens['top'] || this.prev;
-            } else {
-                return null;
-            }
-        }
-        if (side === 'right') {
-            if (this.children.length) {
-                return this._relativeScreens['right'] || this.children[0];
-            } else {
-                return null;
-            }
-        }
-        if (side === 'bottom') {
-            if (this.next) {
-                return this._relativeScreens['bottom'] || this.next;
-            } else {
-                return null;
-            }
-        }
-        return null;
-    };
-    Screen.prototype.setRelativeScreen = function(side, screen) {
-        if (side !== 'left' && side !== 'top' && side !== 'right' && side !== 'bottom') {
-            throw new Error('Screen module - setRelativeScreen - wrong side arg: ' + side);
-        }
-        if (!(screen instanceof Screen)) {
-            throw new Error('Screen module - setRelativeScreen - wrong screen arg');
-        }
-        this._relativeScreens[side] = screen;
-    };
-    Screen.prototype._updateRelativeScreen = function() {
-        if (!this.children.length) {
-            this._relativeScreens['right'] = null;
-        }
-        if (!this.parents.length) {
-            this._relativeScreens['left'] = null;
-        }
-        if (!this.next) {
-            this._relativeScreens['bottom'] = null;
-        }
-        if (!this.prev) {
-            this._relativeScreens['top'] = null;
-        }
-
-    };
-
+    Screen._length = 1;
+    Screen._relativeUpdateFn = [];
     Screen.setMainScreen = function(screen) {
         Screen._mainScreen = screen;
         Screen._mainScreenSetted = true;
     };
     Screen.getMainScreen = function() {
         return Screen._mainScreen;
+    };
+    Screen.registerRelativeUpdateFn = function(fn) {
+        Screen._relativeUpdateFn.push(fn);
+    };
+    Screen.unregisterRelativeUpdateFn = function(fn) {
+        Screen._relativeUpdateFn = Screen._relativeUpdateFn.filter(function(value) {
+            return value !== fn;
+        });
+    };
+    Screen.clearRelativeUpdateFn = function() {
+        Screen._relativeUpdateFn = [];
+    };
+    Screen._runRelativeUpdateFn = function(screen) {
+        Screen._relativeUpdateFn.forEach(function(fn) {
+            fn.call(undefined, screen);
+        });
     };
 
     return Screen;

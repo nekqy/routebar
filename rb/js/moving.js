@@ -143,7 +143,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
 
             if ($newElement.is('.rb__empty')) {
                 self._animation.goToWrongSide($oldElement, side).then(function(result) {
-                    self._renderHtml();
+                    self._renderHtml(result);
                     moveResolve({
                         how: 'wrongSide',
                         isOk: result
@@ -151,7 +151,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
                 });
             } else if (side === 'center') {
                 self._animation.goToCenter($oldElement);
-                self._renderHtml();
+                self._renderHtml(true);
                 moveResolve({
                     how: 'center',
                     isOk: true
@@ -171,8 +171,8 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
 
                 self._update(side, undefined, [$oldElement, $newElement], isSaveHistory);
 
-                self._animation.goToCorrectSide($newElement, side).then(function(result) {
-                    self._renderHtml();
+                self._animation.goToCorrectSide($oldElement, $newElement, side).then(function(result) {
+                    self._renderHtml(result);
                     moveResolve({
                         how: 'correctSide',
                         isOk: result
@@ -212,10 +212,11 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
         return this.setScreen(this._screenManager.getCurScreen());
     };
 
-    Moving.prototype._renderHtml = function() {
+    Moving.prototype._renderHtml = function(result) {
         var movingSide = this._side,
             self = this;
         this.beforeRenderDispatcher._runActions(function() {
+            if(!result) return;
 
             var iframeCount = 0, loadedIframeCount = 0;
             sides.forEach(function(side) {

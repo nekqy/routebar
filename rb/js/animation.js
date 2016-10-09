@@ -4,7 +4,11 @@ define(['utils', 'jquery.easing'], function(Utils) {
     function Animation(mainDiv, time) {
         this._time = undefined;
         this._mainDiv = undefined;
-        this._curElem = undefined;
+        this._isAnimate = undefined;
+        this._old = undefined;
+        this._new = undefined;
+        this._res = undefined;
+
 
         if (typeof time === 'number') {
             this._time = time > 0 ? time : 1;
@@ -23,12 +27,7 @@ define(['utils', 'jquery.easing'], function(Utils) {
         }
     }
 
-    Animation.prototype._animate = function(elem, side, value, easing, time, beforeFn, afterFn, needAfter, res) {
-
-        if (this._curElem) {
-            this._curElem.stop();
-        }
-        this._curElem = elem;
+    Animation.prototype._animate = function(elem, side, value, easing, time, beforeFn, afterFn, needAfter) {
 
         beforeFn && beforeFn();
 
@@ -37,10 +36,7 @@ define(['utils', 'jquery.easing'], function(Utils) {
         opts = {
             duration: time,
             easing: easing,
-            queue: false,
-            fail: function() {
-                res(false);
-            }
+            queue: false
         };
 
         if (needAfter) opts.always = afterFn;
@@ -49,7 +45,7 @@ define(['utils', 'jquery.easing'], function(Utils) {
         elem.animate(css, opts);
     };
 
-    Animation.prototype.goToWrongSide = function($oldElement, side) {
+    Animation.prototype.goToWrongSide = function(elem, side) {
         var self = this,
             startSide = Utils.getStartSide(side),
             width = this._mainDiv.width(),
@@ -63,45 +59,83 @@ define(['utils', 'jquery.easing'], function(Utils) {
             else if (side === 'top') value = height - dh;
             else if (side === 'bottom') value = height + dh;
 
-            self._animate($oldElement, side, value, 'easeInExpo', self._time/2, function() {
-                $oldElement.css({'margin-left': width, 'margin-top': height});
+            if (self._isAnimate) {
+                self._isAnimate = false;
+                self._old.stop(false, true);
+                self._new.stop(false, true);
+                self._res(false);
+            }
+            self._isAnimate = true;
+            self._old = elem;
+            self._res = res;
+
+
+            self._animate(elem, side, value, 'easeInExpo', self._time/2, function() {
+                elem.css({'margin-left': width, 'margin-top': height});
             }, function() {
-                self._animate($oldElement, side, startSide === 'left' ? width : height, 'easeOutElastic', self._time/2, function() {
+                self._animate(elem, side, startSide === 'left' ? width : height, 'easeOutElastic', self._time/2, function() {
                 }, function() {
-                    res(true);
-                }, false, res)
-            }, false, res)
+                    if (self._isAnimate) {
+                        res(true);
+                    }
+                })
+            })
         });
     };
 
-    Animation.prototype.goToCorrectSide = function($newElement, side) {
+    Animation.prototype.goToCorrectSide = function(oldElem, newElem, side) {
         var self = this,
             width = this._mainDiv.width(),
             height = this._mainDiv.height();
 
         return new Promise(function(res, rej) {
 
-            var curScreen;
-            self._animate($newElement, side, side === 'left' || side === 'right' ? width : height, 'easeOutExpo', self._time, function() {
+            var value,
+                curScreen;
+            if (side === 'left') value = 2*width;
+            else if (side === 'top') value = 2*height;
+            else if (side === 'right') value = 0;
+            else if (side === 'bottom') value = 0;
+
+            if (self._isAnimate) {
+                self._isAnimate = false;
+                self._old.stop(false, true);
+                self._new.stop(false, true);
+                self._res(false);
+            }
+            self._isAnimate = true;
+            self._old = oldElem;
+            self._new = newElem;
+            self._res = res;
+
+            self._animate(oldElem, side, value, 'easeOutExpo', self._time, function() {
+                oldElem.toggleClass('rb__hiding-screen', true);
+            }, function() {
+                oldElem.toggleClass('rb__hiding-screen', false);
+            }, true);
+            self._animate(newElem, side, side === 'left' || side === 'right' ? width : height, 'easeOutExpo', self._time, function() {
                 if (side === 'left') {
-                    $newElement.css({'margin-left': 0, 'margin-top': height});
+                    newElem.css({'margin-left': 0, 'margin-top': height});
                 } else if (side === 'right') {
-                    $newElement.css({'margin-left': 2*width, 'margin-top': height});
+                    newElem.css({'margin-left': 2*width, 'margin-top': height});
                 } else if (side === 'top') {
-                    $newElement.css({'margin-left': width, 'margin-top': 0});
+                    newElem.css({'margin-left': width, 'margin-top': 0});
                 } else if (side === 'bottom') {
-                    $newElement.css({'margin-left': width, 'margin-top': 2*height});
+                    newElem.css({'margin-left': width, 'margin-top': 2*height});
                 }
 
-                curScreen = $newElement[0].screen;
+                curScreen = newElem[0].screen;
             }, function() {
-                res(true);
-            }, false, res);
+                if (self._isAnimate) {
+                    res(true);
+                    self._isAnimate = false;
+                }
+            });
         });
-    }
+    };
 
-    Animation.prototype.goToCenter = function($oldElement) {
-        $oldElement.css({'margin-left': $oldElement.width(), 'margin-top': $oldElement.height()});
+    Animation.prototype.goToCenter = function(elem) {
+        elem.css({'margin-left': elem.width(), 'margin-top': elem.height()});
     };
 
     return Animation;

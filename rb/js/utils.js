@@ -39,9 +39,7 @@ define([], function() {
         if (side === 'center') return 'center';
         throw new Error('move function', 'wrong side');
     }
-    function nop() {
 
-    }
     function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
@@ -50,7 +48,7 @@ define([], function() {
         debounce: debounce,
         oppositeSide: oppositeSide,
         getStartSide: getStartSide,
-        nop: nop,
-        capitalizeFirstLetter: capitalizeFirstLetter
+        capitalizeFirstLetter: capitalizeFirstLetter,
+        nop: function() {}
     };
 });

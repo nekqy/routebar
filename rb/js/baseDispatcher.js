@@ -28,7 +28,7 @@ define([], function() {
             self = this;
 
         if (Object.keys(this._actions).length) {
-            $('#rb').append(this._loadingDiv);
+            $('#rb').append(this._loadingDiv); // todo вынести это в moving, а здесь просто вызывать функцию
 
             Object.keys(this._actions).map(function(index) {
                 var value = this._actions[index],

@@ -1,8 +1,6 @@
 define([], function() {
     "use strict";
 
-    var _mainDiv;
-
     function clearArrowTimeout(container) {
         container.toggleClass('rb__arrow-hide', false);
         container.toggleClass('rb__arrow-cursor', true);
@@ -24,9 +22,7 @@ define([], function() {
     }
 
     return function (mainDiv, actionFn) {
-        if (mainDiv instanceof $) {
-            _mainDiv = mainDiv;
-        } else {
+        if (!(mainDiv instanceof $)) {
             throw new Error('Arrows module - init - wrong mainDiv arg: ' + mainDiv);
         }
 

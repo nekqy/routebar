@@ -1,53 +1,51 @@
 define(['utils'], function(Utils) {
     "use strict";
-    var historyLength = 10,
-        screens = [],
-        curScreen;
 
-    function updateScreens(side, screen, isSaveHistory) {
+    function ScreenManager(historyLength) {
+        this._historyLength = typeof historyLength === 'number' && historyLength >=0 ? historyLength : 10;
+        this._screens = [];
+        this._curScreen = undefined;
+    }
+
+    ScreenManager.prototype.updateScreens = function(side, screen, isSaveHistory) {
         var updated = false;
         if (screen) {
-            if (curScreen !== screen) {
+            if (this._curScreen !== screen) {
                 updated = true;
             }
-            curScreen = screen;
-        } else if (curScreen.getRelativeScreen(side)) {
-            var prevScreen = curScreen;
-            curScreen = curScreen.getRelativeScreen(side);
+            this._curScreen = screen;
+        } else if (this._curScreen.getRelativeScreen(side)) {
+            var prevScreen = this._curScreen;
+            this._curScreen = this._curScreen.getRelativeScreen(side);
 
-            if (prevScreen !== curScreen) {
-                curScreen.setRelativeScreen(Utils.oppositeSide(side), prevScreen);
+            if (prevScreen !== this._curScreen) {
+                this._curScreen.setRelativeScreen(Utils.oppositeSide(side), prevScreen);
                 updated = true;
             }
         }
 
         if (updated && isSaveHistory !== false) {
-            screens.push({
-                screen: curScreen,
+            this._screens.push({
+                screen: this._curScreen,
                 side: Utils.oppositeSide(side)
             });
-            if (screens.length > historyLength) {
-                screens.shift();
+            if (this._screens.length > this._historyLength) {
+                this._screens.shift();
             }
         }
-    }
-
-    function getCurScreen() {
-        return curScreen;
-    }
-    function getRelativeScreen(side) {
-        return curScreen.getRelativeScreen(side);
-    }
-
-    return {
-        updateScreens: updateScreens,
-        getCurScreen: getCurScreen,
-        getRelativeScreen: getRelativeScreen,
-        clearHistory: function() {
-            screens = [];
-        },
-        popHistory: function() {
-            return screens.pop();
-        }
     };
+
+    ScreenManager.prototype.getCurScreen = function() {
+        return this._curScreen;
+    };
+    ScreenManager.prototype.getRelativeScreen = function(side) {
+        return this._curScreen.getRelativeScreen(side);
+    };
+    ScreenManager.prototype.clearHistory = function() {
+        this._screens = [];
+    };
+    ScreenManager.prototype.popHistory = function() {
+        return this._screens.pop();
+    };
+    return ScreenManager;
 });

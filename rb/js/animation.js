@@ -1,14 +1,34 @@
 define(['utils', 'jquery.easing'], function(Utils) {
     "use strict";
 
-    var _time, _mainDiv, curElem;
+    function Animation(mainDiv, time) {
+        this._time = undefined;
+        this._mainDiv = undefined;
+        this._curElem = undefined;
 
-    function animate(elem, side, value, easing, time, beforeFn, afterFn, needAfter, res) {
-
-        if (curElem) {
-            curElem.stop();
+        if (typeof time === 'number') {
+            this._time = time > 0 ? time : 1;
+        } else {
+            if (time === undefined) {
+                this._time = 500;
+            } else {
+                throw new Error('Animation module - init - wrong time arg: ' + time);
+            }
         }
-        curElem = elem;
+
+        if (mainDiv instanceof $) {
+            this._mainDiv = mainDiv;
+        } else {
+            throw new Error('Animation module - init - wrong mainDiv arg: ' + mainDiv);
+        }
+    }
+
+    Animation.prototype._animate = function(elem, side, value, easing, time, beforeFn, afterFn, needAfter, res) {
+
+        if (this._curElem) {
+            this._curElem.stop();
+        }
+        this._curElem = elem;
 
         beforeFn && beforeFn();
 
@@ -27,12 +47,13 @@ define(['utils', 'jquery.easing'], function(Utils) {
         else opts.done = afterFn;
 
         elem.animate(css, opts);
-    }
+    };
 
-    function goToWrongSide($oldElement, side) {
-        var startSide = Utils.getStartSide(side),
-            width = _mainDiv.width(),
-            height = _mainDiv.height();
+    Animation.prototype.goToWrongSide = function($oldElement, side) {
+        var self = this,
+            startSide = Utils.getStartSide(side),
+            width = this._mainDiv.width(),
+            height = this._mainDiv.height();
 
         return new Promise(function(res, rej) {
             var dw = width/10, dh = height/10,
@@ -42,26 +63,26 @@ define(['utils', 'jquery.easing'], function(Utils) {
             else if (side === 'top') value = height - dh;
             else if (side === 'bottom') value = height + dh;
 
-            animate($oldElement, side, value, 'easeInExpo', _time/2, function() {
+            self._animate($oldElement, side, value, 'easeInExpo', self._time/2, function() {
                 $oldElement.css({'margin-left': width, 'margin-top': height});
             }, function() {
-                animate($oldElement, side, startSide === 'left' ? width : height, 'easeOutElastic', _time/2, function() {
+                self._animate($oldElement, side, startSide === 'left' ? width : height, 'easeOutElastic', self._time/2, function() {
                 }, function() {
                     res(true);
-                    _renderFn && _renderFn();
                 }, false, res)
             }, false, res)
         });
-    }
+    };
 
-    function goToCorrectSide($newElement, side) {
-        var width = _mainDiv.width(),
-            height = _mainDiv.height();
+    Animation.prototype.goToCorrectSide = function($newElement, side) {
+        var self = this,
+            width = this._mainDiv.width(),
+            height = this._mainDiv.height();
 
         return new Promise(function(res, rej) {
 
             var curScreen;
-            animate($newElement, side, side === 'left' || side === 'right' ? width : height, 'easeOutExpo', _time, function() {
+            self._animate($newElement, side, side === 'left' || side === 'right' ? width : height, 'easeOutExpo', self._time, function() {
                 if (side === 'left') {
                     $newElement.css({'margin-left': 0, 'margin-top': height});
                 } else if (side === 'right') {
@@ -75,45 +96,13 @@ define(['utils', 'jquery.easing'], function(Utils) {
                 curScreen = $newElement[0].screen;
             }, function() {
                 res(true);
-                _renderFn && _renderFn();
             }, false, res);
         });
     }
 
-    function goToCenter($oldElement) {
+    Animation.prototype.goToCenter = function($oldElement) {
         $oldElement.css({'margin-left': $oldElement.width(), 'margin-top': $oldElement.height()});
-        _renderFn && _renderFn();
-    }
-
-    var _renderFn = undefined;
-    function init(mainDiv, renderFn, time) {
-        if (typeof time === 'number') {
-            _time = time > 0 ? time : 1;
-        } else {
-            if (time === undefined) {
-                _time = 500;
-            } else {
-                throw new Error('Animation module - init - wrong time arg: ' + time);
-            }
-        }
-
-        if (mainDiv instanceof $) {
-            _mainDiv = mainDiv;
-        } else {
-            throw new Error('Animation module - init - wrong mainDiv arg: ' + mainDiv);
-        }
-
-        if (typeof renderFn === 'function') {
-            _renderFn = renderFn;
-        } else {
-            throw new Error('Animation module - init - wrong renderFn arg: ' + renderFn);
-        }
-    }
-
-    return {
-        init: init,
-        goToWrongSide: goToWrongSide,
-        goToCorrectSide: goToCorrectSide,
-        goToCenter: goToCenter
     };
+
+    return Animation;
 });

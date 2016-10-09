@@ -1,4 +1,3 @@
-    // BASIC
 
     // markups of screens
     var
@@ -19,38 +18,45 @@
         .addChild(secondScreen)
         .addChild(thirdScreen);
 
-    // configuring.
+    // configuring
     rb.configure({
-        startScreen: mainScreen
-    });
+        startScreen: mainScreen,
+        prepare: function(instances) {
+            for (var id in instances) {
+                if (instances.hasOwnProperty(id)) {
+                    var inst = instances[id];
+                    // dynamic control of screens example
+                    function loadPage(resolve, reject) {
+                        $.get('examples/example2.html', function(data) {
 
-    // ADVANCED
+                            newScreen.addChild(newScreen = new rb.Screen(data));
 
-    // dynamic control of screens example
-    function loadPage(resolve, reject) {
-        $.get('examples/example2.html', function(data) {
-
-            newScreen.addChild(newScreen = new rb.Screen(data));
-
-            if (++count >= 5) {
-                rb.beforeMoveDispatcher.remove(index); // action unregistration
+                            if (++count >= 5) {
+                                inst.beforeMoveDispatcher.remove(index); // action unregistration
+                            }
+                            resolve(true);
+                        }).fail(function() {
+                            var error = new Error('Данные не загружены');
+                            reject(error);
+                        });
+                    }
+                    function action(side, curScreen) {
+                        var promise;
+                        if (side === 'right' && curScreen === newScreen) {
+                            promise = new Promise(loadPage);
+                        }
+                        return promise;
+                    }
+                    var count = 0,
+                        newScreen = mainScreen.getChildren()[0],
+                        index = inst.beforeMoveDispatcher.add(action); // action registration
+                }
             }
-            resolve(true);
-        }).fail(function() {
-            var error = new Error('Данные не загружены');
-            reject(error);
-        });
-    }
-    function action(side, curScreen) {
-        var promise;
-        if (side === 'right' && curScreen === newScreen) {
-            promise = new Promise(loadPage);
+
+            instances['rb1'].setScreen(firstScreen, false);
+            instances['rb2'].setScreen(secondScreen, false);
         }
-        return promise;
-    }
-    var count = 0,
-        newScreen = mainScreen.getChildren()[0],
-        index = rb.beforeMoveDispatcher.add(action); // action registration
+    });
 
     // for testing
     //var sides = ['left', 'top', 'right', 'bottom'];

@@ -1,69 +1,52 @@
-define(['utils', 'screenModel', 'baseDispatcher', 'screenManager', 'smartResizer', 'arrows', 'moving'], function(
-    Utils, Screen, BaseDispatcher, ScreenManager, SmartResizer, Arrows, Moving) {
+define(['utils', 'screenModel', 'baseDispatcher', 'arrows', 'moving'], function(
+    Utils, Screen, BaseDispatcher, Arrows, Moving) {
     "use strict";
 
-    var $rb;
+    var $rb, instances = {}, prepare;
 
     function initLayout(wrapperName) {
-        var
-            $rbWrapper = $('#' + wrapperName),
-            $body = $('body');
-        if (!$rbWrapper.length) {
-            $body.append('<div id="' + wrapperName + '"></div>');
-            $rbWrapper = $('#' + wrapperName);
-        }
+
+        var $rbWrapper = $('.' + wrapperName);
         $rbWrapper.html('<div class="rb"></div>');
         $rb = $rbWrapper.find('.rb');
 
-        Moving.init($rb);
-        SmartResizer($rb, $rb.width(), $rb.height());
+        for(var i = 0; i < $rb.length; i++) {
+            var elem = $rb.eq(i),
+                id = elem.parent().attr('id');
 
-        Moving.move('center', Screen.getMainScreen(), false);
+            if (id === undefined) {
+                id = 'instance_' + i;
+                elem.attr('id', id);
+            }
+
+            var inst = new Moving(elem, 1000, 10);
+            instances[id] = inst;
+
+            var mainScreen = Screen.getMainScreen();
+            if (mainScreen) {
+                inst.move('center', mainScreen, false);
+            }
+        }
     }
 
     $(function() {
         initLayout('rb-wrapper');
-
-        $('body').on('keydown', function(e) {
-            Moving.moveByActionValue(e.which, [37, 38, 39, 40], function(value, defValue) {
-                return value === defValue;
-            });
-        });
-
-        Arrows($rb, function(container, compareFn) {
-            Moving.moveByActionValue(container, ['left', 'top', 'right', 'bottom'], compareFn);
-        });
+        prepare(instances);
     });
 
     function configure(config) {
         if (config && config.startScreen) {
             Screen.setMainScreen(config.startScreen);
         }
-    }
-    function setScreen(screen, isSaveHistory) {
-        return Moving.move('center', screen, isSaveHistory);
-    }
-    function reload(side) {
-        var rbSide = $(side ? ('.rb__' + side) : '.rb__center');
-        if (rbSide.length) {
-            rbSide[0].screen = null;
+        if (config && typeof config.prepare === 'function') {
+            prepare = config.prepare;
+        } else {
+            throw new Error('Main module - configure - prepare function not found');
         }
-
-        return setScreen(ScreenManager.getCurScreen());
     }
 
     return {
         Screen: Screen,
-
-        beforeMoveDispatcher: Moving.beforeMoveDispatcher,
-        beforeRenderDispatcher: Moving.beforeRenderDispatcher,
-        afterRenderDispatcher: Moving.afterRenderDispatcher,
-
-        configure: configure,
-        setScreen: setScreen,
-        reload: reload,
-
-        move: Moving.move,
-        moveBack: Moving.moveBack
+        configure: configure
     };
 });

@@ -23,7 +23,12 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
         this._mainDiv = undefined;
         this._side = undefined;
 
-        this._animation = new Animation(mainDiv, speed);
+        this._animation = new Animation(function() {
+            return {
+                width: mainDiv.width(),
+                height: mainDiv.height()
+            }
+        }, speed);
         this._screenManager = new ScreenManager(historyLength);
 
         if (mainDiv instanceof $) {
@@ -123,7 +128,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
         if (side) {
             return Promise.race([ this.beforeMoveDispatcher._runActions(
                 self._moveInner.bind(self, side, screen, isSaveHistory),
-                [side, self._screenManager.getCurScreen()]
+                [side, self._screenManager.getCurScreen(), self]
             ) ]);
         }
     };
@@ -199,6 +204,10 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
         }
         return false;
     };
+    Moving.prototype.animateWrongSide = function(side) {
+        var elem = this._mainDiv.find('.rb__center');
+        return this._animation.goToWrongSide(elem, side);
+    };
 
     Moving.prototype.setScreen = function(screen, isSaveHistory) {
         return this.move('center', screen, isSaveHistory);
@@ -240,17 +249,17 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
                 rbSide.find('iframe').one('load', function() {
                     loadedIframeCount++;
                     if (iframeCount === loadedIframeCount) {
-                        self.afterRenderDispatcher._runActions(Utils.nop, [movingSide, self._screenManager.getCurScreen()]);
+                        self.afterRenderDispatcher._runActions(Utils.nop, [movingSide, self._screenManager.getCurScreen(), self]);
                     }
                 })
             });
 
             setTimeout(function() {
                 if (iframeCount === 0) {
-                    self.afterRenderDispatcher._runActions(Utils.nop, [movingSide, self._screenManager.getCurScreen()]);
+                    self.afterRenderDispatcher._runActions(Utils.nop, [movingSide, self._screenManager.getCurScreen(), self]);
                 }
             }, 0);
-        }, [movingSide, this._screenManager.getCurScreen()]);
+        }, [movingSide, this._screenManager.getCurScreen(), this]);
     };
 
     return Moving;

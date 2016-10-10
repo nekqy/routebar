@@ -1,14 +1,18 @@
 define(['utils', 'jquery.easing'], function(Utils) {
     "use strict";
 
-    function Animation(mainDiv, time) {
+    function Animation(getWidth, time) {
         this._time = undefined;
-        this._mainDiv = undefined;
         this._isAnimate = undefined;
         this._old = undefined;
         this._new = undefined;
         this._res = undefined;
 
+        if (typeof getWidth === 'function') {
+            this._getWidth = getWidth;
+        } else {
+            throw new Error('Animation module - init - wrong getWidth arg: ' + getWidth);
+        }
 
         if (typeof time === 'number') {
             this._time = time > 0 ? time : 1;
@@ -18,12 +22,6 @@ define(['utils', 'jquery.easing'], function(Utils) {
             } else {
                 throw new Error('Animation module - init - wrong time arg: ' + time);
             }
-        }
-
-        if (mainDiv instanceof $) {
-            this._mainDiv = mainDiv;
-        } else {
-            throw new Error('Animation module - init - wrong mainDiv arg: ' + mainDiv);
         }
     }
 
@@ -48,8 +46,9 @@ define(['utils', 'jquery.easing'], function(Utils) {
     Animation.prototype.goToWrongSide = function(elem, side) {
         var self = this,
             startSide = Utils.getStartSide(side),
-            width = this._mainDiv.width(),
-            height = this._mainDiv.height();
+            size = this._getWidth(),
+            width = size.width,
+            height = size.height;
 
         return new Promise(function(res, rej) {
             var dw = width/10, dh = height/10,
@@ -86,8 +85,9 @@ define(['utils', 'jquery.easing'], function(Utils) {
 
     Animation.prototype.goToCorrectSide = function(oldElem, newElem, side) {
         var self = this,
-            width = this._mainDiv.width(),
-            height = this._mainDiv.height();
+            size = this._getWidth(),
+            width = size.width,
+            height = size.height;
 
         return new Promise(function(res, rej) {
 

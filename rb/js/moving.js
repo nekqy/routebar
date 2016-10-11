@@ -23,12 +23,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
         this._mainDiv = undefined;
         this._side = undefined;
 
-        this._animation = new Animation(function() {
-            return {
-                width: mainDiv.width(),
-                height: mainDiv.height()
-            }
-        }, speed);
+        this._animation = new Animation(mainDiv, speed);
         this._screenManager = new ScreenManager(historyLength);
 
         if (mainDiv instanceof $) {
@@ -147,16 +142,18 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
         return new Promise(function (moveResolve, moveReject) {
 
             if ($newElement.is('.rb__empty')) {
-                self._animation.goToWrongSide($oldElement, side).then(function(result) {
-                    self._renderHtml(result);
+                self._animation.goToWrongSide(side).then(function(result) {
+                    if (result) {
+                        self._renderHtml();
+                    }
                     moveResolve({
                         how: 'wrongSide',
                         isOk: result
                     });
                 });
             } else if (side === 'center') {
-                self._animation.goToCenter($oldElement);
-                self._renderHtml(true);
+                self._animation.goToCenter();
+                self._renderHtml();
                 moveResolve({
                     how: 'center',
                     isOk: true
@@ -176,8 +173,10 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
 
                 self._update(side, undefined, [$oldElement, $newElement], isSaveHistory);
 
-                self._animation.goToCorrectSide($oldElement, $newElement, side).then(function(result) {
-                    self._renderHtml(result);
+                self._animation.goToCorrectSide(side).then(function(result) {
+                    if (result) {
+                        self._renderHtml();
+                    }
                     moveResolve({
                         how: 'correctSide',
                         isOk: result
@@ -205,8 +204,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
         return false;
     };
     Moving.prototype.animateWrongSide = function(side) {
-        var elem = this._mainDiv.find('.rb__center');
-        return this._animation.goToWrongSide(elem, side);
+        return this._animation.goToWrongSide(side);
     };
 
     Moving.prototype.setScreen = function(screen, isSaveHistory) {
@@ -221,12 +219,11 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
         return this.setScreen(this._screenManager.getCurScreen());
     };
 
-    Moving.prototype._renderHtml = function(result) {
+    Moving.prototype._renderHtml = function() {
         var movingSide = this._side,
             self = this;
-        this.beforeRenderDispatcher._runActions(function() {
-            if(!result) return;
 
+        this.beforeRenderDispatcher._runActions(function() {
             var iframeCount = 0, loadedIframeCount = 0;
             sides.forEach(function(side) {
                 var rbSide = self._mainDiv.find('.rb__' + side),

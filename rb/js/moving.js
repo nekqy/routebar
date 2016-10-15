@@ -81,13 +81,39 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
         }
 
         if (!except || except && !$div.is(except) && !includes($div, except)) {
-            sides.forEach(checkAndLoad);
+            sides.forEach(checkAndLoad); // todo оптимизировать. не надо искать так
         }
     };
     Moving.prototype._update = function(side, screen, except, isSaveHistory) {
-        var isLeft, isTop, isRight, isBottom, $rbLeft, $rbTop, $rbRight, $rbBottom, $rbCenter;
+        function checkExistance(checkSide, targetScreen, curElement) {
+            var curScreen = curElement[0].screen,
+                nextElement = self._mainDiv.find('.rb__' + checkSide),
+                nextScreen = nextElement[0].screen;
+            if (nextScreen === targetScreen && nextScreen !== curScreen) {
+                curElement.toggleClass('rb__center', false);
+                curElement.toggleClass('rb__' + checkSide, true);
+                nextElement.toggleClass('rb__center', true);
+                nextElement.toggleClass('rb__' + checkSide, false);
 
-        this._screenManager.updateScreens(side, screen, isSaveHistory);
+                if (Utils.oppositeSide(side) === checkSide) {
+                    self._makeLoading(curElement);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        var self = this,
+            isLeft, isTop, isRight, isBottom, $rbLeft, $rbTop, $rbRight, $rbBottom, $rbCenter;
+
+        var updatedScreen = this._screenManager.updateScreens(side, screen, isSaveHistory),
+            curElement = self._mainDiv.find('.rb__center');
+
+        // todo и если это oppositeSide надо залоадить то с чего уходим, оно уже не актуально
+        !checkExistance('left', updatedScreen, curElement)
+        && !checkExistance('right', updatedScreen, curElement)
+        && !checkExistance('top', updatedScreen, curElement)
+        && !checkExistance('bottom', updatedScreen, curElement);
 
         $rbCenter = this._mainDiv.find('.rb__center');
         $rbLeft = this._mainDiv.find('.rb__left');
@@ -111,11 +137,11 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
             //$rb.find('.rb__arrow-container_bottom').toggleClass('rb__arrow-none', !isBottom);
         }
 
-        this._makeLoading($rbCenter, except);
-        this._makeLoading($rbLeft, except);
-        this._makeLoading($rbTop, except);
-        this._makeLoading($rbRight, except);
-        this._makeLoading($rbBottom, except);
+        this._makeLoading($rbCenter);
+        //this._makeLoading($rbLeft, except);
+        //this._makeLoading($rbTop, except);
+        //this._makeLoading($rbRight, except);
+        //this._makeLoading($rbBottom, except);
     };
     
     Moving.prototype.move = function(side, screen, isSaveHistory) {
@@ -222,6 +248,15 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
     Moving.prototype._renderHtml = function() {
         var movingSide = this._side,
             self = this;
+
+        var $rbLeft = this._mainDiv.find('.rb__left');
+        var $rbTop = this._mainDiv.find('.rb__top');
+        var $rbRight = this._mainDiv.find('.rb__right');
+        var $rbBottom = this._mainDiv.find('.rb__bottom');
+        this._makeLoading($rbLeft);
+        this._makeLoading($rbTop);
+        this._makeLoading($rbRight);
+        this._makeLoading($rbBottom);
 
         this.beforeRenderDispatcher._runActions(function() {
             var iframeCount = 0, loadedIframeCount = 0;

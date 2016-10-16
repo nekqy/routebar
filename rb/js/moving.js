@@ -1,17 +1,10 @@
-define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows', 'elementsPool', 'utils'], function(
-    Animation, ScreenManager, BaseDispatcher, SmartResizer, Arrows, ElementsPool, Utils) {
+define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'controlManager', 'arrowsControl', 'keydownControl', 'elementsPool', 'utils'], function(
+    Animation, ScreenManager, BaseDispatcher, SmartResizer, ControlManager, ArrowsControl, KeydownControl, ElementsPool, Utils) {
     "use strict";
 
     var sides = ['center', 'left', 'top', 'right', 'bottom'];
 
     function Moving(mainDiv, speed, historyLength, loadingHtml) {
-        function keydownHandler(e) {
-            self._moveByActionValue(e.which, [37, 38, 39, 40], function(value, defValue) {
-                return value === defValue;
-            });
-            e.stopPropagation();
-        }
-
         this._loadingHtml = loadingHtml || '<div class="rb__loading_wrapper"><div class="cssload-loader"></div></div>';
         var loadingDiv = '<div class="rb__loading">' + this._loadingHtml + '</div>';
 
@@ -31,12 +24,10 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
             throw new Error('Moving module - init - wrong mainDiv arg: ' + mainDiv);
         }
 
-        var self = this;
-        Arrows(mainDiv, function(container, compareFn) {
-            self._moveByActionValue(container, ['left', 'top', 'right', 'bottom'], compareFn);
-        });
-        $('body').on('keydown', keydownHandler);
-        mainDiv.on('keydown', keydownHandler);
+        this._controlManager = new ControlManager();
+        this._controlManager
+            .add('arrows', new ArrowsControl(mainDiv, this._moveByActionValue.bind(this)), true)
+            .add('keyboard', new KeydownControl(mainDiv, this._moveByActionValue.bind(this)), true);
 
         SmartResizer(mainDiv, mainDiv.width(), mainDiv.height());
 
@@ -44,6 +35,10 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
             mainDiv[0].moving = this;
         }
     }
+
+    Moving.prototype.getControlManager = function() {
+        return this._controlManager;
+    };
     
     Moving.prototype.move = function(side, screen, isSaveHistory) {
         var self = this;

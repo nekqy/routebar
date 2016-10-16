@@ -1,7 +1,7 @@
 define(['utils', 'jquery.easing'], function(Utils) {
     "use strict";
 
-    function Animation(mainDiv, time) {
+    function Animation(mainDiv, time, elementsPool) {
         if (typeof time === 'number') {
             this._time = time > 0 ? time : 1;
         } else {
@@ -11,6 +11,8 @@ define(['utils', 'jquery.easing'], function(Utils) {
                 throw new Error('Animation module - init - wrong time arg: ' + time);
             }
         }
+
+        this._elementsPool = elementsPool;
 
         if (mainDiv instanceof $) {
             this._mainDiv = mainDiv;
@@ -38,8 +40,8 @@ define(['utils', 'jquery.easing'], function(Utils) {
     Animation.prototype._updateState = function(res, elements) {
         if (this._isAnimate) {
             this._isAnimate = false;
-            this._old && this._old.stop(false, true);
             this._new && this._new.stop();
+            this._old && this._old.stop(false, true);
             this._cur && this._cur.stop();
             this._prev && this._prev.stop(false, true);
             this._next && this._next.stop(false, true);
@@ -58,9 +60,9 @@ define(['utils', 'jquery.easing'], function(Utils) {
         var self = this,
             width = this._mainDiv.width(),
             height = this._mainDiv.height(),
-            elem = this._mainDiv.find('.rb__center'),
-            nextElem = this._mainDiv.find('.rb__' + side),
-            prevElem = this._mainDiv.find('.rb__' + Utils.oppositeSide(side));
+            elem = this._elementsPool.getElementBySide('center'),
+            nextElem = this._elementsPool.getElementBySide(side),
+            prevElem = this._elementsPool.getElementBySide(Utils.oppositeSide(side));
 
         return new Promise(function(res, rej) {
             function wrongAnimate(elem, startLeft, startTop, beforeFn, afterFn) {
@@ -118,8 +120,8 @@ define(['utils', 'jquery.easing'], function(Utils) {
 
     Animation.prototype.goToCorrectSide = function(side) {
         var self = this,
-            newElem = this._mainDiv.find('.rb__center'),
-            oldElem = this._mainDiv.find('.rb__' + Utils.oppositeSide(side)),
+            newElem = this._elementsPool.getElementBySide('center'),
+            oldElem = this._elementsPool.getElementBySide(Utils.oppositeSide(side)),
             width = this._mainDiv.width(),
             height = this._mainDiv.height();
 
@@ -170,7 +172,7 @@ define(['utils', 'jquery.easing'], function(Utils) {
     };
 
     Animation.prototype.goToCenter = function() {
-        var elem = this._mainDiv.find('.rb__center');
+        var elem = this._elementsPool.getElementBySide('center');
         elem.css({'margin-left': elem.width(), 'margin-top': elem.height()});
     };
 

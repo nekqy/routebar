@@ -19,6 +19,7 @@ define(['utils'], function(Utils) {
         newHeight = _height * scale;
 
         _mainDiv.css({'width': newWidth, 'height': newHeight});
+        // todo это все по любому надо инициализировать, чтобы блоки было не видно, и перейти с margin на нормальные координаты
         rbCenter.css({'margin-left': newWidth, 'margin-top': newHeight});
         rbLeft.css({'margin-left': newWidth, 'margin-top': newHeight});
         rbTop.css({'margin-left': newWidth, 'margin-top': newHeight});

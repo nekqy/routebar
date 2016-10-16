@@ -36,6 +36,8 @@ define(['utils', 'screenModel'], function(Utils, Screen) {
                 this._history.shift();
             }
         }
+
+        return this._curScreen;
     };
 
     ScreenManager.prototype._getRelativeScreenByScreen = function(screen, side) {

@@ -1,7 +1,7 @@
 define([], function() {
     "use strict";
 
-    function Screen(html, children) {
+    function Screen(html, children, isTemporary) {
         if (!Screen._mainScreenSetted) {
             Screen.mainScreen = this;
         }
@@ -11,11 +11,15 @@ define([], function() {
         this.next = this;
         this.prev = this;
         this._id = 'screen_' + Screen._length++;
+        this._temporary = isTemporary !== false;
 
         this.setChildren(children);
     }
     Screen.prototype.toString = function() {
         return this._id;
+    };
+    Screen.prototype.isTemporary = function() {
+        return this._temporary;
     };
     Screen.prototype.setChildren = function(children) {
         if (children && Array.isArray(children)) {

@@ -15,9 +15,9 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'arrows'
         this._loadingHtml = loadingHtml || '<div class="rb__loading_wrapper"><div class="cssload-loader"></div></div>';
         var loadingDiv = '<div class="rb__loading">' + this._loadingHtml + '</div>';
 
-        this.beforeMoveDispatcher = new BaseDispatcher(loadingDiv);
-        this.beforeRenderDispatcher = new BaseDispatcher(loadingDiv);
-        this.afterRenderDispatcher = new BaseDispatcher(loadingDiv);
+        this.beforeMoveDispatcher = new BaseDispatcher(mainDiv, loadingDiv);
+        this.beforeRenderDispatcher = new BaseDispatcher(mainDiv, loadingDiv);
+        this.afterRenderDispatcher = new BaseDispatcher(mainDiv, loadingDiv);
 
         this._mainDiv = undefined;
 

@@ -18,7 +18,6 @@ define([], function() {
                 element;
             if (!self._elements.hasOwnProperty(id)) {
                 element = $('<div class="rb__side rb__hidden rb__loading" data-id="' + id + '">' + self._loadingHtml + '</div>');
-                //element[0].screen = screen;
                 self._mainDiv.prepend(element);
                 self._elements[id] = {
                     element: element,
@@ -46,6 +45,7 @@ define([], function() {
         this.getElementBySide('center').toggleClass('rb__center', false);
         this._mainDiv.find('.rb__side').toggleClass('rb__hidden', true);
 
+        self._elementsBySide = {};
         newScreen && prepareRelativeSide('center', newScreen);
         leftScreen && prepareRelativeSide('left', leftScreen);
         topScreen && prepareRelativeSide('top', topScreen);

@@ -1,9 +1,10 @@
 define([], function() {
     "use strict";
 
-    function BaseDispatcher(loadingDiv) {
+    function BaseDispatcher(mainDiv, loadingDiv) {
         this._actions = {};
         this._index = 0;
+        this._mainDiv = mainDiv;
         this._loadingDiv = $(loadingDiv);
     }
     BaseDispatcher.prototype.add = function(action, once) {
@@ -28,7 +29,7 @@ define([], function() {
             self = this;
 
         if (Object.keys(this._actions).length) {
-            $('#rb').append(this._loadingDiv); // todo вынести это в moving, а здесь просто вызывать функцию
+            this._mainDiv.append(this._loadingDiv); // todo вынести это в moving, а здесь просто вызывать функцию
 
             Object.keys(this._actions).map(function(index) {
                 var value = this._actions[index],

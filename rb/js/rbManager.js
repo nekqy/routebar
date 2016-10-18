@@ -21,6 +21,10 @@ define(['screenModel', 'moving'], function(ScreenModel, Moving) {
             var inst = new Moving(elem, 1000, 10);
             instances[id] = inst;
 
+            Object.defineProperty(rb, id, {
+                value: inst
+            });
+
             var mainScreen = ScreenModel.getMainScreen();
             if (mainScreen) {
                 inst.move('center', mainScreen, false);

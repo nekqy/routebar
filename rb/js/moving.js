@@ -4,26 +4,19 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
 
     var sides = ['center', 'left', 'top', 'right', 'bottom'];
 
-    function Moving(mainDiv, speed, historyLength, loadingHtml) {
-        this._loadingHtml = loadingHtml || '<div class="rb__loading_wrapper"><div class="cssload-loader"></div></div>';
-        var loadingDiv = '<div class="rb__loading">' + this._loadingHtml + '</div>';
-
-        this.beforeMoveDispatcher = new BaseDispatcher(mainDiv, loadingDiv);
-        this.beforeRenderDispatcher = new BaseDispatcher(mainDiv, loadingDiv);
-        this.afterRenderDispatcher = new BaseDispatcher(mainDiv, loadingDiv);
-
-        this._mainDiv = undefined;
-
-        this._screenManager = new ScreenManager(historyLength);
-        this._elementsPool = new ElementsPool(mainDiv, this._screenManager, this._loadingHtml);
-        this._animation = new Animation(mainDiv, speed, this._elementsPool);
-
+    function Moving(mainDiv) {
         if (mainDiv instanceof $) {
             this._mainDiv = mainDiv;
         } else {
             throw new Error('Moving module - init - wrong mainDiv arg: ' + mainDiv);
         }
 
+        this.beforeMoveDispatcher = new BaseDispatcher(mainDiv);
+        this.beforeRenderDispatcher = new BaseDispatcher(mainDiv);
+        this.afterRenderDispatcher = new BaseDispatcher(mainDiv);
+        this._screenManager = new ScreenManager();
+        this._elementsPool = new ElementsPool(mainDiv, this._screenManager);
+        this._animation = new Animation(mainDiv, this._elementsPool);
         this._controlManager = new ControlManager();
         this._controlManager
             .add('arrows', new ArrowsControl(mainDiv, this._moveByActionValue.bind(this)), true)
@@ -31,11 +24,71 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
 
         SmartResizer(mainDiv, mainDiv.width(), mainDiv.height());
 
-        if (mainDiv.length) {
-            mainDiv[0].moving = this;
-        }
+        this.resetConfig();
+        //if (mainDiv.length) {
+        //    mainDiv[0].moving = this;
+        //}
     }
+    Moving.prototype.resetConfig = function() {
+        this.configure({
+            startScreen: rb.Screen.getMainScreen(),
+            wrongTime1: 500,
+            wrongTime2: 500,
+            correctTime: 1000,
+            wrongEasing1: 'easeInExpo',
+            wrongEasing2: 'easeOutElastic',
+            correctEasing: 'easeOutExpo',
+            hideTime: 2000,
+            loadingHtml: '<div class="rb__loading_wrapper"><div class="cssload-loader"></div></div>',
+            loadingDiv: '<div class="rb__loading"><div class="rb__loading_wrapper"><div class="cssload-loader"></div></div></div>',
+            leftKey: 37,
+            topKey: 38,
+            rightKey: 39,
+            bottomKey: 40,
+            maxHistoryLength: 10
+        });
+    };
 
+    Moving.prototype.configure = function(config) {
+        if (!config) return;
+
+        this._animation.configure(config);
+        this._elementsPool.configure(config);
+
+        for (var name in this._controlManager._controls) {
+            if (this._controlManager._controls.hasOwnProperty(name)) {
+                this._controlManager._controls[name].configure(config);
+            }
+        }
+
+        this.beforeMoveDispatcher.configure(config);
+        this.beforeRenderDispatcher.configure(config);
+        this.afterRenderDispatcher.configure(config);
+
+        if (typeof config === 'object') {
+            if (config.startScreen !== undefined) {
+                this.setScreen(config.startScreen);
+            }
+        }
+
+        // опции ресайзера
+
+        // показывать ли, что сейчас идет вставка, типа точки или курсор поменять
+
+        // показывать ли старые скрины при переходе на новый
+
+        // закидывать ли фокус внутрь при переходе
+
+        // блокировать ли переход до тех пор, пока закончен этот, или пока не отрендерился этот
+
+        // хранить ли историю в пуле
+
+        // зацикливать ли детей одного и того же парента
+
+        // режим дебага или нет. в дебаге прикреплять к элементам их модули, выводить доп. инфу в консоль
+    };
+
+    // todo defineProperty, и вообще доступ к объектам в api сделать через defineProperty
     Moving.prototype.getControlManager = function() {
         return this._controlManager;
     };

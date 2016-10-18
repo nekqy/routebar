@@ -1,13 +1,20 @@
-define([], function() {
+define(['utils', 'IPlugin'], function(Utils, IPlugin) {
     "use strict";
 
-    function ElementsPool(mainDiv, screenManager, loadingHtml) {
+    function ElementsPool(mainDiv, screenManager) {
         this._mainDiv = mainDiv;
         this._screenManager = screenManager;
         this._elements = {};
         this._elementsBySide = {};
-        this._loadingHtml = loadingHtml;
     }
+    Utils.inherite(ElementsPool, IPlugin);
+    ElementsPool.prototype.configure = function(config) {
+        if (typeof config === 'object') {
+            if (config.loadingHtml !== undefined) {
+                this._loadingHtml = config.loadingHtml;
+            }
+        }
+    };
 
     ElementsPool.prototype.prepareSide = function() {
         function getScreen(side) {

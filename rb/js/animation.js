@@ -1,17 +1,7 @@
-define(['utils', 'jquery.easing'], function(Utils) {
+define(['utils', 'jquery.easing', 'IPlugin'], function(Utils, IPlugin) {
     "use strict";
 
-    function Animation(mainDiv, time, elementsPool) {
-        if (typeof time === 'number') {
-            this._time = time > 0 ? time : 1;
-        } else {
-            if (time === undefined) {
-                this._time = 500;
-            } else {
-                throw new Error('Animation module - init - wrong time arg: ' + time);
-            }
-        }
-
+    function Animation(mainDiv, elementsPool) {
         this._elementsPool = elementsPool;
 
         if (mainDiv instanceof $) {
@@ -20,6 +10,41 @@ define(['utils', 'jquery.easing'], function(Utils) {
             throw new Error('Animation module - init - wrong mainDiv arg: ' + mainDiv);
         }
     }
+    Utils.inherite(Animation, IPlugin);
+    Animation.prototype.configure = function(config) {
+        function fixTime(time) {
+            if (typeof time === 'number') {
+                return time > 0 ? time : 1;
+            } else {
+                if (time === undefined) {
+                    return 500;
+                } else {
+                    throw new Error('Animation module - configure - wrong time arg: ' + time);
+                }
+            }
+        }
+
+        if (typeof config === 'object') {
+            if (config.wrongTime1 !== undefined) {
+                this._wrongTime1 = fixTime(config.wrongTime1);
+            }
+            if (config.wrongTime2 !== undefined) {
+                this._wrongTime2 = fixTime(config.wrongTime2);
+            }
+            if (config.correctTime !== undefined) {
+                this._correctTime = fixTime(config.correctTime);
+            }
+            if (config.wrongEasing1 !== undefined) {
+                this._wrongEasing1 = config.wrongEasing1;
+            }
+            if (config.wrongEasing2 !== undefined) {
+                this._wrongEasing2 = config.wrongEasing2;
+            }
+            if (config.correctEasing !== undefined) {
+                this._correctEasing = config.correctEasing;
+            }
+        }
+    };
 
     Animation.prototype._animate = function(elem, side, value, easing, time, beforeFn, afterFn) {
 
@@ -66,11 +91,11 @@ define(['utils', 'jquery.easing'], function(Utils) {
 
         return new Promise(function(res, rej) {
             function wrongAnimate(elem, startLeft, startTop, beforeFn, afterFn) {
-                self._animate(elem, side, '+=' + value, 'easeInExpo', self._isAnimate ? self._time/2 : 10, function() {
+                self._animate(elem, side, '+=' + value, self._wrongEasing1, self._isAnimate ? self._wrongTime1 : 10, function() {
                     elem.css({'margin-left': startLeft, 'margin-top': startTop});
                     beforeFn && beforeFn();
                 }, function() {
-                    self._animate(elem, side, '-=' + value, 'easeOutElastic', self._isAnimate ? self._time/2 : 10, undefined, function() {
+                    self._animate(elem, side, '-=' + value, self._wrongEasing2, self._isAnimate ? self._wrongTime2 : 10, undefined, function() {
                         afterFn && afterFn();
                     });
                 });
@@ -127,7 +152,7 @@ define(['utils', 'jquery.easing'], function(Utils) {
 
         return new Promise(function(res, rej) {
             function correctAnimate(elem, startLeft, startTop, beforeFn, afterFn) {
-                self._animate(elem, side, '-=' + value, 'easeOutExpo', self._time, function() {
+                self._animate(elem, side, '-=' + value, self._correctEasing, self._correctTime, function() {
                     elem.css({'margin-left': startLeft, 'margin-top': startTop});
                     beforeFn && beforeFn();
                 }, function() {

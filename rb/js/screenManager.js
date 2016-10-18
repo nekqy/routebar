@@ -1,14 +1,22 @@
-define(['utils', 'screenModel'], function(Utils, Screen) {
+define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
     "use strict";
 
-    function ScreenManager(historyLength) {
-        this._maxHistoryLength = typeof historyLength === 'number' && historyLength >= 0 ? historyLength : 10;
+    function ScreenManager() {
         this._history = [];
         this._curScreen = undefined;
         this._relativeScreens = {};
         this._relativeUpdateFn = this._updateRelativeScreen.bind(this);
         Screen.registerRelativeUpdateFn(this._relativeUpdateFn);
     }
+    Utils.inherite(ScreenManager, IPlugin);
+    ScreenManager.prototype.configure = function(config) {
+        function fixLength(historyLength) {
+            return typeof historyLength === 'number' && historyLength >= 0 ? historyLength : 10;
+        }
+        if (config.maxHistoryLength !== undefined) {
+            this._maxHistoryLength = fixLength(config.maxHistoryLength);
+        }
+    };
 
     ScreenManager.prototype.updateScreens = function(side, screen, isSaveHistory) {
         var updated = false;

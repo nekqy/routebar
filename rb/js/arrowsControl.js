@@ -1,4 +1,4 @@
-define([], function() {
+define(['utils', 'IPlugin'], function(Utils, IPlugin) {
     "use strict";
 
     function ArrowsControl(mainDiv, actionFn) {
@@ -13,6 +13,14 @@ define([], function() {
         this._mainDiv = mainDiv;
         this._actionFn = actionFn;
     }
+    Utils.inherite(ArrowsControl, IPlugin);
+    ArrowsControl.prototype.configure = function(config) {
+        if (typeof config === 'object') {
+            if (config.hideTime !== undefined) {
+                this._hideTime = config.hideTime;
+            }
+        }
+    };
 
     ArrowsControl.prototype.enable = function() {
         if (this._isEnable) return;
@@ -52,7 +60,7 @@ define([], function() {
             }
 
             if (arrow.length) {
-                arrow[0].hideArrowId = setTimeout(hideArrow, 2000);
+                arrow[0].hideArrowId = setTimeout(hideArrow, self._hideTime);
             }
         };
         var mouseLeaveHandler = function(e) {

@@ -1,12 +1,22 @@
-define([], function() {
+define(['utils', 'IPlugin'], function(Utils, IPlugin) {
     "use strict";
 
-    function BaseDispatcher(mainDiv, loadingDiv) {
+    function BaseDispatcher(mainDiv) {
         this._actions = {};
         this._index = 0;
         this._mainDiv = mainDiv;
-        this._loadingDiv = $(loadingDiv);
     }
+    Utils.inherite(BaseDispatcher, IPlugin);
+    BaseDispatcher.prototype.configure = function(config) {
+        if (typeof config === 'object') {
+            if (config.loadingDiv !== undefined) {
+                this._loadingDiv = $(config.loadingDiv);
+            }
+        }
+    };
+
+    // todo сделать не once, а дать возможность указать число - количество срабатываний,
+    // или функцию которая если вернет true - не отписываться, false - отписываться
     BaseDispatcher.prototype.add = function(action, once) {
         if (typeof action === 'function') {
             this._actions[this._index++] = {
@@ -17,6 +27,7 @@ define([], function() {
         }
         return null;
     };
+    // todo отписка не по индексу, а по функции
     BaseDispatcher.prototype.remove = function(index) {
         if (this._actions.hasOwnProperty(index)) {
             delete this._actions[index];

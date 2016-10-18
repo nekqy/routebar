@@ -1,26 +1,30 @@
 define(['screenModel', 'rbManager'], function(ScreenModel, RbManager) {
     "use strict";
 
-    var prepare;
+    var _prepare;
 
     $(function() {
-        RbManager.initLayout('rb-wrapper', prepare);
+        if (typeof prepare === 'function') {
+            RbManager.initLayout('rb-wrapper', _prepare);
+        } else {
+            throw new Error('Main module - prepare function not found. Use "rb.prepare(function)"');
+        }
     });
 
-    function configure(config) {
-        if (config && config.startScreen) {
-            ScreenModel.setMainScreen(config.startScreen);
-        }
-        if (config && typeof config.prepare === 'function') {
-            prepare = config.prepare;
+    function prepare(prepare) {
+        if (typeof prepare === 'function') {
+            _prepare = prepare;
         } else {
             throw new Error('Main module - configure - prepare function not found');
         }
     }
 
-    return {
-        Screen: ScreenModel,
-        configure: configure,
-        instanceManager: RbManager
-    };
+    return Object.create(null, {
+        Screen: {
+            value: ScreenModel
+        },
+        prepare: {
+            value: prepare
+        }
+    });
 });

@@ -3,7 +3,7 @@ define([], function() {
 
     function Screen(html, children, isTemporary) {
         if (!Screen._mainScreenSetted) {
-            Screen.mainScreen = this;
+            Screen._mainScreen = this;
         }
 
         this.html = html;

@@ -19,53 +19,68 @@
         .addChild(thirdScreen);
 
     // configuring
-    rb.configure({
-        startScreen: mainScreen,
-        prepare: function(instances) {
-            for (var id in instances) {
-                if (instances.hasOwnProperty(id)) {
-                    var inst = instances[id];
-                    // dynamic control of screens example
-                    function loadPage(resolve, reject) {
-                        $.get('examples/example2.html', function(data) {
+    function prepare() {
+        // dynamic control of screens example
+        function action() {
+            //var count = 0;
+            function loadPage(resolve, reject) {
+                $.get('examples/example2.html', function(data) {
 
-                            newScreen.addChild(newScreen = new rb.Screen(data));
+                    newScreen.addChild(newScreen = new rb.Screen(data));
 
-                            if (++count >= 5) {
-                                inst.beforeMoveDispatcher.remove(index); // action unregistration
-                            }
-                            resolve(true);
-                        }).fail(function() {
-                            var error = new Error('Данные не загружены');
-                            reject(error);
-                        });
-                    }
-                    function action(side, curScreen) {
-                        var promise;
-                        if (side === 'right' && curScreen === newScreen) {
-                            promise = new Promise(loadPage);
-                        }
-                        return promise;
-                    }
-                    var count = 0,
-                        newScreen = mainScreen.getChildren()[0],
-                        index = inst.beforeMoveDispatcher.add(action); // action registration
-                }
+                    //if (++count >= 5) {
+                    //    inst.beforeMoveDispatcher.remove(index);
+                    //}
+                    resolve(true);
+                }).fail(function() {
+                    var error = new Error('Данные не загружены');
+                    reject(error);
+                });
             }
-
-            instances['rb1'].setScreen(firstScreen, false);
-            instances['rb2'].setScreen(secondScreen, false);
+            return function (side, curScreen) {
+                var promise;
+                if (side === 'right' && curScreen === newScreen) {
+                    promise = new Promise(loadPage);
+                }
+                return promise;
+            }
         }
-    });
+        var newScreen = mainScreen.getChildren()[0];
 
-    // for testing
-    //var sides = ['left', 'top', 'right', 'bottom'];
-    //rb.afterRenderDispatcher.add(function(side) {
-    //    var index = Math.floor(Math.random()*4);
-    //    rb.move(sides[index]).then(function(result){
-    //        console.log(result.how, result.isOk, 'moved to ' + sides[index], result.isOk ? 'successfully' : 'failed')
-    //    });
-    //    if (side !== 'center') {
-    //        return false;
-    //    }
-    //});
+        rb.rb1.configure({
+            startScreen: firstScreen
+        });
+        rb.rb2.configure({
+            startScreen: secondScreen
+        });
+        rb.rb1.beforeMoveDispatcher.add(action(), true);
+        rb.rb2.beforeMoveDispatcher.add(action());
+
+        // for testing
+        var sides = ['left', 'top', 'right', 'bottom'],
+            cfg = {
+                wrongTime1: 1500,
+                wrongTime2: 1500,
+                correctTime: 3000
+            };
+        rb.rb1.configure(cfg);
+        rb.rb2.configure(cfg);
+        rb.rb3.configure(cfg);
+        rb.rb4.configure(cfg);
+        function randomStep(side, curScreen, moving) {
+            var index = Math.floor(Math.random()*4);
+            moving.move(sides[index]).then(function(result){
+                console.log(result.how, result.isOk, 'moved to ' + sides[index], result.isOk ? 'successfully' : 'failed')
+            });
+            if (side !== 'center') {
+                return false;
+            }
+        }
+        rb.rb1.afterRenderDispatcher.add(randomStep);
+        rb.rb2.afterRenderDispatcher.add(randomStep);
+        rb.rb3.afterRenderDispatcher.add(randomStep);
+        rb.rb4.afterRenderDispatcher.add(randomStep);
+    }
+
+    //rb.Screen.setMainScreen(mainScreen);
+    rb.prepare(prepare);

@@ -1,4 +1,4 @@
-define([], function() {
+define(['utils', 'IPlugin'], function(Utils, IPlugin) {
     "use strict";
 
     function KeydownControl(mainDiv, actionFn) {
@@ -13,13 +13,30 @@ define([], function() {
         this._mainDiv = mainDiv;
         this._actionFn = actionFn;
     }
+    Utils.inherite(KeydownControl, IPlugin);
+    KeydownControl.prototype.configure = function(config) {
+        if (typeof config === 'object') {
+            if (config.leftKey !== undefined) {
+                this._leftKey = config.leftKey;
+            }
+            if (config.topKey !== undefined) {
+                this._topKey = config.topKey;
+            }
+            if (config.rightKey !== undefined) {
+                this._rightKey = config.rightKey;
+            }
+            if (config.bottomKey !== undefined) {
+                this._bottomKey = config.bottomKey;
+            }
+        }
+    };
 
     KeydownControl.prototype.enable = function() {
         if (this._isEnable) return;
 
         var self = this;
         var baseHandler = function(e) {
-            self._actionFn(e.which, [37, 38, 39, 40], function(value, defValue) {
+            self._actionFn(e.which, [self._leftKey, self._topKey, self._rightKey, self._bottomKey], function(value, defValue) {
                 return value === defValue;
             });
         };

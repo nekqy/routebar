@@ -44,11 +44,25 @@ define([], function() {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
+    function setMixin(base, mixin) {
+        for(var key in mixin) {
+            if (mixin.hasOwnProperty(key)) {
+                base.prototype[key] = mixin[key];
+            }
+        }
+    }
+    function inherite(parent, child) {
+        child.prototype = Object.create(parent.prototype);
+        child.prototype.constructor = child;
+    }
+
     return {
         debounce: debounce,
         oppositeSide: oppositeSide,
         getStartSide: getStartSide,
         capitalizeFirstLetter: capitalizeFirstLetter,
-        nop: function() {}
+        nop: function() {},
+        setMixin: setMixin,
+        inherite: inherite
     };
 });

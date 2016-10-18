@@ -1,7 +1,7 @@
 define(['utils', 'IPlugin'], function(Utils, IPlugin) {
     "use strict";
 
-    function ArrowsControl(mainDiv, actionFn) {
+    function ArrowsControl(mainDiv, actionFn, afterRender) {
         if (!(mainDiv instanceof $)) {
             throw new Error('KeydownControl module - init - wrong mainDiv arg: ' + mainDiv);
         }
@@ -12,6 +12,7 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         this._isEnable = false;
         this._mainDiv = mainDiv;
         this._actionFn = actionFn;
+        this._afterRender = afterRender;
     }
     Utils.inherite(ArrowsControl, IPlugin);
     ArrowsControl.prototype.configure = function(config) {
@@ -27,7 +28,7 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
 
         var self = this;
         var mouseEnterHandler = function(e) {
-            var arrow = $(this),
+            var arrow = $(e.currentTarget),
                 $body = $('body'),
                 arrowOffset = arrow.offset(),
                 arrowX = arrowOffset.left,
@@ -64,13 +65,16 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
             }
         };
         var mouseLeaveHandler = function(e) {
-            var arrow = $(this);
+            var arrow = $(e.currentTarget);
             clearTimeout(arrow[0].hideArrowId);
         };
         var clickHandler = function(e) {
-            var container = $(this);
+            var arrow = $(e.currentTarget);
 
-            self._actionFn(container, ['left', 'top', 'right', 'bottom'], function(container, defValue) {
+            mouseLeaveHandler(e);
+            self._afterRender.add(mouseEnterHandler.bind(undefined, e), true);
+
+            self._actionFn(arrow, ['left', 'top', 'right', 'bottom'], function(container, defValue) {
                 return container.is('.rb__arrow-container_' + defValue);
             });
         };

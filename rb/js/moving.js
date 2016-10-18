@@ -19,7 +19,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
         this._animation = new Animation(mainDiv, this._elementsPool);
         this._controlManager = new ControlManager();
         this._controlManager
-            .add('arrows', new ArrowsControl(mainDiv, this._moveByActionValue.bind(this)), true)
+            .add('arrows', new ArrowsControl(mainDiv, this._moveByActionValue.bind(this), this.afterRenderDispatcher), true)
             .add('keyboard', new KeydownControl(mainDiv, this._moveByActionValue.bind(this)), true);
 
         SmartResizer(mainDiv, mainDiv.width(), mainDiv.height());

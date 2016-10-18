@@ -7,9 +7,9 @@ define([], function() {
         }
 
         this.html = html;
-        this.parents = [];
-        this.next = this;
-        this.prev = this;
+        this._parents = [];
+        this._next = null;
+        this._prev = null;
         this._id = 'screen_' + Screen._length++;
         this._temporary = isTemporary !== false;
 
@@ -23,42 +23,66 @@ define([], function() {
     };
     Screen.prototype.setChildren = function(children) {
         if (children && Array.isArray(children)) {
-            this.children = [];
+            this._children = [];
             for (var i = 0; i < children.length; i++) {
                 this.addChild(children[i]);
             }
         } else {
-            this.children = [];
+            this._children = [];
         }
         Screen._runRelativeUpdateFn(this);
         return this;
     };
     Screen.prototype.getChildren = function() {
-        return this.children;
+        return this._children;
     };
     Screen.prototype.addChild = function(child) {
-        var children = this.children;
-        child.parents.push(this);
-        child.next = children.length ? children[0] : child;
-        child.prev = children.length ? children[children.length-1] : child;
-        child.next.prev = child;
-        child.prev.next = child;
+        var children = this._children;
+        child._parents.push(this);
+        if (children.length > Screen._doCyclic) {
+            child._next = children.length ? children[0] : child;
+            child._prev = children.length ? children[children.length-1] : child;
+            child._next._prev = child;
+            child._prev._next = child;
+        }
 
         children.push(child);
         Screen._runRelativeUpdateFn(this);
         return this;
     };
     Screen.prototype.removeChild = function(child) {
-        var children = this.children,
+        var children = this._children,
             index = children.indexOf(child),
             removed;
         if (index !== -1) {
             removed = children.splice(index, 1)[0];
-            removed.prev.next = removed.next;
-            removed.next.prev = removed.prev;
+
+            if (removed._prev === removed._next) {
+                remove._prev = remove._next = null;
+            } else {
+                removed._prev._next = removed._next;
+                removed._next._prev = removed._prev;
+            }
+
         }
         Screen._runRelativeUpdateFn(this);
         return this;
+    };
+    Screen.prototype.doChildrenCyclic = function(val) {
+        if (this._children.length > 0) {
+            if (val) {
+                if (this._children.length > 1) {
+                    this._children[0]._prev = this._children[this._children.length-1];
+                    this._children[this._children.length-1]._next = this._children[0];
+                } else {
+                    this._children[0]._prev = null;
+                    this._children[this._children.length-1]._next = null;
+                }
+            } else {
+                this._children[0]._prev = null;
+                this._children[this._children.length-1]._next = null;
+            }
+        }
     };
 
     Screen._length = 1;
@@ -85,6 +109,10 @@ define([], function() {
         Screen._relativeUpdateFn.forEach(function(fn) {
             fn.call(undefined, screen);
         });
+    };
+    Screen._doCyclic = 0;
+    Screen.doCyclic = function(val) {
+        Screen._doCyclic = val ? 0 : 1;
     };
 
     return Screen;

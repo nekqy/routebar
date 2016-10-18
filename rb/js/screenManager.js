@@ -65,29 +65,29 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
             return screen;
         }
         if (side === 'left') {
-            if (screen.parents.length) {
-                return this._relativeScreens[id]['left'] || screen.parents[0];
+            if (screen._parents.length) {
+                return this._relativeScreens[id]['left'] || screen._parents[0];
             } else {
                 return null;
             }
         }
         if (side === 'top') {
-            if (screen.prev) {
-                return this._relativeScreens[id]['top'] || screen.prev;
+            if (screen._prev) {
+                return this._relativeScreens[id]['top'] || screen._prev;
             } else {
                 return null;
             }
         }
         if (side === 'right') {
-            if (screen.children.length) {
-                return this._relativeScreens[id]['right'] || screen.children[0];
+            if (screen._children.length) {
+                return this._relativeScreens[id]['right'] || screen._children[0];
             } else {
                 return null;
             }
         }
         if (side === 'bottom') {
-            if (screen.next) {
-                return this._relativeScreens[id]['bottom'] || screen.next;
+            if (screen._next) {
+                return this._relativeScreens[id]['bottom'] || screen._next;
             } else {
                 return null;
             }
@@ -122,16 +122,16 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
             this._relativeScreens[id] = {};
         }
 
-        if (!screen.children.length) {
+        if (!screen._children.length) {
             this._relativeScreens[id]['right'] = null;
         }
-        if (!screen.parents.length) {
+        if (!screen._parents.length) {
             this._relativeScreens[id]['left'] = null;
         }
-        if (!screen.next) {
+        if (!screen._next) {
             this._relativeScreens[id]['bottom'] = null;
         }
-        if (!screen.prev) {
+        if (!screen._prev) {
             this._relativeScreens[id]['top'] = null;
         }
     };

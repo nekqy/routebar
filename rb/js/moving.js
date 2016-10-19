@@ -40,7 +40,6 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
             correctEasing: 'easeOutExpo',
             hideTime: 2000,
             loadingHtml: '<div class="rb__loading_wrapper"><div class="cssload-loader"></div></div>',
-            loadingDiv: '<div class="rb__loading"><div class="rb__loading_wrapper"><div class="cssload-loader"></div></div></div>',
             leftKey: 37,
             topKey: 38,
             rightKey: 39,
@@ -64,6 +63,8 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
                 this._controlManager._controls[name].configure(config);
             }
         }
+
+        config.loadingDiv = config.loadingHtml ? '<div class="rb__loading">' + config.loadingHtml + '</div>' : null;
 
         this.beforeMoveDispatcher.configure(config);
         this.beforeRenderDispatcher.configure(config);

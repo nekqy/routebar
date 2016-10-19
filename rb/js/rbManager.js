@@ -11,12 +11,8 @@ define(['screenModel', 'moving'], function(ScreenModel, Moving) {
 
         for(var i = 0; i < $rb.length; i++) {
             var elem = $rb.eq(i),
-                id = elem.parent().attr('id');
-
-            if (id === undefined) {
-                id = 'instance_' + i;
-                elem.attr('id', id);
-            }
+                elemWrapper = elem.parent(),
+                id = elemWrapper.data('id') || elemWrapper.attr('id') || 'instance_' + i;
 
             var inst = new Moving(elem, 1000, 10);
             instances[id] = inst;

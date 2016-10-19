@@ -47,7 +47,8 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
             bottomKey: 40,
             maxHistoryLength: 10,
             lockControls: false,
-            showAdjacentScreens: true
+            showAdjacentScreens: true,
+            saveHistoryInPool: false
         });
     };
 
@@ -56,6 +57,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
 
         this._animation.configure(config);
         this._elementsPool.configure(config);
+        this._screenManager.configure(config);
 
         for (var name in this._controlManager._controls) {
             if (this._controlManager._controls.hasOwnProperty(name)) {
@@ -79,8 +81,6 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
         // опции ресайзера
 
         // закидывать ли фокус внутрь при переходе
-
-        // хранить ли историю в пуле
 
         // режим дебага или нет. в дебаге прикреплять к элементам их модули, выводить доп. инфу в консоль
     };

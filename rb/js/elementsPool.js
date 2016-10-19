@@ -13,6 +13,9 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
             if (config.loadingHtml !== undefined) {
                 this._loadingHtml = config.loadingHtml;
             }
+            if (config.saveHistoryInPool !== undefined) {
+                this._saveHistoryInPool = config.saveHistoryInPool;
+            }
         }
     };
 
@@ -85,8 +88,10 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
                 }
             } else {
                 if (elem.screen.isTemporary()) {
-                    self._elements[id].element.remove();
-                    delete self._elements[id];
+                    if (!(self._saveHistoryInPool && self._screenManager._containsHistory(self._elements[id].screen))) {
+                        self._elements[id].element.remove();
+                        delete self._elements[id];
+                    }
                 }
             }
         });

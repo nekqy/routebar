@@ -11,7 +11,7 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
     Utils.inherite(ScreenManager, IPlugin);
     ScreenManager.prototype.configure = function(config) {
         function fixLength(historyLength) {
-            return typeof historyLength === 'number' && historyLength >= 0 ? historyLength : 10;
+            return (typeof historyLength === 'number' && historyLength >= 0) ? historyLength : 10;
         }
         if (config.maxHistoryLength !== undefined) {
             this._maxHistoryLength = fixLength(config.maxHistoryLength);
@@ -150,6 +150,11 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
     };
     ScreenManager.prototype.destroy = function() {
         Screen.unregisterRelativeUpdateFn(this._relativeUpdateFn);
+    };
+    ScreenManager.prototype._containsHistory = function(screen) {
+        return this._history.some(function(val) {
+            return val.screen === screen;
+        });
     };
 
     return ScreenManager;

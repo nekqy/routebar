@@ -31,6 +31,10 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         }
     };
 
+    KeydownControl.prototype.isEnable = function() {
+        return this._isEnable;
+    };
+
     KeydownControl.prototype.enable = function() {
         if (this._isEnable) return;
 

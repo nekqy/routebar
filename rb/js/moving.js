@@ -45,7 +45,8 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
             topKey: 38,
             rightKey: 39,
             bottomKey: 40,
-            maxHistoryLength: 10
+            maxHistoryLength: 10,
+            lockControls: false
         });
     };
 
@@ -69,6 +70,9 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
             if (config.startScreen !== undefined) {
                 this.setScreen(config.startScreen);
             }
+            if (config.lockControls !== undefined) {
+                this._lockControls = config.lockControls;
+            }
         }
 
         // опции ресайзера
@@ -78,8 +82,6 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
         // показывать ли старые скрины при переходе на новый
 
         // закидывать ли фокус внутрь при переходе
-
-        // блокировать ли переход до тех пор, пока закончен этот, или пока не отрендерился этот
 
         // хранить ли историю в пуле
 
@@ -102,6 +104,10 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
     };
     Moving.prototype._moveInner = function(side, screen, isSaveHistory) {
         var self = this;
+
+        if (this._lockControls && !this._locks) {
+            this._locks = this._controlManager.disableAll();
+        }
 
         this._screenManager.updateScreens('center', screen, [], isSaveHistory);
 
@@ -179,6 +185,10 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
 
         function afterRender() {
             self.afterRenderDispatcher._runActions(Utils.nop, args);
+            if (self._lockControls) {
+                self._controlManager.enableByValues(self._locks);
+                self._locks = null;
+            }
         }
 
         this.beforeRenderDispatcher._runActions(function() {

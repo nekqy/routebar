@@ -23,6 +23,10 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         }
     };
 
+    ArrowsControl.prototype.isEnable = function() {
+        return this._isEnable;
+    };
+
     ArrowsControl.prototype.enable = function() {
         if (this._isEnable) return;
 

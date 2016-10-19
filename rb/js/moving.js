@@ -46,7 +46,8 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
             rightKey: 39,
             bottomKey: 40,
             maxHistoryLength: 10,
-            lockControls: false
+            lockControls: false,
+            showAdjacentScreens: true
         });
     };
 
@@ -76,10 +77,6 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
         }
 
         // опции ресайзера
-
-        // показывать ли, что сейчас идет вставка, типа точки или курсор поменять
-
-        // показывать ли старые скрины при переходе на новый
 
         // закидывать ли фокус внутрь при переходе
 

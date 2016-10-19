@@ -43,6 +43,9 @@ define(['utils', 'jquery.easing', 'IPlugin'], function(Utils, IPlugin) {
             if (config.correctEasing !== undefined) {
                 this._correctEasing = config.correctEasing;
             }
+            if (config.showAdjacentScreens !== undefined) {
+                this._showAdjacentScreens = config.showAdjacentScreens;
+            }
         }
     };
 
@@ -126,16 +129,18 @@ define(['utils', 'jquery.easing', 'IPlugin'], function(Utils, IPlugin) {
                 value = dh;
             }
 
-            wrongAnimate(nextElem, width + relValWidth, height + relValHeight, function() {
-                nextElem.toggleClass('rb__hiding-screen', true);
-            }, function() {
-                nextElem.toggleClass('rb__hiding-screen', false);
-            }, true);
-            wrongAnimate(prevElem, width - relValWidth, height - relValHeight, function() {
-                prevElem.toggleClass('rb__hiding-screen', true);
-            }, function() {
-                nextElem.toggleClass('rb__hiding-screen', false);
-            }, true);
+            if (self._showAdjacentScreens) {
+                wrongAnimate(nextElem, width + relValWidth, height + relValHeight, function() {
+                    nextElem.toggleClass('rb__hiding-screen', true);
+                }, function() {
+                    nextElem.toggleClass('rb__hiding-screen', false);
+                }, true);
+                wrongAnimate(prevElem, width - relValWidth, height - relValHeight, function() {
+                    prevElem.toggleClass('rb__hiding-screen', true);
+                }, function() {
+                    nextElem.toggleClass('rb__hiding-screen', false);
+                }, true);
+            }
             wrongAnimate(elem, width, height, undefined, function() {
                 self._isAnimate = false;
                 self._res(true);
@@ -184,11 +189,13 @@ define(['utils', 'jquery.easing', 'IPlugin'], function(Utils, IPlugin) {
                 value = height;
             }
 
-            correctAnimate(oldElem, width, height, function() {
-                oldElem.toggleClass('rb__hiding-screen', true);
-            }, function() {
-                oldElem.toggleClass('rb__hiding-screen', false);
-            }, true);
+            if (self._showAdjacentScreens) {
+                correctAnimate(oldElem, width, height, function () {
+                    oldElem.toggleClass('rb__hiding-screen', true);
+                }, function () {
+                    oldElem.toggleClass('rb__hiding-screen', false);
+                }, true);
+            }
             correctAnimate(newElem, width + relValWidth, height + relValHeight, undefined, function() {
                 self._isAnimate = false;
                 self._res(true);

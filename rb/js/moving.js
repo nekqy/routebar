@@ -1,5 +1,5 @@
-define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'controlManager', 'arrowsControl', 'keydownControl', 'elementsPool', 'utils'], function(
-    Animation, ScreenManager, BaseDispatcher, SmartResizer, ControlManager, ArrowsControl, KeydownControl, ElementsPool, Utils) {
+define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'controlManager', 'swipesControl', 'arrowsControl', 'keydownControl', 'elementsPool', 'utils'], function(
+    Animation, ScreenManager, BaseDispatcher, SmartResizer, ControlManager, SwipesControl, ArrowsControl, KeydownControl, ElementsPool, Utils) {
     "use strict";
 
     var sides = ['center', 'left', 'top', 'right', 'bottom'];
@@ -19,6 +19,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
         this._animation = new Animation(mainDiv, this._elementsPool);
         this._controlManager = new ControlManager();
         this._controlManager
+            .add('swipes', new SwipesControl(mainDiv,this._moveByActionValue.bind(this)), true)
             .add('arrows', new ArrowsControl(mainDiv, this._moveByActionValue.bind(this), this.afterRenderDispatcher), true)
             .add('keyboard', new KeydownControl(mainDiv, this._moveByActionValue.bind(this)), true);
 
@@ -47,7 +48,8 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
             maxHistoryLength: 10,
             lockControls: false,
             showAdjacentScreens: true,
-            saveHistoryInPool: false
+            saveHistoryInPool: false,
+            pointersForSwipe: 1
         });
     };
 

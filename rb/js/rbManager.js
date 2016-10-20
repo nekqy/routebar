@@ -6,7 +6,7 @@ define(['screenModel', 'moving'], function(ScreenModel, Moving) {
     function initLayout(wrapperName, prepare) {
 
         var $rbWrapper = $('.' + wrapperName);
-        $rbWrapper.html('<div class="rb"></div>');
+        $rbWrapper.html('<div class="rb"><div tabindex="-1" class="rb__fake-element"></div></div>');
         $rb = $rbWrapper.find('.rb');
 
         for(var i = 0; i < $rb.length; i++) {

@@ -47,14 +47,8 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         var mainDivHandler = function(e) {
             baseHandler(e);
         };
-        var bodyHandler = function(e) {
-            baseHandler(e);
-            e.stopPropagation();
-        };
 
-        $('body').on('keydown', bodyHandler);
         this._mainDiv.on('keydown', mainDivHandler);
-        this._bodyHandler = bodyHandler;
         this._mainDivHandler = mainDivHandler;
 
         this._isEnable = true;
@@ -62,9 +56,8 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
 
     KeydownControl.prototype.disable = function() {
         if (!this._isEnable) return;
-        $('body').off('keydown', this._bodyHandler);
+
         this._mainDiv.off('keydown', this._mainDivHandler);
-        this._bodyHandler = null;
         this._mainDivHandler = null;
 
         this._isEnable = false;

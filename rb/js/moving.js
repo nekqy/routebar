@@ -33,6 +33,13 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
         //if (mainDiv.length) {
         //    mainDiv[0].moving = this;
         //}
+
+        var self = this;
+        mainDiv.on('click', function(e) {
+            if ($(e.target).closest('.rb').length && !$(document.activeElement).closest('.rb').length) {
+                self.activate();
+            }
+        });
     }
     Moving.prototype.resetConfig = function() {
         this.configure({
@@ -188,6 +195,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
             args = [side, self._screenManager.getCurScreen(), self];
 
         function afterRender() {
+            self.activate();
             self.afterRenderDispatcher._runActions(Utils.nop, args);
             if (self._lockControls) {
                 self._controlManager.enableByValues(self._locks);
@@ -216,6 +224,10 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
                 }
             }, 0);
         }, args);
+    };
+
+    Moving.prototype.activate = function() {
+        this._mainDiv.find('.rb__fake-element').focus();
     };
 
     return Moving;

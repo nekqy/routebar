@@ -1,7 +1,7 @@
 define([], function() {
     "use strict";
 
-    function Screen(html, children, isTemporary) {
+    function Screen(html, children, isPermanent) {
         if (!Screen._mainScreenSetted) {
             Screen._mainScreen = this;
         }
@@ -11,7 +11,7 @@ define([], function() {
         this._next = null;
         this._prev = null;
         this._id = 'screen_' + Screen._length++;
-        this._temporary = isTemporary !== false;
+        this._temporary = !isPermanent;
 
         this.setChildren(children);
     }

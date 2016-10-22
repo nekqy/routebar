@@ -27,7 +27,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
                 .add('keyboard', new KeydownControl(mainDiv, this._moveByActionValue.bind(this)), true);
         }
 
-        SmartResizer(mainDiv, mainDiv.width(), mainDiv.height());
+        //SmartResizer(mainDiv, mainDiv.width(), mainDiv.height());
 
         this.resetConfig();
         //if (mainDiv.length) {
@@ -86,18 +86,12 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
 
         if (typeof config === 'object') {
             if (config.startScreen !== undefined) {
-                this.setScreen(config.startScreen);
+                this.setScreen(config.startScreen, false);
             }
             if (config.lockControls !== undefined) {
                 this._lockControls = config.lockControls;
             }
         }
-
-        // опции ресайзера
-
-        // закидывать ли фокус внутрь при переходе
-
-        // режим дебага или нет. в дебаге прикреплять к элементам их модули, выводить доп. инфу в консоль
     };
 
     // todo defineProperty, и вообще доступ к объектам в api сделать через defineProperty
@@ -121,7 +115,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
             this._locks = this._controlManager.disableAll();
         }
 
-        this._screenManager.updateScreens('center', screen, [], isSaveHistory);
+        this._screenManager.updateScreens('center', screen, isSaveHistory);
 
         return new Promise(function (moveResolve, moveReject) {
 

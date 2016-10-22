@@ -25,6 +25,9 @@ define(['screenModel', 'rbManager'], function(ScreenModel, RbManager) {
         },
         prepare: {
             value: prepare
+        },
+        Batch: {
+            value: RbManager.Batch
         }
     });
 });

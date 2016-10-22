@@ -6,24 +6,20 @@ define(['screenModel', 'moving'], function(ScreenModel, Moving) {
     function initLayout(startScreens, callback) {
         $(function() {
             var $rbWrapper = $('.rb-wrapper');
-            $rbWrapper.html('<div class="rb"><div tabindex="-1" class="rb__fake-element"></div></div>');
-            var $rb = $rbWrapper.find('.rb'),
-                loadingPromises = [];
+            var loadingPromises = [];
 
-            rb.Instances = {};
-            for (var i = 0; i < $rb.length; i++) {
-                var elem = $rb.eq(i),
-                    elemWrapper = elem.parent(),
+            for (var i = 0; i < $rbWrapper.length; i++) {
+                var elemWrapper = $rbWrapper.eq(i),
                     id = elemWrapper.data('id') || elemWrapper.attr('id') || 'instance_' + i;
 
-                var inst = new Moving(elem, startScreens[id]);
-                instances[id] = inst;
-                loadingPromises.push(inst._loadingPromise);
+                if (rb.Instances[id] === undefined) {
+                    elemWrapper.html('<div class="rb"><div tabindex="-1" class="rb__fake-element"></div></div>');
 
-                if (rb.Instances[id] !== undefined) {
-                    console.error('initLayout - instance id "' + id + '" forbidden or exists already');
-                    //throw new Error('initLayout - instance id "' + id + '" forbidden or exists already');
-                } else {
+                    var $rb = elemWrapper.find('.rb'),
+                        inst = new Moving($rb, startScreens[id]);
+                    instances[id] = inst;
+                    loadingPromises.push(inst._loadingPromise);
+
                     Object.defineProperty(rb.Instances, id, {
                         value: inst
                     });

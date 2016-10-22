@@ -8,6 +8,9 @@ define(['screenModel', 'rbManager'], function(ScreenModel, RbManager) {
         start: {
             value: RbManager.initLayout
         },
+        Instances: {
+            value: {}
+        },
         Batch: {
             value: RbManager.Batch
         }

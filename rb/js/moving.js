@@ -124,10 +124,6 @@ define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartRes
                             isOk: result
                         }));
                     }
-                    //moveResolve({
-                    //    how: 'wrongSide',
-                    //    isOk: result
-                    //});
                 });
             } else if (side === 'center') {
                 self._elementsPool.prepareSide(side);
@@ -136,10 +132,6 @@ define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartRes
                     how: 'center',
                     isOk: true
                 }));
-                //moveResolve({
-                //    how: 'center',
-                //    isOk: true
-                //});
             } else if (sides.indexOf(side) !== -1) {
                 self._screenManager.updateScreens(side, undefined, isSaveHistory);
                 self._elementsPool.prepareSide();
@@ -151,10 +143,6 @@ define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartRes
                             isOk: result
                         }));
                     }
-                    //moveResolve({
-                    //    how: 'correctSide',
-                    //    isOk: result
-                    //});
                 });
             } else {
                 moveReject(new Error('Moving module - move - wrong side arg: ' + side));
@@ -271,6 +259,10 @@ define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartRes
             path = this._screenManager.findShortestPath(this._screenManager.getCurScreen(), screen);
 
         nextStep(path, 0);
+    };
+
+    Moving.prototype.destroy = function() {
+
     };
 
     return Moving;

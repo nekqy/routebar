@@ -13,8 +13,14 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
         function fixLength(historyLength) {
             return (typeof historyLength === 'number' && historyLength >= 0) ? historyLength : 10;
         }
-        if (config.maxHistoryLength !== undefined) {
-            this._maxHistoryLength = fixLength(config.maxHistoryLength);
+
+        if (typeof config === 'object') {
+            if (config.maxHistoryLength !== undefined) {
+                this._maxHistoryLength = fixLength(config.maxHistoryLength);
+            }
+            if (config.isDirectPath !== undefined) {
+                this._isDirectPath = config.isDirectPath;
+            }
         }
     };
 
@@ -155,6 +161,82 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
         return this._history.some(function(val) {
             return val.screen === screen;
         });
+    };
+
+    ScreenManager.prototype.findShortestPath = function (start, end) {
+        function findPaths(start, end) {
+            var costs = {},
+                open = {'0': [start]},
+                predecessors = {},
+                keys;
+
+            var addToOpen = function (cost, vertex) {
+                if (!open[cost]) open[cost] = [];
+                open[cost].push(vertex);
+            };
+
+            costs[start] = 0;
+
+            while (open) {
+                if(!(keys = Object.keys(open)).length) break;
+
+                keys.sort(function (a, b) {
+                    return a - b;
+                });
+
+                var key = keys[0],
+                    bucket = open[key],
+                    node = bucket.shift(),
+                    currentCost = +key,
+                    adjacentNodes;
+
+                if (self._isDirectPath) {
+                    adjacentNodes = node && node._children.concat(node._parents).concat(node._next).concat(node._prev) || [];
+                } else {
+                    adjacentNodes = node && [self._getRelativeScreenByScreen(node, 'left'),
+                            self._getRelativeScreenByScreen(node, 'top'),
+                            self._getRelativeScreenByScreen(node, 'right'),
+                            self._getRelativeScreenByScreen(node, 'bottom')
+                        ] || [];
+                }
+
+                if (!bucket.length) delete open[key];
+
+                for (var i = 0; i < adjacentNodes.length; i++) {
+                    var vertex = adjacentNodes[i],
+                        totalCost = currentCost + 1,
+                        vertexCost = costs[vertex];
+
+                    if ((vertexCost === undefined) || (vertexCost > totalCost)) {
+                        costs[vertex] = totalCost;
+                        addToOpen(totalCost, vertex);
+                        predecessors[vertex] = node;
+                    }
+                }
+            }
+
+            if (costs[end] === undefined) {
+                return null;
+            } else {
+                return predecessors;
+            }
+        }
+        function extractShortest(predecessors, end) {
+            var nodes = [],
+                u = end;
+
+            while (u) {
+                nodes.push(u);
+                u = predecessors[u];
+            }
+
+            nodes.reverse();
+            return nodes;
+        }
+
+        var self = this;
+        var predecessors = findPaths(start, end);
+        return extractShortest(predecessors, end);
     };
 
     return ScreenManager;

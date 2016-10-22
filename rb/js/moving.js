@@ -60,7 +60,8 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
             lockControls: false,
             showAdjacentScreens: true,
             saveHistoryInPool: false,
-            pointersForSwipe: 1
+            pointersForSwipe: 1,
+            isDirectPath: true
         });
     };
 
@@ -228,6 +229,47 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
 
     Moving.prototype.activate = function() {
         this._mainDiv.find('.rb__fake-element').focus();
+    };
+
+    Moving.prototype.goToScreen = function(screen) {
+        function nextStep(path, i) {
+            if (i+1 >= path.length) {
+                self._controlManager.enableByValues(locks);
+                return;
+            }
+
+            var curScreen = path[i],
+                nextScreen = path[i+1],
+                side;
+
+            if (curScreen._children.indexOf(nextScreen) !== -1) {
+                side = 'right';
+            } else if (curScreen._parents.indexOf(nextScreen) !== -1) {
+                side = 'left';
+            } else if (curScreen._next === nextScreen) {
+                side = 'bottom';
+            } else if (curScreen._prev === nextScreen) {
+                side = 'top';
+            } else {
+                throw new Error('goToScreen : side not found');
+            }
+
+            self._screenManager._setRelativeScreen(self._screenManager.getCurScreen(), side, nextScreen);
+
+            self.afterRenderDispatcher.add(function() {
+                self.afterRenderDispatcher.add(function() {
+                    nextStep(path, i+1);
+                }, true);
+                self.move(side);
+            }, true);
+
+            self.setScreen(curScreen, false);
+        }
+        var self = this,
+            locks = this._controlManager.disableAll(),
+            path = this._screenManager.findShortestPath(this._screenManager.getCurScreen(), screen);
+
+        nextStep(path, 0);
     };
 
     return Moving;

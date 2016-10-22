@@ -3,34 +3,37 @@ define(['screenModel', 'moving'], function(ScreenModel, Moving) {
 
     var instances = {};
 
-    function initLayout(wrapperName, prepare) {
+    function initLayout(startScreens, callback) {
+        $(function() {
+            var $rbWrapper = $('.rb-wrapper');
+            $rbWrapper.html('<div class="rb"><div tabindex="-1" class="rb__fake-element"></div></div>');
+            var $rb = $rbWrapper.find('.rb'),
+                loadingPromises = [];
 
-        var $rbWrapper = $('.' + wrapperName);
-        $rbWrapper.html('<div class="rb"><div tabindex="-1" class="rb__fake-element"></div></div>');
-        var $rb = $rbWrapper.find('.rb');
+            rb.Instances = {};
+            for (var i = 0; i < $rb.length; i++) {
+                var elem = $rb.eq(i),
+                    elemWrapper = elem.parent(),
+                    id = elemWrapper.data('id') || elemWrapper.attr('id') || 'instance_' + i;
 
-        for(var i = 0; i < $rb.length; i++) {
-            var elem = $rb.eq(i),
-                elemWrapper = elem.parent(),
-                id = elemWrapper.data('id') || elemWrapper.attr('id') || 'instance_' + i;
+                var inst = new Moving(elem, startScreens[id]);
+                instances[id] = inst;
+                loadingPromises.push(inst._loadingPromise);
 
-            var inst = new Moving(elem, 1000, 10);
-            instances[id] = inst;
-
-            if (rb[id] !== undefined) {
-                throw new Error('initLayout - instance id "' + id + '" forbidden or exists already');
+                if (rb.Instances[id] !== undefined) {
+                    console.error('initLayout - instance id "' + id + '" forbidden or exists already');
+                    //throw new Error('initLayout - instance id "' + id + '" forbidden or exists already');
+                } else {
+                    Object.defineProperty(rb.Instances, id, {
+                        value: inst
+                    });
+                }
             }
-            Object.defineProperty(rb, id, {
-                value: inst
+
+            Promise.all(loadingPromises).then(function() {
+                callback && callback(instances);
             });
-
-            var mainScreen = ScreenModel.getMainScreen();
-            if (mainScreen) {
-                inst.move('center', mainScreen, false);
-            }
-        }
-
-        prepare && prepare(instances);
+        });
     }
 
     function batchAction(action, args) {

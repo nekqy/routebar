@@ -1,10 +1,10 @@
-define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'controlManager', 'swipesControl', 'arrowsControl', 'keydownControl', 'elementsPool', 'utils'], function(
-    Animation, ScreenManager, BaseDispatcher, SmartResizer, ControlManager, SwipesControl, ArrowsControl, KeydownControl, ElementsPool, Utils) {
+define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'controlManager', 'swipesControl', 'arrowsControl', 'keydownControl', 'elementsPool', 'utils'], function(
+    ScreenModel, Animation, ScreenManager, BaseDispatcher, SmartResizer, ControlManager, SwipesControl, ArrowsControl, KeydownControl, ElementsPool, Utils) {
     "use strict";
 
     var sides = ['center', 'left', 'top', 'right', 'bottom'];
 
-    function Moving(mainDiv) {
+    function Moving(mainDiv, startScreen) {
         if (mainDiv instanceof $) {
             this._mainDiv = mainDiv;
         } else {
@@ -29,6 +29,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
 
         //SmartResizer(mainDiv, mainDiv.width(), mainDiv.height());
 
+        this._loadingPromise = this.setScreen(startScreen || ScreenModel.getMainScreen(), false);
         this.resetConfig();
         //if (mainDiv.length) {
         //    mainDiv[0].moving = this;
@@ -43,7 +44,6 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
     }
     Moving.prototype.resetConfig = function() {
         this.configure({
-            startScreen: rb.Screen.getMainScreen(),
             wrongTime1: 500,
             wrongTime2: 500,
             correctTime: 1000,
@@ -85,9 +85,6 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
         this.afterRenderDispatcher.configure(config);
 
         if (typeof config === 'object') {
-            if (config.startScreen !== undefined) {
-                this.setScreen(config.startScreen, false);
-            }
             if (config.lockControls !== undefined) {
                 this._lockControls = config.lockControls;
             }
@@ -122,33 +119,42 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
             if (!self._screenManager.getRelativeScreen(side)) {
                 self._animation.goToWrongSide(side).then(function(result) {
                     if (result) {
-                        self._renderHtml(side);
+                        self._renderHtml(side, moveResolve.bind(undefined, {
+                            how: 'wrongSide',
+                            isOk: result
+                        }));
                     }
-                    moveResolve({
-                        how: 'wrongSide',
-                        isOk: result
-                    });
+                    //moveResolve({
+                    //    how: 'wrongSide',
+                    //    isOk: result
+                    //});
                 });
             } else if (side === 'center') {
                 self._elementsPool.prepareSide(side);
                 self._animation.goToCenter();
-                self._renderHtml(side);
-                moveResolve({
+                self._renderHtml(side, moveResolve.bind(undefined, {
                     how: 'center',
                     isOk: true
-                });
+                }));
+                //moveResolve({
+                //    how: 'center',
+                //    isOk: true
+                //});
             } else if (sides.indexOf(side) !== -1) {
                 self._screenManager.updateScreens(side, undefined, isSaveHistory);
                 self._elementsPool.prepareSide();
 
                 self._animation.goToCorrectSide(side).then(function(result) {
                     if (result) {
-                        self._renderHtml(side);
+                        self._renderHtml(side, moveResolve.bind(undefined, {
+                            how: 'correctSide',
+                            isOk: result
+                        }));
                     }
-                    moveResolve({
-                        how: 'correctSide',
-                        isOk: result
-                    });
+                    //moveResolve({
+                    //    how: 'correctSide',
+                    //    isOk: result
+                    //});
                 });
             } else {
                 moveReject(new Error('Moving module - move - wrong side arg: ' + side));
@@ -185,7 +191,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
         rbSide.html(screen.html);
     };
 
-    Moving.prototype._renderHtml = function(side) {
+    Moving.prototype._renderHtml = function(side, moveResolve) {
         var self = this,
             args = [side, self._screenManager.getCurScreen(), self];
 
@@ -196,6 +202,7 @@ define(['animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'control
                 self._controlManager.enableByValues(self._locks);
                 self._locks = null;
             }
+            moveResolve();
         }
 
         this.beforeRenderDispatcher._runActions(function() {

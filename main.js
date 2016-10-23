@@ -3,7 +3,7 @@ var
     mainScreenHtml = '<div class="mainScreen">mainScreen</div>',
     firstHtml = '<div class="child1">child1</div>',
     secondHtml = '<iframe width="100%" height="100%" frameborder="0" src="examples/example1.html"></iframe>',
-    thirdHtml = '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/pg5iRruqcps" frameborder="0" allowfullscreen></iframe>';
+    thirdHtml = '<iframe width="100%" height="100%" frameborder="0" src="examples/example1.html"></iframe>';
 
 // main screen defining
 var mainScreen = new rb.Screen(mainScreenHtml);
@@ -63,23 +63,29 @@ $.get('examples/example2.html', function(data) {
                 wrongTime2: 1500,
                 correctTime: 3000
             };
-        instances.rb1.configure(cfg);
-        instances.rb2.configure(cfg);
-        instances.rb3.configure(cfg);
-        instances.rb4.configure(cfg);
+        rb.Batch.configure(cfg);
         function randomStep(side, curScreen, moving) {
             var index = Math.floor(Math.random()*4);
             moving.move(sides[index]).then(function(result){
                 console.log(result.how, result.isOk, 'moved to ' + sides[index], result.isOk ? 'successfully' : 'failed')
             });
         }
-        instances.rb1.afterRenderDispatcher.add(randomStep);
-        instances.rb2.afterRenderDispatcher.add(randomStep);
-        instances.rb3.afterRenderDispatcher.add(randomStep);
-        instances.rb4.afterRenderDispatcher.add(randomStep);
-        randomStep(undefined, undefined, instances.rb1);
-        randomStep(undefined, undefined, instances.rb2);
-        randomStep(undefined, undefined, instances.rb3);
-        randomStep(undefined, undefined, instances.rb4);
+        for (var id in instances) {
+            if (instances.hasOwnProperty(id)) {
+                instances[id].afterRenderDispatcher.add(randomStep);
+                randomStep(undefined, undefined, instances[id]);
+
+                (function (){
+                    var inst = instances[id];
+                    require(['./smartResizer'], function(SmartResizer) {
+                        var smartResizer = new SmartResizer(inst._mainDiv);
+                        inst.addPlugin(smartResizer);
+                        setTimeout(function() {
+                            inst.removePlugin(smartResizer);
+                        }, 60000);
+                    });
+                })();
+            }
+        }
     });
 });

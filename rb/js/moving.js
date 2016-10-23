@@ -1,5 +1,5 @@
-define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartResizer', 'controlManager', 'swipesControl', 'arrowsControl', 'keydownControl', 'elementsPool', 'utils'], function(
-    ScreenModel, Animation, ScreenManager, BaseDispatcher, SmartResizer, ControlManager, SwipesControl, ArrowsControl, KeydownControl, ElementsPool, Utils) {
+define(['IPlugin', 'screenModel', 'animation', 'screenManager', 'baseDispatcher', 'controlManager', 'swipesControl', 'arrowsControl', 'keydownControl', 'elementsPool', 'utils'], function(
+    IPlugin, ScreenModel, Animation, ScreenManager, BaseDispatcher, ControlManager, SwipesControl, ArrowsControl, KeydownControl, ElementsPool, Utils) {
     "use strict";
 
     var sides = ['center', 'left', 'top', 'right', 'bottom'];
@@ -27,6 +27,7 @@ define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartRes
                 .add('keyboard', new KeydownControl(mainDiv, this._moveByActionValue.bind(this)), true);
         }
 
+        this._plugins = [];
         //SmartResizer(mainDiv, mainDiv.width(), mainDiv.height());
 
         this._loadingPromise = this.setScreen(startScreen || ScreenModel.getMainScreen(), false);
@@ -69,6 +70,10 @@ define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartRes
 
     Moving.prototype.configure = function(config) {
         if (!config) return;
+
+        this._plugins.forEach(function(plugin) {
+            plugin.configure(config);
+        });
 
         this._animation.configure(config);
         this._elementsPool.configure(config);
@@ -258,7 +263,26 @@ define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartRes
         nextStep(path, 0);
     };
 
+    Moving.prototype.addPlugin = function(plugin) {
+        if (plugin instanceof IPlugin) {
+            this._plugins.push(plugin);
+        } else {
+            console.error('Moving - addPlugin - argument must be IPlugin');
+        }
+    };
+    Moving.prototype.removePlugin = function(plugin) {
+        var index = this._plugins.indexOf(plugin);
+        if (index != -1) {
+            plugin.destroy();
+            this._plugins.splice(index, 1);
+        }
+    };
+
     Moving.prototype.destroy = function() {
+        this._plugins.forEach(function(plugin) {
+            plugin.destroy();
+        });
+
         this.beforeMoveDispatcher.destroy();
         this.beforeRenderDispatcher.destroy();
         this.afterRenderDispatcher.destroy();

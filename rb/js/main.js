@@ -1,4 +1,4 @@
-define(['screenModel', 'rbManager'], function(ScreenModel, RbManager) {
+define(['screenModel', 'rbManager', 'IPlugin'], function(ScreenModel, RbManager, IPlugin) {
     "use strict";
 
     return Object.create(null, {
@@ -16,6 +16,9 @@ define(['screenModel', 'rbManager'], function(ScreenModel, RbManager) {
         },
         Batch: {
             value: RbManager.Batch
+        },
+        IPlugin: {
+            value: IPlugin
         }
     });
 });

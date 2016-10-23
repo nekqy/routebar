@@ -1,28 +1,6 @@
 define([], function() {
     "use strict";
 
-    // debouncing function from John Hann
-    // http://unscriptable.com/index.php/2009/03/20/debouncing-javascript-methods/
-    function debounce(func, threshold, execAsap) {
-        var timeout;
-
-        return function debounced () {
-            var obj = this, args = arguments;
-            function delayed () {
-                if (!execAsap)
-                    func.apply(obj, args);
-                timeout = null;
-            }
-
-            if (timeout)
-                clearTimeout(timeout);
-            else if (execAsap)
-                func.apply(obj, args);
-
-            timeout = setTimeout(delayed, threshold || 100);
-        };
-    }
-
     function oppositeSide(side) {
         if (side === 'left') return 'right';
         if (side === 'right') return 'left';
@@ -51,7 +29,7 @@ define([], function() {
             }
         }
     }
-    function inherite(parent, child) {
+    function inherite(child, parent) {
         child.prototype = Object.create(parent.prototype);
         child.prototype.constructor = child;
     }
@@ -64,7 +42,6 @@ define([], function() {
     }
 
     return {
-        debounce: debounce,
         oppositeSide: oppositeSide,
         getStartSide: getStartSide,
         capitalizeFirstLetter: capitalizeFirstLetter,

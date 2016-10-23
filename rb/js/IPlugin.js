@@ -1,4 +1,4 @@
-define([], function() {
+define(['utils'], function(Utils) {
     "use strict";
 
     function IPlugin() {
@@ -11,6 +11,10 @@ define([], function() {
 
     IPlugin.prototype.destroy = function() {
         throw new Error('Destroy function not realized');
+    };
+
+    IPlugin.inherite = function(module) {
+        Utils.inherite(module, IPlugin);
     };
 
     return IPlugin;

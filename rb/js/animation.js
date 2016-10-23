@@ -1,4 +1,4 @@
-define(['utils', 'jquery.easing', 'IPlugin'], function(Utils, IPlugin) {
+define(['utils', 'IPlugin', 'jquery.easing'], function(Utils, IPlugin) {
     "use strict";
 
     function Animation(mainDiv, elementsPool) {

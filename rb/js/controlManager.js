@@ -82,6 +82,18 @@ define([], function() {
             }
         }
     };
+    ControlManager.prototype.configure = function(config) {
+        for (var name in this._controls) {
+            if (this._controls.hasOwnProperty(name)) {
+                this._controls[name].configure(config);
+            }
+        }
+    };
+
+    ControlManager.prototype.destroy = function() {
+        this.disableAll();
+        this._controls = null;
+    };
 
     return ControlManager;
 });

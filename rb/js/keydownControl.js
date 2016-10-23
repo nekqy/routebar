@@ -63,5 +63,9 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         this._isEnable = false;
     };
 
+    KeydownControl.prototype.destroy = function() {
+        this.disable();
+    };
+
     return KeydownControl;
 });

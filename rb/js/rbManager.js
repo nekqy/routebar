@@ -1,8 +1,6 @@
 define(['screenModel', 'moving'], function(ScreenModel, Moving) {
     "use strict";
 
-    var instances = {};
-
     function initLayout(startScreens, callback) {
         $(function() {
             var $rbWrapper = $('.rb-wrapper');
@@ -16,27 +14,28 @@ define(['screenModel', 'moving'], function(ScreenModel, Moving) {
                     elemWrapper.html('<div class="rb"><div tabindex="-1" class="rb__fake-element"></div></div>');
 
                     var $rb = elemWrapper.find('.rb'),
-                        inst = new Moving($rb, startScreens[id]);
-                    instances[id] = inst;
+                        inst = new Moving($rb, startScreens && startScreens[id]);
                     loadingPromises.push(inst._loadingPromise);
 
                     Object.defineProperty(rb.Instances, id, {
-                        value: inst
+                        value: inst,
+                        configurable: true,
+                        enumerable: true
                     });
                 }
             }
 
             Promise.all(loadingPromises).then(function() {
-                callback && callback(instances);
+                callback && callback(rb.Instances);
             });
         });
     }
 
     function batchAction(action, args) {
         var res = [];
-        for (var id in instances) {
-            if (instances.hasOwnProperty(id)) {
-                var inst = instances[id];
+        for (var id in rb.Instances) {
+            if (rb.Instances.hasOwnProperty(id)) {
+                var inst = rb.Instances[id];
                 res.push(inst[action].apply(inst, args));
             }
         }
@@ -62,15 +61,29 @@ define(['screenModel', 'moving'], function(ScreenModel, Moving) {
         batchAction('reload', arguments);
     }
 
+    function remove(id) {
+        if (rb.Instances.hasOwnProperty(id)) {
+            rb.Instances[id].destroy();
+            delete rb.Instances[id];
+        }
+    }
+    function removeAll() {
+        for (var id in rb.Instances) {
+            remove(id);
+        }
+    }
+
     return {
         initLayout: initLayout,
+        remove: remove,
         Batch: {
             configure: configure,
             move: move,
             moveBack: moveBack,
             animateWrongSide: animateWrongSide,
             setScreen: setScreen,
-            reload: reload
+            reload: reload,
+            removeAll: removeAll
         }
     };
 });

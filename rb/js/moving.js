@@ -36,11 +36,13 @@ define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartRes
         //}
 
         var self = this;
-        mainDiv.on('click', function(e) {
+
+        this._clickHandler = function(e) {
             if ($(e.target).closest('.rb').length && !$(document.activeElement).closest('.rb').length) {
                 self.activate();
             }
-        });
+        };
+        mainDiv.on('click', this._clickHandler);
     }
     Moving.prototype.resetConfig = function() {
         this.configure({
@@ -71,12 +73,7 @@ define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartRes
         this._animation.configure(config);
         this._elementsPool.configure(config);
         this._screenManager.configure(config);
-
-        for (var name in this._controlManager._controls) {
-            if (this._controlManager._controls.hasOwnProperty(name)) {
-                this._controlManager._controls[name].configure(config);
-            }
-        }
+        this._controlManager.configure(config);
 
         config.loadingDiv = config.loadingHtml ? '<div class="rb__loading">' + config.loadingHtml + '</div>' : null;
 
@@ -262,7 +259,23 @@ define(['screenModel', 'animation', 'screenManager', 'baseDispatcher', 'smartRes
     };
 
     Moving.prototype.destroy = function() {
+        this.beforeMoveDispatcher.destroy();
+        this.beforeRenderDispatcher.destroy();
+        this.afterRenderDispatcher.destroy();
+        this._animation.destroy();
+        this._controlManager.destroy();
+        this._screenManager.destroy();
+        this._elementsPool.destroy();
+        this._animation = null;
+        this._elementsPool = null;
+        this._screenManager = null;
+        this._controlManager = null;
+        this.beforeMoveDispatcher = null;
+        this.beforeRenderDispatcher = null;
+        this.afterRenderDispatcher = null;
 
+        this._mainDiv.off('click', this._clickHandler);
+        this._mainDiv.remove();
     };
 
     return Moving;

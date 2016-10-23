@@ -113,6 +113,9 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         if (!this._isEnable) return;
 
         var $rbArrowContainer = this._mainDiv.find('.rb__arrow-container');
+        for (var i = 0; i < $rbArrowContainer.length; i++) {
+            clearTimeout($rbArrowContainer[i].hideArrowId);
+        }
         $rbArrowContainer.off('click', this._clickHandler);
         $rbArrowContainer.off('mouseenter', this._mouseEnterHandler);
         $rbArrowContainer.off('mouseleave', this._mouseLeaveHandler);
@@ -123,6 +126,10 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         this._mainDiv.find('.rb__arrow-container').remove();
 
         this._isEnable = false;
+    };
+
+    ArrowsControl.prototype.destroy = function() {
+        this.disable();
     };
 
     return ArrowsControl;

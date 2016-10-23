@@ -239,5 +239,11 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
         return extractShortest(predecessors, end);
     };
 
+    ScreenManager.prototype.destroy = function() {
+        this._history = null;
+        this._curScreen = null;
+        this._relativeScreens = null;
+    };
+
     return ScreenManager;
 });

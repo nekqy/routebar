@@ -56,5 +56,9 @@ define(['utils', 'IPlugin', 'hammer'], function(Utils, IPlugin, Hammer) {
         this._isEnable = false;
     };
 
+    SwipesControl.prototype.destroy = function() {
+        this.disable();
+    };
+
     return SwipesControl;
 });

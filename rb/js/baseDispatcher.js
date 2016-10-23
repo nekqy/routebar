@@ -81,5 +81,9 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         }
     };
 
+    BaseDispatcher.prototype.destroy = function() {
+        this._actions = null;
+    };
+
     return BaseDispatcher;
 });

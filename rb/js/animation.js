@@ -208,5 +208,14 @@ define(['utils', 'jquery.easing', 'IPlugin'], function(Utils, IPlugin) {
         elem.css({'margin-left': elem.width(), 'margin-top': elem.height()});
     };
 
+    Animation.prototype.destroy = function() {
+        this._new && this._new.stop();
+        this._old && this._old.stop();
+        this._cur && this._cur.stop();
+        this._prev && this._prev.stop();
+        this._next && this._next.stop();
+        this._res && this._res(false);
+    };
+
     return Animation;
 });

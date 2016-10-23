@@ -97,5 +97,15 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         });
     };
 
+    ElementsPool.prototype.destroy = function() {
+        var self = this;
+        Object.keys(this._elements).forEach(function(id) {
+            self._elements[id].element.remove();
+        });
+        this._elements = null;
+        this._elementsBySide = null;
+        this._screenManager = null;
+    };
+
     return ElementsPool;
 });

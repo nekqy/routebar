@@ -8,6 +8,9 @@ define(['screenModel', 'rbManager'], function(ScreenModel, RbManager) {
         start: {
             value: RbManager.initLayout
         },
+        remove: {
+            value: RbManager.remove
+        },
         Instances: {
             value: {}
         },

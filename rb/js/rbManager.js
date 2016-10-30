@@ -2,6 +2,11 @@ define(['screenModel', 'moving'], function(ScreenModel, Moving) {
     "use strict";
 
     function initLayout(startScreens, callback) {
+        if (typeof startScreens === 'function') {
+            callback = startScreens;
+            startScreens = undefined;
+        }
+
         $(function() {
             var $rbWrapper = $('.rb-wrapper');
             var loadingPromises = [];

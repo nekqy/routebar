@@ -19,6 +19,7 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         }
     };
 
+    // todo load зависит от prepare, поэтому из prepare надо возвращать функцию load
     ElementsPool.prototype.prepareSide = function() {
         function getScreen(side) {
             return self._screenManager._getRelativeScreenByScreen(newScreen, side);

@@ -55,10 +55,12 @@ define(['IPlugin', 'screenModel', 'animation', 'screenManager', 'baseDispatcher'
             correctEasing: 'easeOutExpo',
             hideTime: 2000,
             loadingHtml: '<div class="rb__loading_wrapper"><div class="cssload-loader"></div></div>',
-            leftKey: 37,
-            topKey: 38,
-            rightKey: 39,
-            bottomKey: 40,
+            //http://www.javascripter.net/faq/keycodes.htm
+            //https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+            leftKey: [37, 'a'],
+            topKey: [38, 'w'],
+            rightKey: [39, 'd'],
+            bottomKey: [40, 's'],
             maxHistoryLength: 10,
             lockControls: false,
             showAdjacentScreens: true,
@@ -152,11 +154,24 @@ define(['IPlugin', 'screenModel', 'animation', 'screenManager', 'baseDispatcher'
         });
     };
     Moving.prototype._moveByActionValue = function(value, ltrbValues, mapFn) {
+        function check(value, checkValues) {
+            var res;
+            if (Array.isArray(checkValues)) {
+                res = checkValues.find(function(checkValue) {
+                    return mapFn(value, checkValue);
+                });
+                res = res !== undefined;
+            } else {
+                res = mapFn(value, checkValues);
+            }
+            return res;
+        }
+
         var side;
-        if (mapFn(value, ltrbValues[0])) side = 'left';
-        else if (mapFn(value, ltrbValues[1])) side = 'top';
-        else if (mapFn(value, ltrbValues[2])) side = 'right';
-        else if (mapFn(value, ltrbValues[3])) side = 'bottom';
+        if (check(value, ltrbValues[0])) side = 'left';
+        else if (check(value, ltrbValues[1])) side = 'top';
+        else if (check(value, ltrbValues[2])) side = 'right';
+        else if (check(value, ltrbValues[3])) side = 'bottom';
         return this.move(side);
     };
     Moving.prototype.moveBack = function() {

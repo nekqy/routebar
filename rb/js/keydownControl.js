@@ -43,6 +43,9 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
             self._actionFn(e.which, [self._leftKey, self._topKey, self._rightKey, self._bottomKey], function(value, defValue) {
                 return value === defValue;
             });
+            self._actionFn(e.key, [self._leftKey, self._topKey, self._rightKey, self._bottomKey], function(value, defValue) {
+                return value === defValue;
+            });
         };
         var mainDivHandler = function(e) {
             baseHandler(e);

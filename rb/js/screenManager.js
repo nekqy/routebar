@@ -154,9 +154,6 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
     ScreenManager.prototype.popHistory = function() {
         return this._history.pop();
     };
-    ScreenManager.prototype.destroy = function() {
-        Screen.unregisterRelativeUpdateFn(this._relativeUpdateFn);
-    };
     ScreenManager.prototype._containsHistory = function(screen) {
         return this._history.some(function(val) {
             return val.screen === screen;
@@ -240,6 +237,7 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
     };
 
     ScreenManager.prototype.destroy = function() {
+        Screen.unregisterRelativeUpdateFn(this._relativeUpdateFn);
         this._history = null;
         this._curScreen = null;
         this._relativeScreens = null;

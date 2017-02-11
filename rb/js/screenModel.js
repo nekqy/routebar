@@ -1,18 +1,33 @@
 define([], function() {
     "use strict";
 
-    function Screen(html, children, isPermanent) {
+    function Screen(html, children, isPermanent, isDirectedGraph) {
         if (!Screen._mainScreenSetted) {
             Screen._mainScreen = this;
         }
 
-        this.html = html;
         this._parents = [];
         this._next = null;
         this._prev = null;
         this._id = 'screen_' + Screen._length++;
-        this._temporary = !isPermanent;
 
+        if (Array.isArray(html)) {
+            isDirectedGraph = html[3];
+            isPermanent = html[2];
+            children = html[1];
+            html = html[0];
+        } else if (typeof html === 'object') {
+            isDirectedGraph = html.isDirectedGraph;
+            isPermanent = html.isPermanent;
+            children = html.children;
+            html = html.html;
+        } else if (typeof html !== 'string') {
+            html = '';
+        }
+
+        this.html = html;
+        this._temporary = !isPermanent;
+        this._isDirectedGraph = !!isDirectedGraph;
         this.setChildren(children);
     }
     Screen.prototype.toString = function() {
@@ -38,7 +53,7 @@ define([], function() {
     };
     Screen.prototype.addChild = function(child) {
         var children = this._children;
-        if (true) { // TODO сделать опцию направленный/ненаправленный граф
+        if (!this._isDirectedGraph) {
             child._parents.push(this);
         }
         if (children.length > Screen._doCyclic) {

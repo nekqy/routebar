@@ -22,14 +22,14 @@ define([], function() {
 
     function PathNotFoundError(property) {
         CustomError.apply(this, arguments);
-        this.name = 'PropertyError';
+        this.name = 'PathNotFoundError';
     }
     PathNotFoundError.prototype = Object.create(CustomError.prototype);
     PathNotFoundError.prototype.constructor = PathNotFoundError;
 
     function FatalError(property) {
         CustomError.apply(this, arguments);
-        this.name = 'PropertyError';
+        this.name = 'FatalError';
     }
     FatalError.prototype = Object.create(CustomError.prototype);
     FatalError.prototype.constructor = FatalError;

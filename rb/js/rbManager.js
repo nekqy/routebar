@@ -1,4 +1,4 @@
-define(['screenModel', 'moving'], function(ScreenModel, Moving) {
+define(['moving'], function(Moving) {
     "use strict";
 
     function initLayout(startScreens, callback) {

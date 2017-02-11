@@ -1,5 +1,5 @@
-define(['IPlugin', 'screenModel', 'animation', 'screenManager', 'baseDispatcher', 'controlManager', 'swipesControl', 'arrowsControl', 'keydownControl', 'elementsPool', 'utils'], function(
-    IPlugin, ScreenModel, Animation, ScreenManager, BaseDispatcher, ControlManager, SwipesControl, ArrowsControl, KeydownControl, ElementsPool, Utils) {
+define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseDispatcher', 'controlManager', 'swipesControl', 'arrowsControl', 'keydownControl', 'elementsPool', 'utils'], function(
+    Errors, IPlugin, ScreenModel, Animation, ScreenManager, BaseDispatcher, ControlManager, SwipesControl, ArrowsControl, KeydownControl, ElementsPool, Utils) {
     "use strict";
 
     var sides = ['center', 'left', 'top', 'right', 'bottom'];
@@ -237,10 +237,27 @@ define(['IPlugin', 'screenModel', 'animation', 'screenManager', 'baseDispatcher'
         this._mainDiv.find('.rb__fake-element').focus();
     };
 
+
     Moving.prototype.goToScreen = function(screen) {
-        function nextStep(path, i) {
-            if (i+1 >= path.length) {
+        function firstStep(path) {
+            return new Promise(function(resolve, reject) {
+                nextStep(path, 0, resolve, reject);
+            });
+        }
+        function nextStep(path, i, resolve, reject) {
+            if (!path) {
                 self._controlManager.enableByValues(locks);
+                reject(new Errors.PathNotFoundError('goToScreen : path not found'));
+                return;
+            }
+            if (i === path.length - 1) {
+                self._controlManager.enableByValues(locks);
+                resolve();
+                return;
+            }
+            if ( i > path.length - 1) {
+                self._controlManager.enableByValues(locks);
+                reject(new Errors.FatalError('goToScreen : i > path.length - 1'));
                 return;
             }
 
@@ -257,14 +274,15 @@ define(['IPlugin', 'screenModel', 'animation', 'screenManager', 'baseDispatcher'
             } else if (curScreen._prev === nextScreen) {
                 side = 'top';
             } else {
-                throw new Error('goToScreen : side not found');
+                self._controlManager.enableByValues(locks);
+                reject(new Errors.FatalError('goToScreen : side not found'));
             }
 
             self._screenManager._setRelativeScreen(self._screenManager.getCurScreen(), side, nextScreen);
 
             self.afterRenderDispatcher.add(function() {
                 self.afterRenderDispatcher.add(function() {
-                    nextStep(path, i+1);
+                    nextStep(path, i+1, resolve, reject);
                 }, true);
                 self.move(side);
             }, true);
@@ -275,7 +293,7 @@ define(['IPlugin', 'screenModel', 'animation', 'screenManager', 'baseDispatcher'
             locks = this._controlManager.disableAll(),
             path = this._screenManager.findShortestPath(this._screenManager.getCurScreen(), screen);
 
-        nextStep(path, 0);
+        return firstStep(path);
     };
 
     Moving.prototype.addPlugin = function(plugin) {

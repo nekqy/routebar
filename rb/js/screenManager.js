@@ -233,7 +233,7 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
 
         var self = this;
         var predecessors = findPaths(start, end);
-        return extractShortest(predecessors, end);
+        return !predecessors ? null : extractShortest(predecessors, end);
     };
 
     ScreenManager.prototype.destroy = function() {

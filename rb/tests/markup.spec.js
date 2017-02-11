@@ -8,6 +8,8 @@ define(['./core-test', '../js/main'], function(core, rb) {
     var sides = ['left', 'top', 'right', 'bottom'];
     var screen_1, screen_2, screen_3, screen_4;
 
+    var move = core.move;
+
     function initEach() {
         window.rb = rb;
 
@@ -39,16 +41,9 @@ define(['./core-test', '../js/main'], function(core, rb) {
         screen_4.setChildren([screen_1]);
         init2();
     }
-    function move(side) {
-        return function (done) {
-            var rb1 = rb.Instances.rb1;
-            rb1.move(side).then(function() {
-                done();
-            });
-        }
-    }
 
     var t = new core.TestsWrapper('Markup');
+
     t.addTest('Initial markup', undefined, core.nopDone, core.checkMarkup(initMarkupNice));
     t.addTests(
         _.map(sides, function(side) {

@@ -38,7 +38,9 @@ define([], function() {
     };
     Screen.prototype.addChild = function(child) {
         var children = this._children;
-        child._parents.push(this);
+        if (true) { // TODO сделать опцию направленный/ненаправленный граф
+            child._parents.push(this);
+        }
         if (children.length > Screen._doCyclic) {
             child._next = children.length ? children[0] : child;
             child._prev = children.length ? children[children.length-1] : child;

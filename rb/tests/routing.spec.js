@@ -2,6 +2,8 @@ define(['./core-test', '../js/main'], function(core, rb) {
     'use strict';
 
     var screen_1, screen_2, screen_3, screen_4;
+    var checkScreen = core.checkScreen;
+    var move = core.move;
 
     function initEach() {
         window.rb = rb;
@@ -29,20 +31,49 @@ define(['./core-test', '../js/main'], function(core, rb) {
             correctTime: 10
         });
     }
-    function action(done) {
-        var rb1 = rb.Instances.rb1;
-        rb1.move('right').then(function() {
-            return rb1.move('bottom');
-        }).then(function(){
-            return rb1.move('bottom');
-        }).then(function() {
-            return rb1.move('right');
-        }).then(function() {
-            done();
-        });
-    }
 
     var t = new core.TestsWrapper('Routing');
-    t.addTest('Cycle', init, action, core.checkScreen('screen_1'));
+
+    t.addTestsSerial('Routing1', init, [
+        [move('right'),  checkScreen('screen_2')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('bottom'), checkScreen('screen_3')],
+        [move('right'),  checkScreen('screen_3')],
+        [move('bottom'), checkScreen('screen_4')],
+        [move('right'),  checkScreen('screen_1')]
+    ]);
+    t.addTestsSerial('Routing2', init, [
+        [move('right'),  checkScreen('screen_2')],
+        [move('top'),    checkScreen('screen_4')],
+        [move('right'),  checkScreen('screen_1')]
+    ]);
+    t.addTestsSerial('Routing3', init, [
+        [move('left'),   checkScreen('screen_4')],
+        [move('top'),    checkScreen('screen_3')],
+        [move('right'),  checkScreen('screen_3')],
+        [move('top'),    checkScreen('screen_2')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('left'),   checkScreen('screen_1')]
+    ]);
+    t.addTestsSerial('Routing4', init, [
+        [move('left'),   checkScreen('screen_4')],
+        [move('bottom'), checkScreen('screen_2')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('left'),   checkScreen('screen_1')]
+    ]);
+    t.addTestsSerial('Routing5', init, [
+        [move('left'),   checkScreen('screen_4')],
+        [move('left'),   checkScreen('screen_1')],
+        [move('right'),  checkScreen('screen_4')],
+        [move('right'),  checkScreen('screen_1')]
+    ]);
+    t.addTestsSerial('Routing6', init, [
+        [move('left'),   checkScreen('screen_4')],
+        [move('top'),    checkScreen('screen_3')],
+        [move('top'),    checkScreen('screen_2')],
+        [move('top'),    checkScreen('screen_4')],
+        [move('left'),   checkScreen('screen_1')]
+    ]);
+
     t.start(initEach);
 });

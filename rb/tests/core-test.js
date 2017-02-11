@@ -1,4 +1,6 @@
 define(['../js/main', './testsWrapper'], function(rb, TestsWrapper) {
+    'use strict';
+
     function count(elem, length) {
         var res = $(elem).length === length;
         expect(res).toBe(true);
@@ -22,15 +24,28 @@ define(['../js/main', './testsWrapper'], function(rb, TestsWrapper) {
             return initMarkup === niceMarkup;
         };
     }
+    function move(side) {
+        return function (done) {
+            var rb1 = rb.Instances.rb1;
+            rb1.move(side).then(done);
+        }
+    }
 
-
+    function checkError(correctError) {
+        return function (error) {
+            if (!error) return true;
+            return error instanceof correctError;
+        };
+    }
 
     return {
         count: count,
         checkScreen: checkScreen,
         checkMarkup: checkMarkup,
+        checkError: checkError,
         nop: nop,
         nopDone: nopDone,
+        move: move,
         TestsWrapper: TestsWrapper
     };
 });

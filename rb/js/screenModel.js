@@ -1,21 +1,17 @@
 define([], function() {
     "use strict";
 
-    function Screen(html, children, isPermanent, isDirectedGraph, doChildrenCyclic, doParentsCyclic) {
+    function Screen(html, children, parents, isPermanent, isDirectedGraph, doChildrenCyclic, doParentsCyclic) {
         if (!Screen._mainScreenSetted) {
             Screen._mainScreen = this;
         }
 
-        this._parents = [];
-        this._next = null;
-        this._prev = null;
-        this._id = 'screen_' + Screen._length++;
-
         if (Array.isArray(html)) {
-            doParentsCyclic = html[4];
-            doChildrenCyclic = html[4];
-            isDirectedGraph = html[3];
-            isPermanent = html[2];
+            doParentsCyclic = html[6];
+            doChildrenCyclic = html[5];
+            isDirectedGraph = html[4];
+            isPermanent = html[3];
+            parents = html[2];
             children = html[1];
             html = html[0];
         } else if (typeof html === 'object') {
@@ -23,26 +19,48 @@ define([], function() {
             doChildrenCyclic = html.doChildrenCyclic;
             isDirectedGraph = html.isDirectedGraph;
             isPermanent = html.isPermanent;
+            parents = html.parents;
             children = html.children;
             html = html.html;
         } else if (typeof html !== 'string') {
             html = '';
         }
 
+        if (isPermanent === undefined) {
+            isPermanent = Screen.isPermanent;
+        }
+        if (isDirectedGraph === undefined) {
+            isDirectedGraph = Screen.isDirectedGraph;
+        }
         if (doChildrenCyclic === undefined) {
-            doChildrenCyclic = true;
+            doChildrenCyclic = Screen.doChildrenCyclic;
         }
         if (doParentsCyclic === undefined) {
-            doParentsCyclic = true;
+            doParentsCyclic = Screen.doParentsCyclic;
         }
 
+        this._id = 'screen_' + Screen._length++;
         this.html = html; // TODO на изменение html изменять элементы
         this.setChildren(children);
+        this.setParents(parents);
         this._temporary = !isPermanent; // Todo на изменение тут менять и там где используется
         this._isDirectedGraph = !!isDirectedGraph; // Todo на изменение тут менять и там где используется
         this.doChildrenCyclic(doChildrenCyclic);
         this.doParentsCyclic(doParentsCyclic);
     }
+    Screen.configure = function(config) {
+        Screen.isPermanent = config.isPermanent;
+        Screen.isDirectedGraph = config.isDirectedGraph;
+        Screen.doChildrenCyclic = config.doChildrenCyclic;
+        Screen.doParentsCyclic = config.doParentsCyclic;
+    };
+    Screen.configure({
+        isPermanent: false,
+        isDirectedGraph: false,
+        doChildrenCyclic: true,
+        doParentsCyclic: true
+    });
+
     Screen.prototype.toString = function() {
         return this._id;
     };

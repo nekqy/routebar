@@ -53,15 +53,28 @@
 }
 .rb__arrow-container {
     position: absolute;
-    opacity: 0;
+    opacity: 0.5;
     background: white;
     overflow: hidden;
     transition: opacity 0.5s ease;
 }
 .rb__arrow-container:hover {
-    opacity: 0.5;
+    opacity: 1;
 }
 .rb__arrow-container:active {
+    transform: scale(1.2);
+}
+.rb__arrow-container-hover {
+    position: absolute;
+    opacity: 0;
+    background: white;
+    overflow: hidden;
+    transition: opacity 0.5s ease;
+}
+.rb__arrow-container-hover:hover {
+    opacity: 0.5;
+}
+.rb__arrow-container-hover:active {
     transform: scale(1.2);
 }
 .rb__arrow-container_left {
@@ -91,6 +104,18 @@
     width: 100%;
     height: 50px;
     background: linear-gradient(to top, rgba(255,255,255,255), rgba(255,255,255,0));
+}
+.rb__arrow-container_left {
+    left: -50px;
+}
+.rb__arrow-container_top {
+    top: -50px;
+}
+.rb__arrow-container_right {
+    right: -50px;
+}
+.rb__arrow-container_bottom {
+    bottom: -50px;
 }
 
 .rb__arrow {

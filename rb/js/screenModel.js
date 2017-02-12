@@ -6,6 +6,9 @@ define([], function() {
             Screen._mainScreen = this;
         }
 
+        this._children = [];
+        this._parents = [];
+
         if (Array.isArray(html)) {
             doParentsCyclic = html[6];
             doChildrenCyclic = html[5];

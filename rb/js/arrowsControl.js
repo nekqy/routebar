@@ -10,17 +10,27 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
             throw new Error('KeydownControl module - init - wrong actionFn arg: ' + actionFn);
         }
         this._isEnable = false;
-        this._mainDiv = mainDiv;
+        this._mainDiv = mainDiv.parent();
         this._actionFn = actionFn;
         this._afterRender = afterRender;
     }
     Utils.inherite(ArrowsControl, IPlugin);
     ArrowsControl.prototype.configure = function(config) {
         if (typeof config === 'object') {
-            if (config.hideTime !== undefined) {
-                this._hideTime = config.hideTime;
+            if (config.hideArrowsTime !== undefined) {
+                this._hideArrowsTime = config.hideArrowsTime;
+            }
+            if (config.showArrowsOutside !== undefined) {
+                this._showArrowsOutside = config.showArrowsOutside;
+            }
+            if (config.showArrowsOnHover !== undefined) {
+                this._showArrowsOnHover = config.showArrowsOnHover;
+            }
+            if (config.hideArrowsAfterTime !== undefined) {
+                this._hideArrowsAfterTime = config.hideArrowsAfterTime;
             }
         }
+        this._containerClass = (this._showArrowsOnHover ? 'rb__arrow-container-hover' : 'rb__arrow-container');
     };
 
     ArrowsControl.prototype.isEnable = function() {
@@ -32,6 +42,8 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
 
         var self = this;
         var mouseEnterHandler = function(e) {
+            if (!self._hideArrowsAfterTime) return;
+
             var arrow = $(e.currentTarget),
                 $body = $('body'),
                 arrowOffset = arrow.offset(),
@@ -65,10 +77,12 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
             }
 
             if (arrow.length) {
-                arrow[0].hideArrowId = setTimeout(hideArrow, self._hideTime);
+                arrow[0].hideArrowId = setTimeout(hideArrow, self._hideArrowsTime);
             }
         };
         var mouseLeaveHandler = function(e) {
+            if (!self._hideArrowsAfterTime) return;
+
             var arrow = $(e.currentTarget);
             clearTimeout(arrow[0].hideArrowId);
         };
@@ -78,26 +92,24 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
             mouseLeaveHandler(e);
             self._afterRender.add(mouseEnterHandler.bind(undefined, e), true);
 
-            self._actionFn(arrow, ['left', 'top', 'right', 'bottom'], function(container, defValue) {
+            self._actionFn(arrow, Utils.sides, function(container, defValue) {
                 return container.is('.rb__arrow-container_' + defValue);
             });
         };
 
-        this._mainDiv.append($(
-            '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_left">' +
-            '<div class="rb__arrow rb__arrow_left"></div>' +
-            '</div>' +
-            '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_top">' +
-            '<div class="rb__arrow rb__arrow_top"></div>' +
-            '</div>' +
-            '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_right">' +
-            '<div class="rb__arrow rb__arrow_right"></div>' +
-            '</div>' +
-            '<div class="rb__arrow-container rb__arrow-cursor rb__arrow-container_bottom">' +
-            '<div class="rb__arrow rb__arrow_bottom"></div>'
-        ));
+        var markup = '';
+        Utils.sides.forEach(function(side) {
+            markup += '<div class="' +
+                self._containerClass +
+                ' rb__arrow-cursor rb__arrow-container_' + side + '' +
+                (self._showArrowsOutside ? (' rb__arrow-outside_' + side) : '') +
+                '">' +
+                '<div class="rb__arrow rb__arrow_' + side + '"></div>' +
+                '</div>';
+        });
+        this._mainDiv.append($(markup));
 
-        var $rbArrowContainer = this._mainDiv.find('.rb__arrow-container');
+        var $rbArrowContainer = this._mainDiv.find('.' + this._containerClass);
 
         $rbArrowContainer.on('click', clickHandler);
         $rbArrowContainer.on('mouseenter', mouseEnterHandler);
@@ -112,7 +124,7 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
     ArrowsControl.prototype.disable = function() {
         if (!this._isEnable) return;
 
-        var $rbArrowContainer = this._mainDiv.find('.rb__arrow-container');
+        var $rbArrowContainer = this._mainDiv.find('.' + this._containerClass);
         for (var i = 0; i < $rbArrowContainer.length; i++) {
             clearTimeout($rbArrowContainer[i].hideArrowId);
         }
@@ -123,7 +135,7 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         this._mouseEnterHandler = null;
         this._mouseLeaveHandler = null;
 
-        this._mainDiv.find('.rb__arrow-container').remove();
+        this._mainDiv.find('.' + this._containerClass).remove();
 
         this._isEnable = false;
     };

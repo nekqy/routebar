@@ -42,6 +42,8 @@ define([], function() {
     }
 
     return {
+        sides:  ['left', 'top', 'right', 'bottom'],
+        sidesWithCenter:  ['center', 'left', 'top', 'right', 'bottom'],
         oppositeSide: oppositeSide,
         getStartSide: getStartSide,
         capitalizeFirstLetter: capitalizeFirstLetter,

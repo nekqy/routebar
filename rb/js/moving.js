@@ -2,7 +2,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
     Errors, IPlugin, ScreenModel, Animation, ScreenManager, BaseDispatcher, ControlManager, SwipesControl, ArrowsControl, KeydownControl, ElementsPool, Utils) {
     "use strict";
 
-    var sides = ['center', 'left', 'top', 'right', 'bottom'];
+    var sides = Utils.sidesWithCenter;
 
     function Moving(mainDiv, startScreen) {
         if (mainDiv instanceof $) {
@@ -20,11 +20,11 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         this._controlManager = new ControlManager();
         if (Utils.isMobile) {
             this._controlManager
-                .add('swipes', new SwipesControl(mainDiv,this._moveByActionValue.bind(this)), true);
+                .add('swipes', new SwipesControl(mainDiv,this._moveByActionValue.bind(this)));
         } else {
             this._controlManager
-                .add('arrows', new ArrowsControl(mainDiv, this._moveByActionValue.bind(this), this.afterRenderDispatcher), true)
-                .add('keyboard', new KeydownControl(mainDiv, this._moveByActionValue.bind(this)), true);
+                .add('arrows', new ArrowsControl(mainDiv, this._moveByActionValue.bind(this), this.afterRenderDispatcher))
+                .add('keyboard', new KeydownControl(mainDiv, this._moveByActionValue.bind(this)));
         }
 
         this._plugins = [];
@@ -32,6 +32,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
 
         this._loadingPromise = this.setScreen(startScreen || ScreenModel.getMainScreen(), false);
         this.resetConfig();
+        this._controlManager.enableAll();
         //if (mainDiv.length) {
         //    mainDiv[0].moving = this;
         //}
@@ -53,7 +54,10 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             wrongEasing1: 'easeInExpo',
             wrongEasing2: 'easeOutElastic',
             correctEasing: 'easeOutExpo',
-            hideTime: 2000,
+            hideArrowsAfterTime: true,
+            hideArrowsTime: 2000,
+            showArrowsOutside: true,
+            showArrowsOnHover: true,
             loadingHtml: '<div class="rb__loading_wrapper"><div class="cssload-loader"></div></div>',
             //http://www.javascripter.net/faq/keycodes.htm
             //https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes

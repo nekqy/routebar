@@ -58,7 +58,7 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
         if (!(screen instanceof Screen)) {
             throw new Error('ScreenManager module - _getRelativeScreenByScreen - wrong baseScreen arg');
         }
-        if (side !== 'left' && side !== 'top' && side !== 'right' && side !== 'bottom' &&  side !== 'center') {
+        if (Utils.sidesWithCenter.indexOf(side) === -1) {
             throw new Error('ScreenManager module - _getRelativeScreenByScreen - wrong side arg: ' + side);
         }
 
@@ -101,7 +101,7 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
         return null;
     };
     ScreenManager.prototype._setRelativeScreen = function(baseScreen, side, screen) {
-        if (side !== 'left' && side !== 'top' && side !== 'right' && side !== 'bottom') {
+        if (Utils.sides.indexOf(side) === -1) {
             throw new Error('ScreenManager module - _setRelativeScreen - wrong side arg: ' + side);
         }
         if (!(baseScreen instanceof Screen)) {

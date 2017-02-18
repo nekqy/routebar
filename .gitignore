@@ -1,10 +1,4 @@
-.idea/.name
-.idea/encodings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/rb-nekqy.iml
-.idea/vcs.xml
-.idea/workspace.xml
+.idea
+tmp
 rb/dist
 rb/node_modules
-Tests.xml

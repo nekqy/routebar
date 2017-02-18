@@ -13,7 +13,12 @@ module.exports = {
     module: {
         loaders: [
             { test: /\.css$/, loader: "style!css" }
-        ]
+        ],
+        postLoaders: [{
+            test: /\.js$/,
+            exclude: /(test|node_modules)\//,
+            loader: 'istanbul-instrumenter'
+        }]
     },
     resolve: { // как ищутся модули
         modulesDirectories: [ // если путь неотносительный, где искать

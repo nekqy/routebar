@@ -6,9 +6,9 @@ module.exports = function(config) {
     config.set({
         frameworks: ['jasmine'],
 
-        reporters: ['spec'],
+        reporters: ['dots', 'progress', 'coverage'],
         port: 9876,
-        colors: false,
+        colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
         browsers: ['Chrome'],
@@ -20,7 +20,6 @@ module.exports = function(config) {
             'tests/**/*.spec.js'
         ],
         preprocessors: {
-            'js/**/*.js': ['webpack'],
             'tests/**/*.spec.js': ['webpack']
         },
 
@@ -32,9 +31,21 @@ module.exports = function(config) {
         plugins: [
             webpack,
             'karma-jasmine',
-            'karma-spec-reporter',
-            'karma-chrome-launcher'
-        ]
-
+            'karma-chrome-launcher',
+            'karma-coverage',
+            'karma-sourcemap-loader'
+        ],
+        // конфигурация репортов о покрытии кода тестами
+        coverageReporter: {
+            dir:'tmp/coverage/',
+            reporters: [
+                { type:'html', subdir: 'report-html' },
+                { type:'lcov', subdir: 'report-lcov' }
+            ],
+            instrumenterOptions: {
+                istanbul: { noCompact:true }
+            },
+            includeAllSources: true
+        }
     });
 };

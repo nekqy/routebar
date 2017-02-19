@@ -30,8 +30,8 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         this._plugins = [];
         //SmartResizer(mainDiv, mainDiv.width(), mainDiv.height());
 
-        this._loadingPromise = this.setScreen(startScreen || ScreenModel.getMainScreen(), false);
         this.resetConfig();
+        this._loadingPromise = this.setScreen(startScreen || ScreenModel.getMainScreen(), false);
         this._controlManager.enableAll();
         //if (mainDiv.length) {
         //    mainDiv[0].moving = this;
@@ -58,7 +58,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             hideArrowsTime: 2000,
             showArrowsOutside: true,
             showArrowsOnHover: true,
-            loadingHtml: '<div class="rb__loading_wrapper"><div class="cssload-loader"></div></div>',
+            loadingHtml: '<div class="rb__loading_wrapper"><div class="rb__loader"></div></div>',
             //http://www.javascripter.net/faq/keycodes.htm
             //https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
             leftKey: [37, 'a'],
@@ -70,7 +70,32 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             showAdjacentScreens: true,
             saveHistoryInPool: false,
             pointersForSwipe: 1,
-            isDirectPath: true
+            isDirectPath: true,
+
+            cyclicStep: true,
+
+            getRight: function(screen) {
+                var childIndex = screen.defaultChildIndex();
+                return screen.getChild(childIndex);
+            },
+            getLeft: function(screen) {
+                var parentIndex = screen.defaultParentIndex();
+                return screen.getParent(parentIndex);
+            },
+            getTop: function(screen, cyclicStep) {
+                var parent = screen.getParent(0);
+                if (parent) {
+                    var index = parent.getChildIndex(screen);
+                    return parent.getChild(index - 1, cyclicStep);
+                }
+            },
+            getBottom: function(screen, cyclicStep) {
+                var parent = screen.getParent(0);
+                if (parent) {
+                    var index = parent.getChildIndex(screen);
+                    return parent.getChild(index + 1, cyclicStep);
+                }
+            }
         });
     };
 
@@ -86,7 +111,11 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         this._screenManager.configure(config);
         this._controlManager.configure(config);
 
-        config.loadingDiv = config.loadingHtml ? '<div class="rb__loading">' + config.loadingHtml + '</div>' : null;
+        if (config.loadingHtml) {
+            config.loadingDiv = '<div class="rb__loading">' + config.loadingHtml + '</div>';
+        } else if (typeof config.loadingHtml !== 'undefined') {
+            config.loadingDiv = '';
+        }
 
         this.beforeMoveDispatcher.configure(config);
         this.beforeRenderDispatcher.configure(config);
@@ -95,6 +124,21 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         if (typeof config === 'object') {
             if (config.lockControls !== undefined) {
                 this._lockControls = config.lockControls;
+            }
+            if (config.cyclicStep !== undefined) {
+                this._cyclicStep = config.cyclicStep;
+            }
+            if (config.getLeft !== undefined) {
+                this._getLeft = config.getLeft;
+            }
+            if (config.getRight !== undefined) {
+                this._getRight = config.getRight;
+            }
+            if (config.getTop !== undefined) {
+                this._getTop = config.getTop;
+            }
+            if (config.getBottom !== undefined) {
+                this._getBottom = config.getBottom;
             }
         }
     };
@@ -181,10 +225,9 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
     Moving.prototype.moveBack = function() {
         var lastStep = this._screenManager.popHistory();
         if (lastStep) {
-            this.move(lastStep.side, lastStep.screen, false);
-            return true;
+            return this.move(lastStep.side, lastStep.screen, false);
         }
-        return false;
+        return null;
     };
     Moving.prototype.animateWrongSide = function(side) {
         return this._animation.goToWrongSide(side);
@@ -241,7 +284,6 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         this._mainDiv.find('.rb__fake-element').focus();
     };
 
-
     Moving.prototype.goToScreen = function(screen) {
         function firstStep(path) {
             return new Promise(function(resolve, reject) {
@@ -273,9 +315,9 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 side = 'right';
             } else if (curScreen._parents.indexOf(nextScreen) !== -1) {
                 side = 'left';
-            } else if (curScreen._next === nextScreen) {
+            } else if (self._getBottom(curScreen, self._cyclicStep) === nextScreen) {
                 side = 'bottom';
-            } else if (curScreen._prev === nextScreen) {
+            } else if (self._getTop(curScreen, self._cyclicStep) === nextScreen) {
                 side = 'top';
             } else {
                 self._controlManager.enableByValues(locks);

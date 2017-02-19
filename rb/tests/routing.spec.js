@@ -4,6 +4,8 @@ define(['./core-test', '../js/main'], function(core, rb) {
     var screen_1, screen_2, screen_3, screen_4;
     var checkScreen = core.checkScreen;
     var move = core.move;
+    var moveBack = core.moveBack;
+    var configure = core.configure;
 
     function initEach() {
         window.rb = rb;
@@ -20,16 +22,25 @@ define(['./core-test', '../js/main'], function(core, rb) {
 
         $('body').append('<div id="rb1" class="rb-wrapper"></div>');
     }
-    function init() {
+    function init(opts) {
         screen_1.setChildren([screen_2, screen_3, screen_4]);
         screen_4.setChildren([screen_1]);
 
-        var rb1 = rb.Instances.rb1;
-        rb1.configure({
+        var options = {
             wrongTime1: 5,
             wrongTime2: 5,
             correctTime: 10
-        });
+        };
+        if (typeof opts === 'object') {
+            for (var prop in opts) {
+                if (opts.hasOwnProperty(prop)) {
+                    options[prop] = opts[prop];
+                }
+            }
+        }
+
+        var rb1 = rb.Instances.rb1;
+        rb1.configure(options);
     }
 
     var t = new core.TestsWrapper('Routing1');
@@ -40,7 +51,28 @@ define(['./core-test', '../js/main'], function(core, rb) {
         [move('bottom'), checkScreen('screen_3')],
         [move('right'),  checkScreen('screen_3')],
         [move('bottom'), checkScreen('screen_4')],
-        [move('right'),  checkScreen('screen_1')]
+        [move('right'),  checkScreen('screen_1')],
+        [moveBack(),     checkScreen('screen_4')],
+        [moveBack(),     checkScreen('screen_3')], // todo сейчас откат идет на предыдущий скрин, а не предыдущего шага
+        [moveBack(),     checkScreen('screen_3')], // todo прочекать то же но с опцией cyclicStep
+        [moveBack(),     checkScreen('screen_2')],
+        [moveBack(),     checkScreen('screen_2')],
+        [moveBack(),     checkScreen('screen_1')],
+        [moveBack(),     checkScreen('screen_1')],
+        [moveBack(),     checkScreen('screen_1')],
+        [moveBack(),     checkScreen('screen_1')],
+        [configure({maxHistoryLength: 2}), checkScreen('screen_1')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('bottom'), checkScreen('screen_3')],
+        [move('bottom'), checkScreen('screen_4')],
+        [moveBack(),     checkScreen('screen_3')],
+        [moveBack(),     checkScreen('screen_2')],
+        [moveBack(),     checkScreen('screen_2')],
+        [configure({maxHistoryLength: 0}), checkScreen('screen_2')],
+        [move('bottom'), checkScreen('screen_3')],
+        [move('bottom'), checkScreen('screen_4')],
+        [moveBack(),     checkScreen('screen_4')],
+        [moveBack(),     checkScreen('screen_4')]
     ]);
     t.addTestsSerial('test2', init, [
         [move('right'),  checkScreen('screen_2')],

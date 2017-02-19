@@ -30,6 +30,49 @@ define(['../js/main', './testsWrapper'], function(rb, TestsWrapper) {
             rb1.move(side).then(done);
         }
     }
+    function moveBack() {
+        return function (done) {
+            var rb1 = rb.Instances.rb1;
+            var res = rb1.moveBack();
+            if (res) {
+                res.then(done);
+            } else {
+                done();
+            }
+        }
+    }
+    function configure(config) {
+        return function (done) {
+            var rb1 = rb.Instances.rb1;
+            rb1.configure(config);
+            done();
+        }
+    }
+    function setScreen(screen, isSaveHistory) {
+        return function (done) {
+            var rb1 = rb.Instances.rb1;
+            rb1.setScreen(screen, isSaveHistory).then(done);
+        }
+    }
+    function reload(side) {
+        return function (done) {
+            var rb1 = rb.Instances.rb1;
+            rb1.reload(side);
+            done();
+        }
+    }
+    function goToScreen(screen, correctErr) {
+        return function (done) {
+            var rb1 = rb.Instances.rb1;
+            rb1.goToScreen(screen).then(done, function(err) {
+                if (correctErr) {
+                    console.error(err);
+                    expect(err instanceof correctErr).toBe(true);
+                }
+                done();
+            });
+        }
+    }
 
     function checkError(correctError) {
         return function (error) {
@@ -46,6 +89,11 @@ define(['../js/main', './testsWrapper'], function(rb, TestsWrapper) {
         nop: nop,
         nopDone: nopDone,
         move: move,
+        moveBack: moveBack,
+        configure: configure,
+        setScreen: setScreen,
+        reload: reload,
+        goToScreen: goToScreen,
         TestsWrapper: TestsWrapper
     };
 });

@@ -21,6 +21,22 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
             if (config.isDirectPath !== undefined) {
                 this._isDirectPath = config.isDirectPath;
             }
+1            if (config.cyclicStep !== undefined) {
+                this._cyclicStep = config.cyclicStep;
+            }
+            if (config.getLeft !== undefined) {
+                this._getLeft = config.getLeft;
+            }
+            if (config.getRight !== undefined) {
+                this._getRight = config.getRight;
+            }
+            if (config.getTop !== undefined) {
+                this._getTop = config.getTop;
+            }
+            if (config.getBottom !== undefined) {
+                this._getBottom = config.getBottom;
+            }
+
         }
     };
 
@@ -71,32 +87,32 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
             return screen;
         }
         if (side === 'left') {
-            if (screen._parents.length) {
-                return this._relativeScreens[id]['left'] || screen._parents[0];
-            } else {
-                return null;
-            }
+            //if (screen._parents.length) {
+                return this._relativeScreens[id]['left'] || this._getLeft(screen);
+            //} else {
+            //    return null;
+            //}
         }
         if (side === 'top') {
-            if (screen._prev) {
-                return this._relativeScreens[id]['top'] || screen._prev;
-            } else {
-                return null;
-            }
+            //if (screen._prev) {
+                return this._relativeScreens[id]['top'] || this._getTop(screen, this._cyclicStep);
+            //} else {
+            //    return null;
+            //}
         }
         if (side === 'right') {
-            if (screen._children.length) {
-                return this._relativeScreens[id]['right'] || screen._children[0];
-            } else {
-                return null;
-            }
+            //if (screen._children.length) {
+                return this._relativeScreens[id]['right'] || this._getRight(screen);
+            //} else {
+            //    return null;
+            //}
         }
         if (side === 'bottom') {
-            if (screen._next) {
-                return this._relativeScreens[id]['bottom'] || screen._next;
-            } else {
-                return null;
-            }
+            //if (screen._next) {
+                return this._relativeScreens[id]['bottom'] || this._getBottom(screen, this._cyclicStep);
+            //} else {
+            //    return null;
+            //}
         }
         return null;
     };
@@ -128,16 +144,16 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
             this._relativeScreens[id] = {};
         }
 
-        if (!screen._children.length) {
+        if (!this._getRight(screen)) {
             this._relativeScreens[id]['right'] = null;
         }
-        if (!screen._parents.length) {
+        if (!this._getLeft(screen)) {
             this._relativeScreens[id]['left'] = null;
         }
-        if (!screen._next) {
+        if (!this._getBottom(screen, this._cyclicStep)) {
             this._relativeScreens[id]['bottom'] = null;
         }
-        if (!screen._prev) {
+        if (!this._getTop(screen, this._cyclicStep)) {
             this._relativeScreens[id]['top'] = null;
         }
     };
@@ -188,7 +204,10 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
                     adjacentNodes;
 
                 if (self._isDirectPath) {
-                    adjacentNodes = node && node._children.concat(node._parents).concat(node._next).concat(node._prev) || [];
+                    adjacentNodes = node && node._children
+                            .concat(node._parents)
+                            .concat(self._getRelativeScreenByScreen(node, 'top'))
+                            .concat(self._getRelativeScreenByScreen(node, 'bottom')) || [];
                 } else {
                     adjacentNodes = node && [self._getRelativeScreenByScreen(node, 'left'),
                             self._getRelativeScreenByScreen(node, 'top'),

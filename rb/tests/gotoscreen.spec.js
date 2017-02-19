@@ -3,6 +3,8 @@ define(['./core-test', '../js/main', '../js/errors'], function(core, rb, Errors)
 
     var screens;
     var checkScreen = core.checkScreen;
+    var _goToScreen = core.goToScreen;
+    var configure = core.configure;
 
     function initEach(opts) {
         window.rb = rb;
@@ -45,15 +47,8 @@ define(['./core-test', '../js/main', '../js/errors'], function(core, rb, Errors)
 
     function goToScreen(i, correctErr) {
         return function (done) {
-            var rb1 = rb.Instances.rb1;
-            rb1.goToScreen(screens[i]).then(done, function(err) {
-                if (correctErr) {
-                    console.error(err);
-                    expect(err instanceof correctErr).toBe(true);
-                }
-                done();
-            });
-        }
+            return _goToScreen(screens[i], correctErr)(done);
+        };
     }
 
     var t = new core.TestsWrapper('GoToScreen1');

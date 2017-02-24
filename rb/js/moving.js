@@ -76,7 +76,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
 
             getRight: function(screen) {
                 var childIndex = screen.defaultChildIndex();
-1                //this._lastScreen = screen;
+                //this._lastScreen = screen;
                 //this._lastSide = 'right';
                 return screen.getChild(childIndex);
             },

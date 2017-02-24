@@ -62,12 +62,23 @@ define(['errors'], function(Errors) {
         return this._defaultParentIndex;
     };
 
-    Screen.prototype._addScreen = function(screen, arr, oppositeArr) {
+    Screen.prototype._addScreen = function(screen, isChild) {
+        var arr = isChild ? this._children : this._parents,
+            index = this._getScreenIndex(screen, arr);
+        if (index !== -1) {
+            return;
+        }
+        if (isChild) {
+            this._children.push(screen);
+            screen._parents.push(this);
+        } else {
+            this._parents.push(screen);
+            screen._children.push(this);
+        }
         if (!this._isDirectedGraph) {
-            oppositeArr.push(this);
+            screen._addScreen(this, isChild);
         }
 
-        arr.push(screen);
         Screen._runRelativeUpdateFn(this);
         return this;
     };
@@ -103,18 +114,30 @@ define(['errors'], function(Errors) {
         }
         return index;
     };
-    Screen.prototype._removeScreen = function(screen, arr, cyclic) {
-        var index = this._getScreenIndex(screen, arr, cyclic);
+    Screen.prototype._removeScreen = function(screen, isChild, cyclic) {
+        var arr = isChild ? this._children : this._parents,
+            index = this._getScreenIndex(screen, arr, cyclic);
 
         if (index !== -1) {
-            arr.splice(index, 1);
+            var removed = arr.splice(index, 1)[0];
+        } else {
+            return;
         }
+        if (isChild) {
+            removed.removeParent(this);
+        } else {
+            removed.removeChild(this);
+        }
+        if (!this._isDirectedGraph) {
+            removed._removeScreen(this, isChild);
+        }
+
         Screen._runRelativeUpdateFn(this);
         return this;
     };
 
     Screen.prototype.pushChild = function(child) {
-        return this._addScreen(child, this._children, child._parents);
+        return this._addScreen(child, true);
     };
     Screen.prototype.getChildIndex = function(child, cyclic) {
         return this._getScreenIndex(child, this._children, cyclic);
@@ -123,8 +146,8 @@ define(['errors'], function(Errors) {
         var index = this.getChildIndex(child, cyclic);
         return this._children[index];
     };
-    Screen.prototype.removeChild = function(child) {
-        return this._removeScreen(child, this._children);
+    Screen.prototype.removeChild = function(child, cyclic) {
+        return this._removeScreen(child, true, cyclic);
     };
     Screen.prototype.pushChildren = function(children) {
         if (children && Array.isArray(children)) {
@@ -139,13 +162,15 @@ define(['errors'], function(Errors) {
         return this.clearChildren().pushChildren(children);
     };
     Screen.prototype.clearChildren = function() {
-        this._children = [];
+        for (var i = this._children; i >= 0; i--) {
+            this.removeChild(this._children[i]);
+        }
         Screen._runRelativeUpdateFn(this);
         return this;
     };
 
     Screen.prototype.pushParent = function(parent) {
-        return this._addScreen(parent, this._parents, parent._children);
+        return this._addScreen(parent, false);
     };
     Screen.prototype.getParentIndex = function(parent, cyclic) {
         return this._getScreenIndex(parent, this._parents, cyclic);
@@ -154,8 +179,8 @@ define(['errors'], function(Errors) {
         var index = this.getParentIndex(parent, cyclic);
         return this._parents[index];
     };
-    Screen.prototype.removeParent = function(parent) {
-        return this._removeScreen(parent, this._parents);
+    Screen.prototype.removeParent = function(parent, cyclic) {
+        return this._removeScreen(parent, false, cyclic);
     };
     Screen.prototype.pushParents = function(parents) {
         if (parents && Array.isArray(parents)) {
@@ -170,7 +195,9 @@ define(['errors'], function(Errors) {
         return this.clearParents().pushParents(parents);
     };
     Screen.prototype.clearParents = function() {
-        this._parents = [];
+        for (var i = this._parents; i >= 0; i--) {
+            this.removeParent(this._parents[i]);
+        }
         Screen._runRelativeUpdateFn(this);
         return this;
     };
@@ -183,7 +210,7 @@ define(['errors'], function(Errors) {
     };
     Screen.configure({
         isPermanent: false,
-        isDirectedGraph: false,
+        isDirectedGraph: true,
         defaultChildIndex: 0,
         defaultParentIndex: 0
     });

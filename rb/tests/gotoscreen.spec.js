@@ -67,7 +67,8 @@ define(['./core-test', '../js/main', '../js/errors'], function(core, rb, Errors)
         [goToScreen(1), checkScreen('screen_2')],
         [goToScreen(5), checkScreen('screen_6')],
         [goToScreen(9, Errors.PathNotFoundError), checkScreen('screen_6')],
-        [goToScreen(0, Errors.PathNotFoundError), checkScreen('screen_6')]
+        [goToScreen(0), checkScreen('screen_1')]
+        //[goToScreen(0, Errors.PathNotFoundError), checkScreen('screen_6')] потому что ищем в парентах
     ]);
     t2.start(initEach.bind(undefined, {
         isDirectedGraph: true
@@ -88,8 +89,10 @@ define(['./core-test', '../js/main', '../js/errors'], function(core, rb, Errors)
     t4.addTestsSerial('GoToScreen4', init1.bind(undefined, true), [
         [goToScreen(1), checkScreen('screen_2')],
         [goToScreen(5), checkScreen('screen_6')],
-        [goToScreen(9, Errors.PathNotFoundError), checkScreen('screen_6')],
-        [goToScreen(0, Errors.PathNotFoundError), checkScreen('screen_6')]
+        [goToScreen(9), checkScreen('screen_10')],
+        [goToScreen(0), checkScreen('screen_1')]
+        //[goToScreen(9, Errors.PathNotFoundError), checkScreen('screen_6')], потому что ищем в парентах
+        //[goToScreen(0, Errors.PathNotFoundError), checkScreen('screen_6')] потому что ищем в парентах
     ]);
     t4.start(initEach.bind(undefined, {
         isDirectedGraph: true

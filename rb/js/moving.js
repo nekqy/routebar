@@ -76,23 +76,45 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
 
             getRight: function(screen) {
                 var childIndex = screen.defaultChildIndex();
+1                //this._lastScreen = screen;
+                //this._lastSide = 'right';
                 return screen.getChild(childIndex);
             },
             getLeft: function(screen) {
                 var parentIndex = screen.defaultParentIndex();
+                //this._lastScreen = screen;
+                //this._lastSide = 'left';
                 return screen.getParent(parentIndex);
             },
             getTop: function(screen, cyclicStep) {
+                var index;
+                if (this._lastSide === 'left') {
+                    index = this._lastScreen.getParentIndex(screen);
+                    return this._lastScreen.getParent(index - 1, cyclicStep);
+                }
+                if (this._lastSide === 'right') {
+                    index = this._lastScreen.getChildIndex(screen);
+                    return this._lastScreen.getChild(index - 1, cyclicStep);
+                }
                 var parent = screen.getParent(0);
                 if (parent) {
-                    var index = parent.getChildIndex(screen);
+                    index = parent.getChildIndex(screen);
                     return parent.getChild(index - 1, cyclicStep);
                 }
             },
             getBottom: function(screen, cyclicStep) {
+                var index;
+                if (this._lastSide === 'left') {
+                    index = this._lastScreen.getParentIndex(screen);
+                    return this._lastScreen.getParent(index + 1, cyclicStep);
+                }
+                if (this._lastSide === 'right') {
+                    index = this._lastScreen.getChildIndex(screen);
+                    return this._lastScreen.getChild(index + 1, cyclicStep);
+                }
                 var parent = screen.getParent(0);
                 if (parent) {
-                    var index = parent.getChildIndex(screen);
+                    index = parent.getChildIndex(screen);
                     return parent.getChild(index + 1, cyclicStep);
                 }
             }
@@ -124,21 +146,6 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         if (typeof config === 'object') {
             if (config.lockControls !== undefined) {
                 this._lockControls = config.lockControls;
-            }
-            if (config.cyclicStep !== undefined) {
-                this._cyclicStep = config.cyclicStep;
-            }
-            if (config.getLeft !== undefined) {
-                this._getLeft = config.getLeft;
-            }
-            if (config.getRight !== undefined) {
-                this._getRight = config.getRight;
-            }
-            if (config.getTop !== undefined) {
-                this._getTop = config.getTop;
-            }
-            if (config.getBottom !== undefined) {
-                this._getBottom = config.getBottom;
             }
         }
     };
@@ -185,6 +192,11 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                     isOk: true
                 }));
             } else if (sides.indexOf(side) !== -1) {
+                if (side === 'left' || side === 'right') {
+                    self._screenManager._lastSide = side;
+                    self._screenManager._lastScreen = self._screenManager.getCurScreen();
+                }
+
                 self._screenManager.updateScreens(side, undefined, isSaveHistory);
                 self._elementsPool.prepareSide();
 
@@ -311,13 +323,13 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 nextScreen = path[i+1],
                 side;
 
-            if (curScreen._children.indexOf(nextScreen) !== -1) {
-                side = 'right';
-            } else if (curScreen._parents.indexOf(nextScreen) !== -1) {
+            if (curScreen._parents.indexOf(nextScreen) !== -1) {
                 side = 'left';
-            } else if (self._getBottom(curScreen, self._cyclicStep) === nextScreen) {
+            } else if (curScreen._children.indexOf(nextScreen) !== -1) {
+                side = 'right';
+            } else if (self._screenManager._getBottom(curScreen, self._screenManager._cyclicStep) === nextScreen) {
                 side = 'bottom';
-            } else if (self._getTop(curScreen, self._cyclicStep) === nextScreen) {
+            } else if (self._screenManager._getTop(curScreen, self._screenManager._cyclicStep) === nextScreen) {
                 side = 'top';
             } else {
                 self._controlManager.enableByValues(locks);

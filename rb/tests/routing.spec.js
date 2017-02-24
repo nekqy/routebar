@@ -22,6 +22,33 @@ define(['./core-test', '../js/main'], function(core, rb) {
 
         $('body').append('<div id="rb1" class="rb-wrapper"></div>');
     }
+    function initEach2() {
+        window.rb = rb;
+
+        var mainMarkup = '<div class="mainMarkup">mainMarkup</div>';
+        var firstMarkup = '<div class="firstMarkup">firstMarkup</div>';
+        var secondMarkup = '<div class="secondMarkup">secondMarkup</div>';
+        var thirdMarkup = '<div class="thirdMarkup">thirdMarkup</div>';
+        screen_1 = new rb.Screen({
+            html: mainMarkup,
+            isDirectedGraph: false
+        });
+        screen_2 = new rb.Screen({
+            html: firstMarkup,
+            isDirectedGraph: false
+        });
+        screen_3 = new rb.Screen({
+            html: secondMarkup,
+            isDirectedGraph: false
+        });
+        screen_4 = new rb.Screen({
+            html: thirdMarkup,
+            isDirectedGraph: false
+        });
+        rb.Screen.setMainScreen(screen_1);
+
+        $('body').append('<div id="rb1" class="rb-wrapper"></div>');
+    }
     function init(opts) {
         screen_1.setChildren([screen_2, screen_3, screen_4]);
         screen_4.setChildren([screen_1]);
@@ -54,10 +81,7 @@ define(['./core-test', '../js/main'], function(core, rb) {
         [move('right'),  checkScreen('screen_1')],
         [moveBack(),     checkScreen('screen_4')],
         [moveBack(),     checkScreen('screen_3')], // todo сейчас откат идет на предыдущий скрин, а не предыдущего шага
-        [moveBack(),     checkScreen('screen_3')], // todo прочекать то же но с опцией cyclicStep
-        [moveBack(),     checkScreen('screen_2')],
-        [moveBack(),     checkScreen('screen_2')],
-        [moveBack(),     checkScreen('screen_1')],
+        [moveBack(),     checkScreen('screen_2')], // todo прочекать то же но без опции cyclicStep
         [moveBack(),     checkScreen('screen_1')],
         [moveBack(),     checkScreen('screen_1')],
         [moveBack(),     checkScreen('screen_1')],
@@ -81,17 +105,17 @@ define(['./core-test', '../js/main'], function(core, rb) {
     ]);
     t.addTestsSerial('test3', init, [
         [move('left'),   checkScreen('screen_4')],
-        [move('top'),    checkScreen('screen_3')],
-        [move('right'),  checkScreen('screen_3')],
-        [move('top'),    checkScreen('screen_2')],
+        [move('top'),    checkScreen('screen_4')],// todo у 1 потомки 2,3,4. но мы идем в предка 4, и предок у  1 только один 4, гулять вверх вниз не можем
+        [move('right'),  checkScreen('screen_1')],
+        [move('top'),    checkScreen('screen_1')],
         [move('right'),  checkScreen('screen_2')],
         [move('left'),   checkScreen('screen_1')]
     ]);
     t.addTestsSerial('test4', init, [
         [move('left'),   checkScreen('screen_4')],
-        [move('bottom'), checkScreen('screen_2')],
-        [move('right'),  checkScreen('screen_2')],
-        [move('left'),   checkScreen('screen_1')]
+        [move('bottom'), checkScreen('screen_4')],
+        [move('right'),  checkScreen('screen_1')],
+        [move('left'),   checkScreen('screen_4')]
     ]);
     t.addTestsSerial('test5', init, [
         [move('left'),   checkScreen('screen_4')],
@@ -101,13 +125,74 @@ define(['./core-test', '../js/main'], function(core, rb) {
     ]);
     t.addTestsSerial('test6', init, [
         [move('left'),   checkScreen('screen_4')],
-        [move('top'),    checkScreen('screen_3')],
-        [move('top'),    checkScreen('screen_2')],
+        [move('top'),    checkScreen('screen_4')],
+        [move('top'),    checkScreen('screen_4')],
         [move('top'),    checkScreen('screen_4')],
         [move('left'),   checkScreen('screen_1')]
     ]);
 
     t.start(initEach);
+
+    var t3 = new core.TestsWrapper('Routing3');
+    t3.addTestsSerial('test1', init, [
+        [move('right'),  checkScreen('screen_2')],
+        [move('right'),  checkScreen('screen_1')],
+        [move('bottom'), checkScreen('screen_1')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('bottom'), checkScreen('screen_3')],
+        [move('right'),  checkScreen('screen_1')],
+        [moveBack(),     checkScreen('screen_3')],
+        [moveBack(),     checkScreen('screen_2')], // todo сейчас откат идет на предыдущий скрин, а не предыдущего шага
+        [moveBack(),     checkScreen('screen_1')], // todo прочекать то же но без опции cyclicStep
+        [moveBack(),     checkScreen('screen_2')],
+        [moveBack(),     checkScreen('screen_1')],
+        [moveBack(),     checkScreen('screen_1')],
+        [configure({maxHistoryLength: 2}), checkScreen('screen_1')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('bottom'), checkScreen('screen_3')],
+        [move('bottom'), checkScreen('screen_4')],
+        [moveBack(),     checkScreen('screen_3')],
+        [moveBack(),     checkScreen('screen_2')],
+        [moveBack(),     checkScreen('screen_2')],
+        [configure({maxHistoryLength: 0}), checkScreen('screen_2')],
+        [move('bottom'), checkScreen('screen_3')],
+        [move('bottom'), checkScreen('screen_4')],
+        [moveBack(),     checkScreen('screen_4')],
+        [moveBack(),     checkScreen('screen_4')]
+    ]);
+    t3.addTestsSerial('test2', init, [
+        [move('right'),  checkScreen('screen_2')],
+        [move('top'),    checkScreen('screen_4')],
+        [move('right'),  checkScreen('screen_1')]
+    ]);
+    t3.addTestsSerial('test3', init, [
+        [move('left'),   checkScreen('screen_2')], // потому что двусторонняя связь, и когде идем влево паренты 2,3,4 и по умолчанию тот что с индексом 0
+        [move('top'),    checkScreen('screen_4')], // todo почему циклично и как сделать нециклично
+        [move('right'),  checkScreen('screen_1')],
+        [move('top'),    checkScreen('screen_1')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('left'),   checkScreen('screen_1')]
+    ]);
+    t3.addTestsSerial('test4', init, [
+        [move('left'),   checkScreen('screen_2')],
+        [move('bottom'), checkScreen('screen_3')],
+        [move('right'),  checkScreen('screen_1')],
+        [move('left'),   checkScreen('screen_3')]
+    ]);
+    t3.addTestsSerial('test5', init, [
+        [move('left'),   checkScreen('screen_2')],
+        [move('left'),   checkScreen('screen_1')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('right'),  checkScreen('screen_1')]
+    ]);
+    t3.addTestsSerial('test6', init, [
+        [move('left'),   checkScreen('screen_2')],
+        [move('top'),    checkScreen('screen_4')],
+        [move('top'),    checkScreen('screen_3')],
+        [move('top'),    checkScreen('screen_2')],
+        [move('left'),   checkScreen('screen_1')]
+    ]);
+    t3.start(initEach2);
 
     function init2() {
         screen_1.setChildren([screen_2, screen_3]);

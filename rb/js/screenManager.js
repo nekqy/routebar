@@ -21,7 +21,7 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
             if (config.isDirectPath !== undefined) {
                 this._isDirectPath = config.isDirectPath;
             }
-1            if (config.cyclicStep !== undefined) {
+            if (config.cyclicStep !== undefined) {
                 this._cyclicStep = config.cyclicStep;
             }
             if (config.getLeft !== undefined) {
@@ -205,7 +205,7 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
 
                 if (self._isDirectPath) {
                     adjacentNodes = node && node._children
-                            .concat(node._parents)
+                            .concat(node._parents)// todo если оставить только children будет настоящий поиск в графе
                             .concat(self._getRelativeScreenByScreen(node, 'top'))
                             .concat(self._getRelativeScreenByScreen(node, 'bottom')) || [];
                 } else {

@@ -193,7 +193,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 }));
             } else if (sides.indexOf(side) !== -1) {
                 if (side === 'left' || side === 'right') {
-                    self._screenManager._lastSide = side;
+                    self._screenManager._lastSide = side; // todo надо инкапсулировать
                     self._screenManager._lastScreen = self._screenManager.getCurScreen();
                 }
 
@@ -237,7 +237,27 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
     Moving.prototype.moveBack = function() {
         var lastStep = this._screenManager.popHistory();
         if (lastStep) {
-            return this.move(lastStep.side, lastStep.screen, false);
+
+            var curScreen = this._screenManager.getCurScreen(),
+                nextScreen = lastStep.screen,
+                side = lastStep.side,
+                mustUpdate = false;
+            if (side === 'left' && curScreen._parents.indexOf(nextScreen) !== -1) {
+                mustUpdate = true;
+            } else if (side === 'right' && curScreen._children.indexOf(nextScreen) !== -1) {
+                mustUpdate = true;
+            } else if (side === 'bottom' && this._screenManager._getBottom(curScreen, this._screenManager._cyclicStep) === nextScreen) {
+                mustUpdate = true;
+            } else if (side === 'top' && this._screenManager._getTop(curScreen, this._screenManager._cyclicStep) === nextScreen) {
+                mustUpdate = true;
+            } else {
+                return null;
+            }
+            if (mustUpdate) {
+                this._screenManager._setRelativeScreen(this._screenManager.getCurScreen(), side, nextScreen);
+            }
+
+            return this.move(lastStep.side, curScreen, false);
         }
         return null;
     };

@@ -59,8 +59,10 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
 
         if (updated && isSaveHistory !== false) {
             this._history.push({
-                screen: this._curScreen,
-                side: Utils.oppositeSide(side)
+                screen: prevScreen,
+                side: Utils.oppositeSide(side),
+                lastSide: this._lastSide,
+                lastScreen: this._lastScreen
             });
             if (this._history.length > this._maxHistoryLength) {
                 this._history.shift();
@@ -168,7 +170,15 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
         this._history = [];
     };
     ScreenManager.prototype.popHistory = function() {
-        return this._history.pop();
+        var res = this._history.pop();
+        if (res) {
+            this._lastSide = res.lastSide;
+            this._lastScreen = res.lastScreen;
+        } else {
+            this._lastSide = null;
+            this._lastScreen = null;
+        }
+        return res;
     };
     ScreenManager.prototype._containsHistory = function(screen) {
         return this._history.some(function(val) {

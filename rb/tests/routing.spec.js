@@ -22,7 +22,38 @@ define(['./core-test', '../js/main'], function(core, rb) {
 
         $('body').append('<div id="rb1" class="rb-wrapper"></div>');
     }
-    function initEach2() {
+    function init(opts) {
+        screen_1.pushChildren([screen_2, screen_3, screen_4]);
+        screen_4.pushChildren([screen_1]);
+
+        var options = {
+            wrongTime1: 5,
+            wrongTime2: 5,
+            correctTime: 10
+        };
+        if (typeof opts === 'object') {
+            for (var prop in opts) {
+                if (opts.hasOwnProperty(prop)) {
+                    options[prop] = opts[prop];
+                }
+            }
+        }
+
+        var rb1 = rb.Instances.rb1;
+        rb1.configure(options);
+    }
+    function init2() {
+        screen_1.pushChildren([screen_2, screen_3]);
+        screen_1.pushParents([screen_2, screen_4]);
+
+        var rb1 = rb.Instances.rb1;
+        rb1.configure({
+            wrongTime1: 5,
+            wrongTime2: 5,
+            correctTime: 10
+        });
+    }
+    function initEach3() {
         window.rb = rb;
 
         var mainMarkup = '<div class="mainMarkup">mainMarkup</div>';
@@ -49,9 +80,8 @@ define(['./core-test', '../js/main'], function(core, rb) {
 
         $('body').append('<div id="rb1" class="rb-wrapper"></div>');
     }
-    function init(opts) {
-        screen_1.setChildren([screen_2, screen_3, screen_4]);
-        screen_4.setChildren([screen_1]);
+    function init3(opts) {
+        screen_1.pushChildren([screen_2, screen_3, screen_4]);
 
         var options = {
             wrongTime1: 5,
@@ -71,7 +101,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
     }
 
     var t = new core.TestsWrapper('Routing1');
-
     t.addTestsSerial('test1', init, [
         [move('right'),  checkScreen('screen_2')],
         [move('right'),  checkScreen('screen_2')],
@@ -130,11 +159,29 @@ define(['./core-test', '../js/main'], function(core, rb) {
         [move('top'),    checkScreen('screen_4')],
         [move('left'),   checkScreen('screen_1')]
     ]);
-
     t.start(initEach);
 
+    var t2 = new core.TestsWrapper('Routing2');
+    t2.addTestsSerial('test1', init2, [
+        [move('right'),  checkScreen('screen_2')],
+        [move('bottom'),  checkScreen('screen_3')]
+    ]);
+    t2.addTestsSerial('test2', init2, [
+        [move('left'),  checkScreen('screen_2')],
+        [move('bottom'),  checkScreen('screen_4')]
+    ]);
+    t2.addTestsSerial('test3', init2, [
+        [move('right'),  checkScreen('screen_2')],
+        [move('top'),  checkScreen('screen_3')]
+    ]);
+    t2.addTestsSerial('test4', init2, [
+        [move('left'),  checkScreen('screen_2')],
+        [move('top'),  checkScreen('screen_4')]
+    ]);
+    t2.start(initEach);
+
     var t3 = new core.TestsWrapper('Routing3');
-    t3.addTestsSerial('test1', init, [
+    t3.addTestsSerial('test1', init3, [
         [move('right'),  checkScreen('screen_2')],
         [move('right'),  checkScreen('screen_1')],
         [move('bottom'), checkScreen('screen_1')],
@@ -160,12 +207,12 @@ define(['./core-test', '../js/main'], function(core, rb) {
         [moveBack(),     checkScreen('screen_4')],
         [moveBack(),     checkScreen('screen_4')]
     ]);
-    t3.addTestsSerial('test2', init, [
+    t3.addTestsSerial('test2', init3, [
         [move('right'),  checkScreen('screen_2')],
         [move('top'),    checkScreen('screen_4')],
         [move('right'),  checkScreen('screen_1')]
     ]);
-    t3.addTestsSerial('test3', init, [
+    t3.addTestsSerial('test3', init3, [
         [move('left'),   checkScreen('screen_2')], // потому что двусторонняя связь, и когде идем влево паренты 2,3,4 и по умолчанию тот что с индексом 0
         [move('top'),    checkScreen('screen_4')], // todo почему циклично и как сделать нециклично
         [move('right'),  checkScreen('screen_1')],
@@ -173,57 +220,24 @@ define(['./core-test', '../js/main'], function(core, rb) {
         [move('right'),  checkScreen('screen_2')],
         [move('left'),   checkScreen('screen_1')]
     ]);
-    t3.addTestsSerial('test4', init, [
+    t3.addTestsSerial('test4', init3, [
         [move('left'),   checkScreen('screen_2')],
         [move('bottom'), checkScreen('screen_3')],
         [move('right'),  checkScreen('screen_1')],
         [move('left'),   checkScreen('screen_3')]
     ]);
-    t3.addTestsSerial('test5', init, [
+    t3.addTestsSerial('test5', init3, [
         [move('left'),   checkScreen('screen_2')],
         [move('left'),   checkScreen('screen_1')],
         [move('right'),  checkScreen('screen_2')],
         [move('right'),  checkScreen('screen_1')]
     ]);
-    t3.addTestsSerial('test6', init, [
+    t3.addTestsSerial('test6', init3, [
         [move('left'),   checkScreen('screen_2')],
         [move('top'),    checkScreen('screen_4')],
         [move('top'),    checkScreen('screen_3')],
         [move('top'),    checkScreen('screen_2')],
         [move('left'),   checkScreen('screen_1')]
     ]);
-    t3.start(initEach2);
-
-    function init2() {
-        screen_1.setChildren([screen_2, screen_3]);
-        screen_1.setParents([screen_2, screen_4]);
-
-        var rb1 = rb.Instances.rb1;
-        rb1.configure({
-            wrongTime1: 5,
-            wrongTime2: 5,
-            correctTime: 10
-        });
-    }
-
-    var t2 = new core.TestsWrapper('Routing2');
-
-    t2.addTestsSerial('test1', init2, [
-        [move('right'),  checkScreen('screen_2')],
-        [move('bottom'),  checkScreen('screen_3')]
-    ]);
-    t2.addTestsSerial('test2', init2, [
-        [move('left'),  checkScreen('screen_2')],
-        [move('bottom'),  checkScreen('screen_4')]
-    ]);
-    t2.addTestsSerial('test3', init2, [
-        [move('right'),  checkScreen('screen_2')],
-        [move('top'),  checkScreen('screen_3')]
-    ]);
-    t2.addTestsSerial('test4', init2, [
-        [move('left'),  checkScreen('screen_2')],
-        [move('top'),  checkScreen('screen_4')]
-    ]);
-
-    t2.start(initEach);
+    t3.start(initEach3);
 });

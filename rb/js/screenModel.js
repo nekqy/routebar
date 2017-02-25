@@ -38,8 +38,8 @@ define(['errors'], function(Errors) {
 
         this._id = 'screen_' + Screen._length++;
         this.html = html; // TODO на изменение html изменять элементы
-        this.setChildren(children);
-        this.setParents(parents);
+        this.resetChildren(children);
+        this.resetParents(parents);
         this._temporary = !isPermanent; // Todo на изменение тут менять и там где используется
         this._isDirectedGraph = !!isDirectedGraph; // Todo на изменение тут менять и там где используется
         this._defaultChildIndex = defaultChildIndex;
@@ -63,20 +63,27 @@ define(['errors'], function(Errors) {
     };
 
     Screen.prototype._addScreen = function(screen, isChild) {
-        var arr = isChild ? this._children : this._parents,
-            index = this._getScreenIndex(screen, arr);
-        if (index !== -1) {
-            return;
-        }
         if (isChild) {
-            this._children.push(screen);
-            screen._parents.push(this);
+            if (this.getChildIndex(screen) !== -1) {
+                console.log('screenModel: "' + screen.toString() + '" child screen exists!');
+            } else {
+                this._children.push(screen);
+                screen._parents.push(this);
+            }
         } else {
-            this._parents.push(screen);
-            screen._children.push(this);
+            if (this.getParentIndex(screen) !== -1) {
+                console.log('screenModel: "' + screen.toString() + '" parent screen exists!');
+            } else {
+                this._parents.push(screen);
+                screen._children.push(this);
+            }
         }
         if (!this._isDirectedGraph) {
-            screen._addScreen(this, isChild);
+            if (!screen._isAddingState) {
+                this._isAddingState = true;
+                screen._addScreen(this, isChild);
+                this._isAddingState = false;
+            }
         }
 
         Screen._runRelativeUpdateFn(this);
@@ -158,11 +165,11 @@ define(['errors'], function(Errors) {
         Screen._runRelativeUpdateFn(this);
         return this;
     };
-    Screen.prototype.setChildren = function(children) {
+    Screen.prototype.resetChildren = function(children) {
         return this.clearChildren().pushChildren(children);
     };
     Screen.prototype.clearChildren = function() {
-        for (var i = this._children; i >= 0; i--) {
+        for (var i = this._children.length; i >= 0; i--) {
             this.removeChild(this._children[i]);
         }
         Screen._runRelativeUpdateFn(this);
@@ -191,11 +198,11 @@ define(['errors'], function(Errors) {
         Screen._runRelativeUpdateFn(this);
         return this;
     };
-    Screen.prototype.setParents = function(parents) {
+    Screen.prototype.resetParents = function(parents) {
         return this.clearParents().pushParents(parents);
     };
     Screen.prototype.clearParents = function() {
-        for (var i = this._parents; i >= 0; i--) {
+        for (var i = this._parents.length; i >= 0; i--) {
             this.removeParent(this._parents[i]);
         }
         Screen._runRelativeUpdateFn(this);

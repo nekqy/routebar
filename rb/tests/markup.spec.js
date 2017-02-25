@@ -37,11 +37,11 @@ define(['./core-test', '../js/main'], function(core, rb) {
         });
     }
     function init2() {
-        screen_1.setChildren([screen_2, screen_3, screen_4]);
+        screen_1.pushChildren([screen_2, screen_3, screen_4]);
         init();
     }
     function init3() {
-        screen_4.setChildren([screen_1]);
+        screen_4.pushChildren([screen_1]);
         init2();
     }
 

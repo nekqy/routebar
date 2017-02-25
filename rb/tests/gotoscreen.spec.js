@@ -33,13 +33,13 @@ define(['./core-test', '../js/main', '../js/errors'], function(core, rb, Errors)
     }
     function init1(loop) {
         for (var i = 0; i < 8; i++) {
-            screens[i].setChildren([screens[i+1]]);
+            screens[i].pushChildren([screens[i+1]]);
         }
 
-        screens[3].setChildren([screens[4],screens[5]]);
-        screens[7].setChildren([screens[1], screens[8]]);
+        screens[3].pushChildren([screens[5]]);
+        screens[7].pushChildren([screens[1]]);
         if (loop) {
-            screens[9].setChildren([screens[0]]);
+            screens[9].pushChildren([screens[0]]);
         }
 
         init();

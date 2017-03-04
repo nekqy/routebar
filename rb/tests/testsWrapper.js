@@ -49,6 +49,8 @@ define(['../js/main', 'lodash'], function(rb, _) {
                 beforeEach(function (done) {
                     $(function () {
                         try {
+                            window.describeName = self.name;
+                            window.testName = key;
                             prevClear && initEach && initEach();
                         } catch (e) {
                             console.log('initEach failed');
@@ -57,6 +59,8 @@ define(['../js/main', 'lodash'], function(rb, _) {
                         }
                         rb.start(function () {
                             try {
+                                window.describeName = self.name;
+                                window.testName = key;
                                 prevClear && init && init();
                             } catch (e) {
                                 console.log('init failed');
@@ -64,6 +68,8 @@ define(['../js/main', 'lodash'], function(rb, _) {
                                 done(e);
                             }
                             try {
+                                window.describeName = self.name;
+                                window.testName = key;
                                 action(done);
                             } catch (e) {
                                 console.log('action failed');
@@ -75,6 +81,8 @@ define(['../js/main', 'lodash'], function(rb, _) {
                 });
                 it(key, function (done) {
                     try {
+                        window.describeName = self.name;
+                        window.testName = key;
                         var res = check();
                     } catch (e) {
                         console.log('check failed');

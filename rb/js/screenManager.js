@@ -148,16 +148,16 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
         }
 
         if (!this._getRight(screen)) {
-            this._relativeScreens[id]['right'] = null;
+            this._relativeScreens[id]['right'] = undefined;
         }
         if (!this._getLeft(screen)) {
-            this._relativeScreens[id]['left'] = null;
+            this._relativeScreens[id]['left'] = undefined;
         }
         if (!this._getBottom(screen, this._cyclicStep)) {
-            this._relativeScreens[id]['bottom'] = null;
+            this._relativeScreens[id]['bottom'] = undefined;
         }
         if (!this._getTop(screen, this._cyclicStep)) {
-            this._relativeScreens[id]['top'] = null;
+            this._relativeScreens[id]['top'] = undefined;
         }
     };
 

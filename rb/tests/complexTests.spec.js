@@ -9,6 +9,7 @@ define(['./core-test', '../js/main'], function(core, rb) {
             window.rb = rb;
             n = n || 5;
 
+            screens = [];
             for (var i = 0; i < n; i++) {
                 var screenOptions = {
                     html: '<div class="markup' + i + '">markup' + i + '</div>'
@@ -27,25 +28,26 @@ define(['./core-test', '../js/main'], function(core, rb) {
             $('body').append('<div id="rb1" class="rb-wrapper"></div>');
         }
     }
-    function init(opts) {
-        screens[0]._isDirectedGraph = true;
-        screens[0].pushChild(screens[0]);
+    function init(fn, opts) {
+        return function() {
+            fn();
 
-        var options = {
-            wrongTime1: 5,
-            wrongTime2: 5,
-            correctTime: 10
-        };
-        if (typeof opts === 'object') {
-            for (var prop in opts) {
-                if (opts.hasOwnProperty(prop)) {
-                    options[prop] = opts[prop];
+            var options = {
+                wrongTime1: 5,
+                wrongTime2: 5,
+                correctTime: 10
+            };
+            if (typeof opts === 'object') {
+                for (var prop in opts) {
+                    if (opts.hasOwnProperty(prop)) {
+                        options[prop] = opts[prop];
+                    }
                 }
             }
-        }
 
-        var rb1 = rb.Instances.rb1;
-        rb1.configure(options);
+            var rb1 = rb.Instances.rb1;
+            rb1.configure(options);
+        };
     }
     function checkComplex(getCfg) {
         return function() {
@@ -68,7 +70,10 @@ define(['./core-test', '../js/main'], function(core, rb) {
     }
 
     var t = new core.TestsWrapper('Complex1');
-    t.addTestsSerial('test1', init, [
+    t.addTestsSerial('test1', init(function () {
+        screens[0]._isDirectedGraph = true;
+        screens[0].pushChild(screens[0]);
+    }), [
         [
             core.nopDone,
             checkComplex(function() { return {
@@ -147,7 +152,7 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 relativeScreens: {
                     'screen_1': {
                         right: screens[0],
-                        bottom: screens[0]
+                        bottom: screens[0] //todo откуда это берется?
                     }
                 },
                 history: [{
@@ -260,5 +265,146 @@ define(['./core-test', '../js/main'], function(core, rb) {
             }})
         ]
     ]);
-    t.start(initEach(1));
+
+    t.addTestsSerial('test2', init(function () {
+        screens[0]._isDirectedGraph = true;
+        screens[0].pushChild(screens[1]);
+    }), [
+        [
+            core.nopDone,
+            checkComplex(function() { return {
+                curScreen: screens[0],
+                screens: [],
+                elementsBySide: {
+                    center: screens[0].toString() // todo а ведь они тут наверно должны быть. нужно просто childPush делать до старта иначе когда старт там инициализируются значения через getLeft...
+                },
+                sides: {
+                    left: undefined,
+                    top: undefined,
+                    topCycled: undefined,
+                    right: screens[1],
+                    bottom: undefined,
+                    bottomCycled: undefined
+                },
+                relativeScreens: {
+                    'screen_1': {}
+                },
+                history: []
+            }})
+        ],
+        [
+            move('left'),
+            checkComplex(function() { return {
+                curScreen: screens[0],
+                screens: [],
+                elementsBySide: {
+                    center: screens[0].toString()
+                },
+                sides: {
+                    left: undefined,
+                    top: undefined,
+                    topCycled: undefined, // todo а может должны появиться? мы же нажали влево могло бы и понять что теперь надо ориентироваться на потомка
+                    right: screens[1],
+                    bottom: undefined,
+                    bottomCycled: undefined
+                },
+                relativeScreens: {
+                    'screen_1': { // todo почему пусто?
+                    }
+                },
+                history: []
+            }})
+        ],
+        [
+            move('top'),
+            checkComplex(function() { return {
+                curScreen: screens[0],
+                screens: [], // todo а чего это в пуле нет screen[1]??
+                elementsBySide: {
+                    center: screens[0].toString()
+                },
+                sides: {
+                    left: undefined,
+                    top: undefined,
+                    topCycled: undefined,
+                    right: screens[1],
+                    bottom: undefined,
+                    bottomCycled: undefined
+                },
+                relativeScreens: {
+                    'screen_1': {
+                    }
+                },
+                history: []
+            }})
+        ],
+        [
+            move('right'),
+            checkComplex(function() { return {
+                curScreen: screens[1],
+                screens: [screens[0]],
+                elementsBySide: {
+                    center: screens[1].toString(),
+                    left: screens[0].toString(),
+                    top: screens[1].toString(),
+                    bottom: screens[1].toString()
+                },
+                sides: {
+                    left: screens[0],
+                    top: undefined,
+                    topCycled: screens[1],
+                    right: undefined,
+                    bottom: undefined,
+                    bottomCycled: screens[1]
+                },
+                relativeScreens: {
+                    'screen_1': {// todo пусто?
+                    }
+                },
+                history: [{
+                    lastScreen: screens[0],
+                    lastSide: 'right',
+                    side: 'left',
+                    screen: screens[0]
+                }]
+            }})
+        ],
+        [
+            move('bottom'),
+            checkComplex(function() { return {
+                curScreen: screens[1],
+                screens: [screens[0]],
+                elementsBySide: {
+                    center: screens[1].toString(),
+                    left: screens[0].toString(),
+                    top: screens[1].toString(),
+                    bottom: screens[1].toString()
+                },
+                sides: {
+                    left: screens[0],
+                    top: undefined,
+                    topCycled: screens[1],
+                    right: undefined,
+                    bottom: undefined,
+                    bottomCycled: screens[1]
+                },
+                relativeScreens: {
+                    'screen_1': { // todo пусто?
+                    }
+                },
+                history: [{
+                    lastScreen: screens[0],
+                    lastSide: 'right',
+                    side: 'left',
+                    screen: screens[0]
+                }, {
+                    lastScreen: screens[0],
+                    lastSide: 'right',
+                    side: 'top',
+                    screen: screens[1]
+                }]
+            }})
+        ]
+    ]);
+    t.start(initEach(5));
 });

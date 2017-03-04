@@ -51,7 +51,8 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
             var prevScreen = this._curScreen;
             this._curScreen = this.getRelativeScreen(side);
 
-            if (prevScreen !== this._curScreen) {
+            // if (prevScreen !== this._curScreen) {
+            if (side !== 'center') {
                 this._setRelativeScreen(this._curScreen, Utils.oppositeSide(side), prevScreen);
                 updated = true;
             }

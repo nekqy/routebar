@@ -191,8 +191,8 @@ define(['./core-test', '../js/main'], function(core, rb) {
         [moveBack(),     checkScreen('screen_3')],
         [moveBack(),     checkScreen('screen_2')], // todo сейчас откат идет на предыдущий скрин, а не предыдущего шага
         [moveBack(),     checkScreen('screen_1')], // todo прочекать то же но без опции cyclicStep
-        [moveBack(),     checkScreen('screen_2')],
         [moveBack(),     checkScreen('screen_1')],
+        [moveBack(),     checkScreen('screen_2')],
         [moveBack(),     checkScreen('screen_1')],
         [configure({maxHistoryLength: 2}), checkScreen('screen_1')],
         [move('right'),  checkScreen('screen_2')],

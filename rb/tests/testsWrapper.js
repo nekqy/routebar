@@ -48,18 +48,51 @@ define(['../js/main', 'lodash'], function(rb, _) {
             describe(self.name, function () {
                 beforeEach(function (done) {
                     $(function () {
-                        prevClear && initEach && initEach();
+                        try {
+                            prevClear && initEach && initEach();
+                        } catch (e) {
+                            console.log('initEach failed');
+                            console.error(e);
+                            done(e);
+                        }
                         rb.start(function () {
-                            prevClear && init && init();
-                            action(done);
+                            try {
+                                prevClear && init && init();
+                            } catch (e) {
+                                console.log('init failed');
+                                console.error(e);
+                                done(e);
+                            }
+                            try {
+                                action(done);
+                            } catch (e) {
+                                console.log('action failed');
+                                console.error(e);
+                                done(e);
+                            }
                         });
                     });
                 });
-                it(key, function () {
-                    expect(check()).toBe(true);
+                it(key, function (done) {
+                    try {
+                        var res = check();
+                    } catch (e) {
+                        console.log('check failed');
+                        console.error(e);
+                        expect(false).toBe(true);
+                        done(e);
+                    }
+                    expect(res).toBe(true);
+                    done();
                 });
                 afterEach(function (done) {
-                    doClear && clear();
+                    try {
+                        doClear && clear();
+                    } catch (e) {
+                        console.log('clear failed');
+                        console.error(e);
+                        done(e);
+                    }
                     prevClear = doClear;
                     done();
                 });

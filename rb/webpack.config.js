@@ -1,6 +1,15 @@
 var webpack = require("webpack"),
     NODE_ENV = process.env.NODE_ENV || 'development';
 
+var postLoaders = [];
+if (NODE_ENV === 'test') {
+    postLoaders.push({
+        test: /\.js$/,
+        exclude: /(test|node_modules)\//,
+        loader: 'istanbul-instrumenter'
+    });
+}
+
 module.exports = {
     entry: {
         main: "./js/main"
@@ -14,11 +23,7 @@ module.exports = {
         loaders: [
             { test: /\.css$/, loader: "style!css" }
         ],
-        postLoaders: [{
-            test: /\.js$/,
-            exclude: /(test|node_modules)\//,
-            loader: 'istanbul-instrumenter'
-        }]
+        postLoaders: postLoaders
     },
     resolve: { // как ищутся модули
         modulesDirectories: [ // если путь неотносительный, где искать
@@ -27,7 +32,7 @@ module.exports = {
             './node_modules/'
         ]
     },
-    devtool: NODE_ENV == 'development' ? 'source-map' : null,
+    devtool: NODE_ENV == 'development' || NODE_ENV == 'test' ? 'source-map' : null,
 
     plugins: [
         new webpack.NoErrorsPlugin(),

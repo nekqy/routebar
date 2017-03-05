@@ -81,7 +81,11 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 curScreen: screens[0],
                 screens: [],
                 elementsBySide: {
-                    center: screens[0].toString()
+                    center: screens[0].toString(),
+                    left: screens[0].toString(),
+                    top: screens[0].toString(),
+                    right: screens[0].toString(),
+                    bottom: screens[0].toString()
                 },
                 sides: {
                     left: screens[0],
@@ -277,9 +281,10 @@ define(['./core-test', '../js/main'], function(core, rb) {
             core.nopDone,
             checkComplex(function() { return {
                 curScreen: screens[0],
-                screens: [],
+                screens: [screens[1]],
                 elementsBySide: {
-                    center: screens[0].toString() // todo а ведь они тут наверно должны быть. нужно просто childPush делать до старта иначе когда старт там инициализируются значения через getLeft...
+                    center: screens[0].toString(),
+                    right: screens[1].toString()
                 },
                 sides: {
                     left: undefined,
@@ -299,9 +304,10 @@ define(['./core-test', '../js/main'], function(core, rb) {
             move('left'),
             checkComplex(function() { return {
                 curScreen: screens[0],
-                screens: [],
+                screens: [screens[1]],
                 elementsBySide: {
-                    center: screens[0].toString()
+                    center: screens[0].toString(),
+                    right: screens[1].toString()
                 },
                 sides: {
                     left: undefined,
@@ -322,9 +328,10 @@ define(['./core-test', '../js/main'], function(core, rb) {
             move('top'),
             checkComplex(function() { return {
                 curScreen: screens[0],
-                screens: [], // todo а чего это в пуле нет screen[1]??
+                screens: [screens[1]],
                 elementsBySide: {
-                    center: screens[0].toString()
+                    center: screens[0].toString(),
+                    right: screens[1].toString()
                 },
                 sides: {
                     left: undefined,

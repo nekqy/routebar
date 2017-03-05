@@ -45,6 +45,9 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             }
         };
         mainDiv.on('click', this._clickHandler);
+
+        this._relativeUpdateFn = this._reloadScreen.bind(this);
+        ScreenModel.registerRelativeUpdateFn(this._relativeUpdateFn);
     }
     Moving.prototype.resetConfig = function() {
         this.configure({
@@ -185,7 +188,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                     }
                 });
             } else if (side === 'center') {
-                self._elementsPool.prepareSide(side);
+                self._elementsPool.prepareSide();
                 self._animation.goToCenter();
                 self._renderHtml(side, moveResolve.bind(undefined, {
                     how: 'center',
@@ -268,6 +271,11 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
     Moving.prototype.setScreen = function(screen, isSaveHistory) {
         return this.move('center', screen, isSaveHistory);
     };
+    // todo это слишком много, нужно выделить тот функционал который реально релоадит, и вызывать его везде в том числе в ините где сейчас дергается move
+    Moving.prototype._reloadScreen = function() {
+        return this.move('center', this._screenManager.getCurScreen(), false);
+    };
+
     Moving.prototype.reload = function(side) {
         side = side || 'center';
         var rbSide = this._elementsPool.getElementBySide(side);
@@ -390,6 +398,8 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
     };
 
     Moving.prototype.destroy = function() {
+        ScreenModel.unregisterRelativeUpdateFn(this._relativeUpdateFn);
+
         this._plugins.forEach(function(plugin) {
             plugin.destroy();
         });

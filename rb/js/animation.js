@@ -138,7 +138,7 @@ define(['utils', 'IPlugin', 'jquery.easing'], function(Utils, IPlugin) {
                 wrongAnimate(prevElem, width - relValWidth, height - relValHeight, function() {
                     prevElem.toggleClass('rb__hiding-screen', true);
                 }, function() {
-                    nextElem.toggleClass('rb__hiding-screen', false);
+                    prevElem.toggleClass('rb__hiding-screen', false);
                 }, true);
             }
             wrongAnimate(elem, width, height, undefined, function() {

@@ -151,6 +151,11 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 this._lockControls = config.lockControls;
             }
         }
+
+        // updates internal state
+        if (this._screenManager.getCurScreen()) { // todo то есть если только это не new Moving иначе еще рано да и не надо
+            this._reloadScreen();
+        }
     };
 
     // todo defineProperty, и вообще доступ к объектам в api сделать через defineProperty

@@ -23,8 +23,6 @@ define(['../js/main', './testsWrapper'], function(rb, TestsWrapper) {
     function checkMarkup(niceMarkup) {
         return function () {
             var initMarkup = $('.rb').html();
-            initMarkup = initMarkup.replace(/\d+px/g, '');
-            niceMarkup = niceMarkup.replace(/\d+px/g, '');
             var res = initMarkup === niceMarkup;
             if (!res) {
                 console.log(initMarkup + ' != ' + niceMarkup);

@@ -2,42 +2,42 @@ define(['./core-test', '../js/main'], function(core, rb) {
     'use strict';
 
     var initMarkupNice = '' +
-        '<div class="rb__side rb__center" data-id="screen_1" style="margin-left: ; margin-top: ;"><div class="mainMarkup">mainMarkup</div></div>' +
+        '<div class="rb__side rb__center" data-id="screen_1" style="left: 0%; top: 0%;"><div class="mainMarkup">mainMarkup</div></div>' +
         '<div tabindex="-1" class="rb__fake-element">' +
         '</div>';
     var initMarkupNice1_1 = '' +
-        '<div class="rb__side rb__center" data-id="screen_1" style="margin-left: ; margin-top: ;"><div class="mainMarkup">mainMarkup</div></div>' +
+        '<div class="rb__side rb__center" data-id="screen_1" style="left: 0%; top: 0%;"><div class="mainMarkup">mainMarkup</div></div>' +
         '<div tabindex="-1" class="rb__fake-element">' +
         '</div>';
     var initMarkupNice2_1 = '' +
         '<div class="rb__side rb__hidden" data-id="screen_2"><div class="firstMarkup">firstMarkup</div></div>' +
-        '<div class="rb__side rb__center" data-id="screen_1" style="margin-left: ; margin-top: ;"><div class="mainMarkup">mainMarkup</div></div>' +
+        '<div class="rb__side rb__center" data-id="screen_1" style="left: 0%; top: 0%;"><div class="mainMarkup">mainMarkup</div></div>' +
         '<div tabindex="-1" class="rb__fake-element"></div>';
     var initMarkupNice2_2 = '' +
         '<div class="rb__side rb__hidden" data-id="screen_3"><div class="secondMarkup">secondMarkup</div></div>' +
         '<div class="rb__side rb__hidden" data-id="screen_4"><div class="thirdMarkup">thirdMarkup</div></div>' +
-        '<div class="rb__side rb__center" data-id="screen_2" style="margin-left: ; margin-top: ;"><div class="firstMarkup">firstMarkup</div></div>' +
-        '<div class="rb__side rb__hidden" data-id="screen_1" style="margin-left: ; margin-top: ;"><div class="mainMarkup">mainMarkup</div></div>' +
+        '<div class="rb__side rb__center" data-id="screen_2" style="left: 0%; top: 0%;"><div class="firstMarkup">firstMarkup</div></div>' +
+        '<div class="rb__side rb__hidden" data-id="screen_1" style="left: -100%; top: 0%;"><div class="mainMarkup">mainMarkup</div></div>' +
         '<div tabindex="-1" class="rb__fake-element"></div>';
-    //todo какого черта появилось style="margin-left: ; margin-top: ; а в initMarkupNice2_1 нету
+    //todo какого черта появилось style="left: ; top: ; а в initMarkupNice2_1 нету
     var initMarkupNice2_3 = '' +
-        '<div class="rb__side rb__hidden" data-id="screen_2" style="margin-left: ; margin-top: ;"><div class="firstMarkup">firstMarkup</div></div>' +
-        '<div class="rb__side rb__center" data-id="screen_1" style="margin-left: ; margin-top: ;"><div class="mainMarkup">mainMarkup</div></div>' +
+        '<div class="rb__side rb__hidden" data-id="screen_2" style="left: 100%; top: 0%;"><div class="firstMarkup">firstMarkup</div></div>' +
+        '<div class="rb__side rb__center" data-id="screen_1" style="left: 0%; top: 0%;"><div class="mainMarkup">mainMarkup</div></div>' +
         '<div tabindex="-1" class="rb__fake-element"></div>';
     var initMarkupNice3_1 = '' +
         '<div class="rb__side rb__hidden" data-id="screen_3"><div class="secondMarkup">secondMarkup</div></div>' +
-        '<div class="rb__side rb__center" data-id="screen_2" style="margin-left: ; margin-top: ;"><div class="firstMarkup">firstMarkup</div></div>' +
+        '<div class="rb__side rb__center" data-id="screen_2" style="left: 0%; top: 0%;"><div class="firstMarkup">firstMarkup</div></div>' +
         '<div class="rb__side rb__hidden" data-id="screen_4"><div class="thirdMarkup">thirdMarkup</div></div>' +
-        '<div class="rb__side rb__hidden" data-id="screen_1" style="margin-left: ; margin-top: ;"><div class="mainMarkup">mainMarkup</div></div>' +
+        '<div class="rb__side rb__hidden" data-id="screen_1" style="left: -100%; top: 0%;"><div class="mainMarkup">mainMarkup</div></div>' +
         '<div tabindex="-1" class="rb__fake-element"></div>';
     var initMarkupNice3_2 = '' +
-        '<div class="rb__side rb__center" data-id="screen_4" style="margin-left: ; margin-top: ;"><div class="thirdMarkup">thirdMarkup</div></div>' +
-        '<div class="rb__side rb__hidden" data-id="screen_1" style="margin-left: ; margin-top: ;"><div class="mainMarkup">mainMarkup</div></div>' +
+        '<div class="rb__side rb__center" data-id="screen_4" style="left: 0%; top: 0%;"><div class="thirdMarkup">thirdMarkup</div></div>' +
+        '<div class="rb__side rb__hidden" data-id="screen_1" style="left: 100%; top: 0%;"><div class="mainMarkup">mainMarkup</div></div>' +
         '<div tabindex="-1" class="rb__fake-element"></div>';
     var initMarkupNice3_3 = '' +
         '<div class="rb__side rb__hidden" data-id="screen_2"><div class="firstMarkup">firstMarkup</div></div>' +
         '<div class="rb__side rb__hidden" data-id="screen_4"><div class="thirdMarkup">thirdMarkup</div></div>' +
-        '<div class="rb__side rb__center" data-id="screen_1" style="margin-left: ; margin-top: ;"><div class="mainMarkup">mainMarkup</div></div>' +
+        '<div class="rb__side rb__center" data-id="screen_1" style="left: 0%; top: 0%;"><div class="mainMarkup">mainMarkup</div></div>' +
         '<div tabindex="-1" class="rb__fake-element"></div>';
 
 

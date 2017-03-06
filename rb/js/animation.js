@@ -54,7 +54,7 @@ define(['utils', 'IPlugin', 'jquery.easing'], function(Utils, IPlugin) {
         beforeFn && beforeFn();
 
         var css = {}, opts;
-        css['margin' + Utils.capitalizeFirstLetter(Utils.getStartSide(side))] = value;
+        css[Utils.getStartSide(side)] = value + '%';
         opts = {
             duration: time,
             easing: easing,
@@ -86,8 +86,8 @@ define(['utils', 'IPlugin', 'jquery.easing'], function(Utils, IPlugin) {
 
     Animation.prototype.goToWrongSide = function(side) {
         var self = this,
-            width = this._mainDiv.width(),
-            height = this._mainDiv.height(),
+            width = 100,
+            height = 100,
             elem = this._elementsPool.getElementBySide('center'),
             nextElem = this._elementsPool.getElementBySide(side),
             prevElem = this._elementsPool.getElementBySide(Utils.oppositeSide(side));
@@ -95,7 +95,9 @@ define(['utils', 'IPlugin', 'jquery.easing'], function(Utils, IPlugin) {
         return new Promise(function(res, rej) {
             function wrongAnimate(elem, startLeft, startTop, beforeFn, afterFn) {
                 self._animate(elem, side, '+=' + value, self._wrongEasing1, self._isAnimate ? self._wrongTime1 : 10, function() {
-                    elem.css({'margin-left': startLeft, 'margin-top': startTop});
+                    startLeft -= 100;
+                    startTop -= 100;
+                    elem.css({'left': startLeft + '%', 'top': startTop + '%'});
                     beforeFn && beforeFn();
                 }, function() {
                     self._animate(elem, side, '-=' + value, self._wrongEasing2, self._isAnimate ? self._wrongTime2 : 10, undefined, function() {
@@ -152,13 +154,15 @@ define(['utils', 'IPlugin', 'jquery.easing'], function(Utils, IPlugin) {
         var self = this,
             newElem = this._elementsPool.getElementBySide('center'),
             oldElem = this._elementsPool.getElementBySide(Utils.oppositeSide(side)),
-            width = this._mainDiv.width(),
-            height = this._mainDiv.height();
+            width = 100,
+            height = 100;
 
         return new Promise(function(res, rej) {
             function correctAnimate(elem, startLeft, startTop, beforeFn, afterFn) {
                 self._animate(elem, side, '-=' + value, self._correctEasing, self._correctTime, function() {
-                    elem.css({'margin-left': startLeft, 'margin-top': startTop});
+                    startLeft -= 100;
+                    startTop -= 100;
+                    elem.css({'left': startLeft + '%', 'top': startTop + '%'});
                     beforeFn && beforeFn();
                 }, function() {
                     afterFn && afterFn();
@@ -205,7 +209,7 @@ define(['utils', 'IPlugin', 'jquery.easing'], function(Utils, IPlugin) {
 
     Animation.prototype.goToCenter = function() {
         var elem = this._elementsPool.getElementBySide('center');
-        elem.css({'margin-left': elem.width(), 'margin-top': elem.height()});
+        elem.css({'left': '0%', 'top': '0%'});
     };
 
     Animation.prototype.destroy = function() {

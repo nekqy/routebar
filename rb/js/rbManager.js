@@ -7,33 +7,45 @@ define(['moving'], function(Moving) {
             startScreens = undefined;
         }
 
-        $(function() {
-            var $rbWrapper = $('.rb-wrapper');
-            var loadingPromises = [];
+        function waitJQuery() {
+            $(function() {
+                var $rbWrapper = $('.rb-wrapper');
+                var loadingPromises = [];
 
-            for (var i = 0; i < $rbWrapper.length; i++) {
-                var elemWrapper = $rbWrapper.eq(i),
-                    id = elemWrapper.data('id') || elemWrapper.attr('id') || 'instance_' + i;
+                for (var i = 0; i < $rbWrapper.length; i++) {
+                    var elemWrapper = $rbWrapper.eq(i),
+                        id = elemWrapper.data('id') || elemWrapper.attr('id') || 'instance_' + i;
 
-                if (rb.Instances[id] === undefined) {
-                    elemWrapper.html('<div class="rb"><div tabindex="-1" class="rb__fake-element"></div></div>');
+                    if (rb.Instances[id] === undefined) {
+                        elemWrapper.html('<div class="rb"><div tabindex="-1" class="rb__fake-element"></div></div>');
 
-                    var $rb = elemWrapper.find('.rb'),
-                        inst = new Moving($rb, startScreens && startScreens[id]);
-                    loadingPromises.push(inst._loadingPromise);
+                        var $rb = elemWrapper.find('.rb'),
+                            inst = new Moving($rb, startScreens && startScreens[id]);
+                        loadingPromises.push(inst._loadingPromise);
 
-                    Object.defineProperty(rb.Instances, id, {
-                        value: inst,
-                        configurable: true,
-                        enumerable: true
-                    });
+                        Object.defineProperty(rb.Instances, id, {
+                            value: inst,
+                            configurable: true,
+                            enumerable: true
+                        });
+                    }
                 }
-            }
 
-            Promise.all(loadingPromises).then(function() {
-                callback && callback(rb.Instances);
+                Promise.all(loadingPromises).then(function() {
+                    callback && callback(rb.Instances);
+                });
             });
-        });
+        }
+
+        function timeoutFunc() {
+            if (typeof jQuery === 'undefined') {
+                setTimeout(timeoutFunc, 0);
+            } else {
+                waitJQuery();
+            }
+        }
+
+        timeoutFunc();
     }
 
     function batchAction(action, args) {

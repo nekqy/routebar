@@ -38,6 +38,7 @@ define(['utils', 'IPlugin', 'hammer'], function(Utils, IPlugin, Hammer) {
                 return val === defVal;
             });
             e.preventDefault();
+            e.stopPropagation();
         }
 
         var self = this;

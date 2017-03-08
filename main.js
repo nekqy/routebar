@@ -13,18 +13,18 @@ var firstScreen = new rb.Screen(firstHtml),
     secondScreen = new rb.Screen(secondHtml),
     thirdScreen = new rb.Screen(thirdHtml, [mainScreen]);
 mainScreen
-    .addChild(firstScreen)
-    .addChild(secondScreen)
-    .addChild(thirdScreen);
+    .pushChild(firstScreen)
+    .pushChild(secondScreen)
+    .pushChild(thirdScreen);
 
 // dynamic control of screens example
 function action() {
-    var newScreen = mainScreen.getChildren()[0];
+    var newScreen = mainScreen.getChild(0);
     //var count = 0;
     function loadPage(resolve, reject) {
         $.get('examples/example2.html', function(data) {
 
-            newScreen.addChild(newScreen = new rb.Screen(data));
+            newScreen.pushChild(newScreen = new rb.Screen(data));
 
             //if (++count >= 5) {
             //    inst.beforeMoveDispatcher.remove(index);
@@ -46,7 +46,7 @@ function action() {
 
 $.get('examples/example2.html', function(data) {
     var lastScreen = new rb.Screen(data);
-    secondScreen.addChild(lastScreen);
+    secondScreen.pushChild(lastScreen);
 
     rb.Screen.setMainScreen(mainScreen);
 

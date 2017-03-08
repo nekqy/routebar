@@ -19,7 +19,7 @@ define(['moving'], function(Moving) {
                     if (rb.Instances[id] === undefined) {
                         elemWrapper.html('<div class="rb"><div tabindex="-1" class="rb__fake-element"></div></div>');
 
-                        var $rb = elemWrapper.find('.rb'),
+                        var $rb = elemWrapper.find('>.rb'),
                             inst = new Moving($rb, startScreens && startScreens[id]);
                         loadingPromises.push(inst._loadingPromise);
 

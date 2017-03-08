@@ -80,28 +80,28 @@
     top: 0;
     width: 50px;
     height: 100%;
-    background: linear-gradient(to right, rgba(255,255,255,255), rgba(255,255,255,0));
+    background: rgba(255,255,255,128);
 }
 .rb__arrow-container_top {
     top: 0;
     left: 0;
     width: 100%;
     height: 50px;
-    background: linear-gradient(to bottom, rgba(255,255,255,255), rgba(255,255,255,0));
+    background: rgba(255,255,255,128);
 }
 .rb__arrow-container_right {
     right: 0;
     top: 0;
     width: 50px;
     height: 100%;
-    background: linear-gradient(to left, rgba(255,255,255,255), rgba(255,255,255,0));
+    background: rgba(255,255,255,128);
 }
 .rb__arrow-container_bottom {
     bottom: 0;
     left: 0;
     width: 100%;
     height: 50px;
-    background: linear-gradient(to top, rgba(255,255,255,255), rgba(255,255,255,0));
+    background: rgba(255,255,255,128);
 }
 .rb__arrow-container_left {
     left: -50px;

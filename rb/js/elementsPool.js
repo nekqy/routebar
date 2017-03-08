@@ -54,7 +54,7 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
             bottomScreen = getScreen('bottom');
 
         this.getElementBySide('center').toggleClass('rb__center', false);
-        this._mainDiv.find('.rb__side').toggleClass('rb__hidden', true);
+        this._mainDiv.find('>.rb__side').toggleClass('rb__hidden', true);
 
         self._elementsBySide = {};
         newScreen && prepareRelativeSide('center', newScreen);

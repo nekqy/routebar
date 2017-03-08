@@ -109,7 +109,7 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         });
         this._mainDiv.append($(markup));
 
-        var $rbArrowContainer = this._mainDiv.find('.' + this._containerClass);
+        var $rbArrowContainer = this._mainDiv.find('>.' + this._containerClass);
 
         $rbArrowContainer.on('click', clickHandler);
         $rbArrowContainer.on('mouseenter', mouseEnterHandler);
@@ -124,7 +124,7 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
     ArrowsControl.prototype.disable = function() {
         if (!this._isEnable) return;
 
-        var $rbArrowContainer = this._mainDiv.find('.' + this._containerClass);
+        var $rbArrowContainer = this._mainDiv.find('>.' + this._containerClass);
         for (var i = 0; i < $rbArrowContainer.length; i++) {
             clearTimeout($rbArrowContainer[i].hideArrowId);
         }
@@ -135,7 +135,7 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         this._mouseEnterHandler = null;
         this._mouseLeaveHandler = null;
 
-        this._mainDiv.find('.' + this._containerClass).remove();
+        this._mainDiv.find('>.' + this._containerClass).remove();
 
         this._isEnable = false;
     };

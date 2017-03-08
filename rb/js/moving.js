@@ -326,7 +326,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
     };
 
     Moving.prototype.activate = function() {
-        this._mainDiv.find('.rb__fake-element').focus();
+        this._mainDiv.find('>.rb__fake-element').focus();
     };
 
     Moving.prototype.goToScreen = function(screen) {

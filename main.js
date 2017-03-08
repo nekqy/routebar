@@ -74,17 +74,6 @@ $.get('examples/example2.html', function(data) {
             if (instances.hasOwnProperty(id)) {
                 instances[id].afterRenderDispatcher.add(randomStep);
                 randomStep(undefined, undefined, instances[id]);
-
-                (function (){
-                    var inst = instances[id];
-                    require(['./smartResizer'], function(SmartResizer) {
-                        var smartResizer = new SmartResizer(inst._mainDiv);
-                        inst.addPlugin(smartResizer);
-                        setTimeout(function() {
-                            inst.removePlugin(smartResizer);
-                        }, 60000);
-                    });
-                })();
             }
         }
     });

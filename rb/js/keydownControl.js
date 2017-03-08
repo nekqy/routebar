@@ -1,13 +1,13 @@
-define(['utils', 'IPlugin'], function(Utils, IPlugin) {
+define(['utils', 'IPlugin', 'errors'], function(Utils, IPlugin, Errors) {
     "use strict";
 
     function KeydownControl(mainDiv, actionFn) {
         if (!(mainDiv instanceof $)) {
-            throw new Error('KeydownControl module - init - wrong mainDiv arg: ' + mainDiv);
+            throw new Errors.ArgumentError('mainDiv', mainDiv);
         }
 
         if (typeof actionFn !== 'function') {
-            throw new Error('KeydownControl module - init - wrong actionFn arg: ' + actionFn);
+            throw new Errors.ArgumentError('actionFn', actionFn);
         }
         this._isEnable = false;
         this._mainDiv = mainDiv;

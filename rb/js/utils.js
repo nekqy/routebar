@@ -1,4 +1,4 @@
-define([], function() {
+define(['errors'], function(Errors) {
     "use strict";
 
     function oppositeSide(side) {
@@ -7,7 +7,7 @@ define([], function() {
         if (side === 'top') return 'bottom';
         if (side === 'bottom') return 'top';
         if (side === 'center') return 'center';
-        throw new Error('move function', 'wrong side');
+        throw new Errors.ArgumentError('side', side);
     }
     function getStartSide(side) {
         if (side === 'left') return 'left';
@@ -15,7 +15,7 @@ define([], function() {
         if (side === 'top') return 'top';
         if (side === 'bottom') return 'top';
         if (side === 'center') return 'center';
-        throw new Error('move function', 'wrong side');
+        throw new Errors.ArgumentError('side', side);
     }
 
     function capitalizeFirstLetter(string) {

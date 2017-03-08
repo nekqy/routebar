@@ -1,4 +1,4 @@
-define(['utils', 'IPlugin', 'jquery.easing'], function(Utils, IPlugin) {
+define(['utils', 'IPlugin', 'errors', 'jquery.easing'], function(Utils, IPlugin, Errors) {
     "use strict";
 
     function Animation(mainDiv, elementsPool) {
@@ -7,32 +7,32 @@ define(['utils', 'IPlugin', 'jquery.easing'], function(Utils, IPlugin) {
         if (mainDiv instanceof $) {
             this._mainDiv = mainDiv;
         } else {
-            throw new Error('Animation module - init - wrong mainDiv arg: ' + mainDiv);
+            throw new Errors.ArgumentError('mainDiv', mainDiv);
         }
     }
     Utils.inherite(Animation, IPlugin);
     Animation.prototype.configure = function(config) {
-        function fixTime(time) {
+        function fixTime(argName, time) {
             if (typeof time === 'number') {
                 return time > 0 ? time : 1;
             } else {
                 if (time === undefined) {
                     return 500;
                 } else {
-                    throw new Error('Animation module - configure - wrong time arg: ' + time);
+                    throw new Errors.ArgumentError(argName, time);
                 }
             }
         }
 
         if (typeof config === 'object') {
             if (config.wrongTime1 !== undefined) {
-                this._wrongTime1 = fixTime(config.wrongTime1);
+                this._wrongTime1 = fixTime('wrongTime1', config.wrongTime1);
             }
             if (config.wrongTime2 !== undefined) {
-                this._wrongTime2 = fixTime(config.wrongTime2);
+                this._wrongTime2 = fixTime('wrongTime2', config.wrongTime2);
             }
             if (config.correctTime !== undefined) {
-                this._correctTime = fixTime(config.correctTime);
+                this._correctTime = fixTime('correctTime', config.correctTime);
             }
             if (config.wrongEasing1 !== undefined) {
                 this._wrongEasing1 = config.wrongEasing1;

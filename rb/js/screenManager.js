@@ -1,4 +1,4 @@
-define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
+define(['utils', 'screenModel', 'IPlugin', 'errors'], function(Utils, Screen, IPlugin, Errors) {
     "use strict";
 
     function ScreenManager() {
@@ -10,13 +10,13 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
     }
     Utils.inherite(ScreenManager, IPlugin);
     ScreenManager.prototype.configure = function(config) {
-        function fixLength(historyLength) {
-            return (typeof historyLength === 'number' && historyLength >= 0) ? historyLength : 10;
-        }
-
         if (typeof config === 'object') {
             if (config.maxHistoryLength !== undefined) {
-                this._maxHistoryLength = fixLength(config.maxHistoryLength);
+                if (typeof config.maxHistoryLength === 'number' && config.maxHistoryLength >= 0) {
+                    this._maxHistoryLength = config.maxHistoryLength;
+                } else {
+                    throw new Errors.ArgumentError('maxHistoryLength', config.maxHistoryLength);
+                }
             }
             if (config.isDirectPath !== undefined) {
                 this._isDirectPath = config.isDirectPath;
@@ -75,10 +75,10 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
 
     ScreenManager.prototype._getRelativeScreenByScreen = function(screen, side) {
         if (!(screen instanceof Screen)) {
-            throw new Error('ScreenManager module - _getRelativeScreenByScreen - wrong baseScreen arg');
+            throw new Errors.ArgumentError('screen', screen);
         }
         if (Utils.sidesWithCenter.indexOf(side) === -1) {
-            throw new Error('ScreenManager module - _getRelativeScreenByScreen - wrong side arg: ' + side);
+            throw new Errors.ArgumentError('side', side);
         }
 
         var id = screen.toString();
@@ -121,13 +121,13 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
     };
     ScreenManager.prototype._setRelativeScreen = function(baseScreen, side, screen) {
         if (Utils.sides.indexOf(side) === -1) {
-            throw new Error('ScreenManager module - _setRelativeScreen - wrong side arg: ' + side);
+            throw new Errors.ArgumentError('side', side);
         }
         if (!(baseScreen instanceof Screen)) {
-            throw new Error('ScreenManager module - _setRelativeScreen - wrong baseScreen arg');
+            throw new Errors.ArgumentError('baseScreen', baseScreen);
         }
         if (!(screen instanceof Screen)) {
-            throw new Error('ScreenManager module - _setRelativeScreen - wrong screen arg');
+            throw new Errors.ArgumentError('screen', screen);
         }
 
         var id = baseScreen.toString();
@@ -139,7 +139,7 @@ define(['utils', 'screenModel', 'IPlugin'], function(Utils, Screen, IPlugin) {
     };
     ScreenManager.prototype._updateRelativeScreen = function(screen) {
         if (!(screen instanceof Screen)) {
-            throw new Error('ScreenManager module - _updateRelativeScreen - wrong screen arg');
+            throw new Errors.ArgumentError('screen', screen);
         }
         var id = screen.toString();
 

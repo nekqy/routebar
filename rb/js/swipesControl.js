@@ -1,13 +1,13 @@
-define(['utils', 'IPlugin', 'hammer'], function(Utils, IPlugin, Hammer) {
+define(['utils', 'IPlugin', 'errors', 'hammer'], function(Utils, IPlugin, Errors, Hammer) {
     "use strict";
 
     function SwipesControl(mainDiv, actionFn) {
         if (!(mainDiv instanceof $)) {
-            throw new Error('KeydownControl module - init - wrong mainDiv arg: ' + mainDiv);
+            throw new Errors.ArgumentError('mainDiv', mainDiv);
         }
 
         if (typeof actionFn !== 'function') {
-            throw new Error('KeydownControl module - init - wrong actionFn arg: ' + actionFn);
+            throw new Errors.ArgumentError('actionFn', actionFn);
         }
         this._isEnable = false;
         this._mainDiv = mainDiv;

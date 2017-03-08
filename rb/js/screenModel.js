@@ -117,7 +117,7 @@ define(['errors'], function(Errors) {
         } else if (screen instanceof Screen) {
             index = arr.indexOf(screen);
         } else {
-            new Errors.FatalError('screenModel : wrong getScreenIndex args');
+            throw new Errors.ArgumentError('screen', screen);
         }
         return index;
     };
@@ -169,7 +169,7 @@ define(['errors'], function(Errors) {
         return this.clearChildren().pushChildren(children);
     };
     Screen.prototype.clearChildren = function() {
-        for (var i = this._children.length; i >= 0; i--) {
+        for (var i = this._children.length - 1; i >= 0; i--) {
             this.removeChild(this._children[i]);
         }
         Screen._runRelativeUpdateFn(this);
@@ -202,7 +202,7 @@ define(['errors'], function(Errors) {
         return this.clearParents().pushParents(parents);
     };
     Screen.prototype.clearParents = function() {
-        for (var i = this._parents.length; i >= 0; i--) {
+        for (var i = this._parents.length - 1; i >= 0; i--) {
             this.removeParent(this._parents[i]);
         }
         Screen._runRelativeUpdateFn(this);

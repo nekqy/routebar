@@ -8,7 +8,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         if (mainDiv instanceof $) {
             this._mainDiv = mainDiv;
         } else {
-            throw new Error('Moving module - init - wrong mainDiv arg: ' + mainDiv);
+            throw new Errors.ArgumentError('mainDiv', mainDiv);
         }
 
         this.beforeMoveDispatcher = new BaseDispatcher(mainDiv);
@@ -217,7 +217,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                     }
                 });
             } else {
-                moveReject(new Error('Moving module - move - wrong side arg: ' + side));
+                moveReject(new Errors.ArgumentError('side', side));
             }
         });
     };
@@ -250,9 +250,9 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 nextScreen = lastStep.screen,
                 side = lastStep.side,
                 mustUpdate = false;
-            if (side === 'left' && curScreen._parents.indexOf(nextScreen) !== -1) {
+            if (side === 'left' && curScreen.getParent(nextScreen)) {
                 mustUpdate = true;
-            } else if (side === 'right' && curScreen._children.indexOf(nextScreen) !== -1) {
+            } else if (side === 'right' && curScreen.getChild(nextScreen)) {
                 mustUpdate = true;
             } else if (side === 'bottom' && this._screenManager._getBottom(curScreen, this._screenManager._cyclicStep) === nextScreen) {
                 mustUpdate = true;
@@ -356,9 +356,9 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 nextScreen = path[i+1],
                 side;
 
-            if (curScreen._parents.indexOf(nextScreen) !== -1) {
+            if (curScreen.getParent(nextScreen)) {
                 side = 'left';
-            } else if (curScreen._children.indexOf(nextScreen) !== -1) {
+            } else if (curScreen.getChild(nextScreen)) {
                 side = 'right';
             } else if (self._screenManager._getBottom(curScreen, self._screenManager._cyclicStep) === nextScreen) {
                 side = 'bottom';

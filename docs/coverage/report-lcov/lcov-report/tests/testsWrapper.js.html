@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for tests/testsWrapper.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">tests/</a> testsWrapper.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">79.22% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>61/77</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>12/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>16/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">78.95% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>60/76</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112</td><td class="line-coverage quiet"><span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">179×</span>
+<span class="cline-any cline-yes">179×</span>
+<span class="cline-any cline-yes">179×</span>
+<span class="cline-any cline-yes">179×</span>
+<span class="cline-any cline-yes">179×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-yes">179×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">167×</span>
+<span class="cline-any cline-yes">167×</span>
+<span class="cline-any cline-yes">167×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">define(['../js/main', 'lodash'], function(rb, _) {
+    'use strict';
+&nbsp;
+    function TestsWrapper(name) {
+        this.name = name;
+        this.tests = {};
+    }
+&nbsp;
+    TestsWrapper.prototype.addTest = function (name, init, action, checker, doClear) {
+        if (Array.isArray(name)) {
+            doClear = name[4];
+            checker = name[3];
+            action = name[2];
+            init = name[1];
+            name = name[0];
+        }
+        this.tests[name] = [init, action, checker, doClear !== false];
+    };
+    TestsWrapper.prototype.addTests = function (arr) {
+        var self = this;
+        _.forEach(arr, function (val) {
+            self.addTest(val);
+        });
+    };
+    TestsWrapper.prototype.addTestsSerial = function(name, init, tests) {
+        tests = _.map(tests, function(test, index) {
+            var initFn = index === 0 ? init : undefined;
+            var isClear = index === (tests.length - 1);
+            return [name + '_' + index, initFn, test[0], test[1], isClear];
+        });
+        this.addTests(tests);
+    };
+    TestsWrapper.prototype.start = function (initEach) {
+        function clear() {
+            rb.Batch.removeAll();
+            $('.rb-wrapper').remove();
+            rb.Screen._length = 1;
+        }
+&nbsp;
+        var self = this, prevClear = true;
+&nbsp;
+        _.forEach(this.tests, function (testCheck, key) {
+            var init = testCheck[0],
+                action = testCheck[1],
+                check = testCheck[2],
+                doClear = testCheck[3];
+&nbsp;
+            describe(self.name, function () {
+                beforeEach(function (done) {
+                    $(function () {
+                        try {
+                            window.describeName = self.name;
+                            window.testName = key;
+                            prevClear &amp;&amp; initEach &amp;&amp; initEach();
+                        } catch (e) {
+<span class="cstat-no" title="statement not covered" >                            console.log('initEach failed');</span>
+<span class="cstat-no" title="statement not covered" >                            console.error(e);</span>
+<span class="cstat-no" title="statement not covered" >                            done(e);</span>
+                        }
+                        rb.start(function () {
+                            try {
+                                window.describeName = self.name;
+                                window.testName = key;
+                                prevClear &amp;&amp; init &amp;&amp; init();
+                            } catch (e) {
+<span class="cstat-no" title="statement not covered" >                                console.log('init failed');</span>
+<span class="cstat-no" title="statement not covered" >                                console.error(e);</span>
+<span class="cstat-no" title="statement not covered" >                                done(e);</span>
+                            }
+                            try {
+                                window.describeName = self.name;
+                                window.testName = key;
+                                action(done);
+                            } catch (e) {
+<span class="cstat-no" title="statement not covered" >                                console.log('action failed');</span>
+<span class="cstat-no" title="statement not covered" >                                console.error(e);</span>
+<span class="cstat-no" title="statement not covered" >                                done(e);</span>
+                            }
+                        });
+                    });
+                });
+                it(key, function (done) {
+                    try {
+                        window.describeName = self.name;
+                        window.testName = key;
+                        var res = check();
+                    } catch (e) {
+<span class="cstat-no" title="statement not covered" >                        console.log('check failed');</span>
+<span class="cstat-no" title="statement not covered" >                        console.error(e);</span>
+<span class="cstat-no" title="statement not covered" >                        expect(false).toBe(true);</span>
+<span class="cstat-no" title="statement not covered" >                        done(e);</span>
+                    }
+                    expect(res).toBe(true);
+                    done();
+                });
+                afterEach(function (done) {
+                    try {
+                        doClear &amp;&amp; clear();
+                    } catch (e) {
+<span class="cstat-no" title="statement not covered" >                        console.log('clear failed');</span>
+<span class="cstat-no" title="statement not covered" >                        console.error(e);</span>
+<span class="cstat-no" title="statement not covered" >                        done(e);</span>
+                    }
+                    prevClear = doClear;
+                    done();
+                });
+            });
+        });
+    };
+&nbsp;
+    return TestsWrapper;
+});</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 13 2017 01:57:49 GMT+0300 (MSK)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

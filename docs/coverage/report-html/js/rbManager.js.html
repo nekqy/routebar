@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/rbManager.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">js/</a> rbManager.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">68.29% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>28/41</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">58.82% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>10/17</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">53.33% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>8/15</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">68.29% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>28/41</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193</td><td class="line-coverage quiet"><span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">180×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">define(['moving'], function(Moving) {
+    "use strict";
+&nbsp;
+    /**
+     * callback-функция, которая будет выполнена после инициализации панелей
+     *
+     * @callback module:RbManager~initCallback
+     * @param {Moving[]} Instances Набор панелей, действующих в данный момент на странице
+     */
+    /**
+     * Функция, инициализирующая расположенные в данный момент на странице панели.
+     * Если startScreens не задан, первым аргументом может быть callback.
+     * Оживляются элементы с классом rb-wrapper, находящиеся на странице, в качестве идентификатора берется значение
+     * атрибута data-id или id, иначе идентификатор будет назначен самостоятельно.
+     * Инициализация запускается асинхронно, сразу как только страница будет отрендерена.
+     * @param {Object.&lt;string, ScreenModel&gt;} [startScreens] набор моделей контента, которые будут для панелей моделями по умолчанию.
+     * @param {module:RbManager~initCallback} [callback] функция, которая будет выполнена после инициализации панелей
+     * @memberOf module:RbManager
+     */
+    function initLayout(startScreens, callback) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof startScreens === 'function') {
+            callback = startScreens;
+            startScreens = undefined;
+        }
+&nbsp;
+        function waitJQuery() {
+            $(function() {
+                var $rbWrapper = $('.rb-wrapper');
+                var loadingPromises = [];
+&nbsp;
+                for (var i = 0; i &lt; $rbWrapper.length; i++) {
+                    var elemWrapper = $rbWrapper.eq(i),
+                        id = elemWrapper.data('id') || elemWrapper.attr('id') || <span class="branch-2 cbranch-no" title="branch not covered" >'instance_' + i;</span>
+&nbsp;
+                    if (rb.Instances[id] === undefined) {
+                        elemWrapper.html('&lt;div class="rb"&gt;&lt;div tabindex="-1" class="rb__fake-element"&gt;&lt;/div&gt;&lt;/div&gt;');
+&nbsp;
+                        var $rb = elemWrapper.find('&gt;.rb'),
+                            inst = new Moving($rb, startScreens &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >startScreens[id])</span>;
+                        loadingPromises.push(inst._loadingPromise);
+&nbsp;
+                        Object.defineProperty(rb.Instances, id, {
+                            value: inst,
+                            configurable: true,
+                            enumerable: true
+                        });
+                    }
+                }
+&nbsp;
+                Promise.all(loadingPromises).then(function() {
+                    callback &amp;&amp; callback(rb.Instances);
+                });
+            });
+        }
+&nbsp;
+        function timeoutFunc() {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (typeof jQuery === 'undefined') {
+<span class="cstat-no" title="statement not covered" >                setTimeout(timeoutFunc, 0);</span>
+            } else {
+                waitJQuery();
+            }
+        }
+&nbsp;
+        timeoutFunc();
+    }
+&nbsp;
+    /**
+     * Функция, удаляющая панель со страницы
+     * @param {string} id Идентификатор модели контента
+     * @memberOf module:RbManager
+     * @see {@link ScreenModel#toString}
+     */
+    function remove(id) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (rb.Instances.hasOwnProperty(id)) {
+            rb.Instances[id].destroy();
+            delete rb.Instances[id];
+        }
+    }
+&nbsp;
+    function batchAction(action, args) <span class="fstat-no" title="function not covered" >{</span>
+        var res = <span class="cstat-no" title="statement not covered" >[];</span>
+<span class="cstat-no" title="statement not covered" >        for (var id in rb.Instances) {</span>
+<span class="cstat-no" title="statement not covered" >            if (rb.Instances.hasOwnProperty(id)) {</span>
+                var inst = <span class="cstat-no" title="statement not covered" >rb.Instances[id];</span>
+<span class="cstat-no" title="statement not covered" >                res.push(inst[action].apply(inst, args));</span>
+            }
+        }
+<span class="cstat-no" title="statement not covered" >        return res;</span>
+    }
+&nbsp;
+    /**
+     * Применить конфигурацию к панелям
+     * @param {Moving~config} config - конфигурация
+     * @memberOf module:Batch
+     * @see {@link Moving#configure}
+     */
+    function configure(config) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        batchAction('configure', arguments);</span>
+    }
+    /**
+     * Осуществить переход для всех панелей в указанную сторону.
+     * @param {string} side - сторона, в которую осуществляется переход
+     * @param {Boolean} [isSaveHistory] - сохранять ли осуществляемый переход в историю переходов
+     * @returns {Promise} promise о завершении действия во всех панелях
+     * @memberOf module:Batch
+     * @see {@link Moving#move}
+     */
+    function move(side, isSaveHistory) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        return Promise.all(batchAction('move', arguments));</span>
+    }
+    /**
+     * Осуществить откат последнего удачного хода, воспользовавшись историей переходов.
+     * @returns {Promise} promise о завершении действия во всех панелях
+     * @memberOf module:Batch
+     * @see {@link Moving#moveBack}
+     */
+    function moveBack() <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        return batchAction('moveBack', arguments);</span>
+    }
+    /**
+     * Анимировать запрещенное перемещение в одну из сторон. В панели в эту сторону перемещение может быть запрещено,
+     * но будет анимировано, будто запрещено. Это полезно, например, если необходимо, чтобы либо все панели были перемещены
+     * в одну из сторон, либо все анимировали запрещенный переход.
+     * @param {string} side - сторона, в которую осуществляется переход
+     * @returns {Promise} promise о завершении действия во всех панелях
+     * @memberOf module:Batch
+     * @see {@link Moving#animateWrongSide}
+     */
+    function animateWrongSide(side) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        return Promise.all(batchAction('animateWrongSide', arguments));</span>
+    }
+&nbsp;
+    /**
+     * Установить модель контента в текущую ячейку панелей.
+     * @param {ScreenModel} screen - Устанавливаемая модель контента
+     * @param {Boolean} [isSaveHistory] - Сохранять ли устанавливаемую модель в историю переходов
+     * @returns {Promise} promise о завершении установки модели во все панели
+     * @memberOf module:Batch
+     * @see {@link Moving#setScreen}
+     */
+    function setScreen(screen, isSaveHistory) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        return Promise.all(batchAction('setScreen', arguments));</span>
+    }
+    /**
+     * Перезагрузить все панели на странице. Перезагрузка предполагает обновление верстки ячейки панели,
+     * сброс состояния в верстке. Если в элементах верстки есть подписки, необходимо позаботиться об отписке и
+     * последующей подписке к новым элементам верстки.
+     * @prop {string} side - сторона, с которой будет перезагружаться ячейка панели относительно текущей ячейки.
+     * @memberOf module:Batch
+     * @see {@link Moving#reload}
+     */
+    function reload(side) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        batchAction('reload', arguments);</span>
+    }
+    /**
+     * Удалить все панели со страницы.
+     * @memberOf module:Batch
+     * @see {@link module:RbManager.remove}
+     */
+    function removeAll() {
+        for (var id in rb.Instances) {
+            remove(id);
+        }
+    }
+&nbsp;
+    /**
+     * Пакетированные действия на панелях, то есть выполняемые для всех панелей разом.
+     * @typedef {Object} Batch
+     * @module Batch
+     */
+    var Batch = {
+        configure: configure,
+        move: move,
+        moveBack: moveBack,
+        animateWrongSide: animateWrongSide,
+        setScreen: setScreen,
+        reload: reload,
+        removeAll: removeAll
+    };
+&nbsp;
+    /**
+     * Module rbManager.
+     * @module RbManager
+     */
+    return {
+        initLayout: initLayout,
+        remove: remove,
+        /**
+         * @type module:Batch
+         */
+        Batch: Batch
+    };
+});</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 13 2017 01:57:49 GMT+0300 (MSK)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

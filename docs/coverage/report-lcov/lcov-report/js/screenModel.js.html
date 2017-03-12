@@ -1,0 +1,1376 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/screenModel.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">js/</a> screenModel.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">82.91% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>131/158</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">66% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>33/50</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">80.56% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>29/36</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">82.91% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>131/158</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438</td><td class="line-coverage quiet"><span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">23×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">92×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">127×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">191×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">7789×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">193×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">96×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">829×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">809×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">185×</span>
+<span class="cline-any cline-yes">177×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">177×</span>
+<span class="cline-any cline-yes">177×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">185×</span>
+<span class="cline-any cline-yes">80×</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">185×</span>
+<span class="cline-any cline-yes">185×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">6557×</span>
+<span class="cline-any cline-yes">6557×</span>
+<span class="cline-any cline-yes">4670×</span>
+<span class="cline-any cline-yes">1558×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4670×</span>
+<span class="cline-any cline-yes">1887×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1887×</span>
+<span class="cline-any cline-yes">1887×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6557×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">137×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3607×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">2138×</span>
+<span class="cline-any cline-yes">2138×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">275×</span>
+<span class="cline-any cline-yes">79×</span>
+<span class="cline-any cline-yes">127×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">275×</span>
+<span class="cline-any cline-yes">275×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">2950×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">2589×</span>
+<span class="cline-any cline-yes">2589×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">200×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">200×</span>
+<span class="cline-any cline-yes">200×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-yes">196×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">82×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">82×</span>
+<span class="cline-any cline-yes">123×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">1052×</span>
+<span class="cline-any cline-yes">532×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">define(['errors'], function(Errors) {
+    "use strict";
+&nbsp;
+    /**
+     * Конфигурация модели
+     * @typedef {Object} ScreenModel~ScreenConfig
+     * @property {ScreenModel[]} [children] - Потомки модели
+     * @property {ScreenModel[]} [parents] - Предки модели
+     * @property {boolean} [isPermanent] - Является ли модель постоянно хранимой, если да, то попав на страницу не будет оттуда удаляться.
+     * @property {boolean} [isDirectedGraph] - Является ли строящийся граф моделей ориентированным.
+     * @property {string} [html] - Контент модели
+     * @property {number} [defaultChildIndex] - Индекс модели по умолчанию среди моделей-потомков
+     * @property {number} [defaultParentIndex] - Индекс модели по умолчанию среди моделей-предков
+     */
+    /**
+     * Конфигурация моделей по умолчанию
+     * @typedef {Object} ScreenModel~DefaultScreenConfig
+     * @property {boolean} [isPermanent] - Является ли модель постоянно хранимой, если да, то попав на страницу не будет оттуда удаляться.
+     * @property {boolean} [isDirectedGraph] - Является ли строящийся граф моделей ориентированным.
+     * @property {number} [defaultChildIndex] - Индекс модели по умолчанию среди моделей-потомков
+     * @property {number} [defaultParentIndex] - Индекс модели по умолчанию среди моделей-предков
+     */
+    /**
+     * @class
+     * Модель контента, отображаемая в ячейке панели.
+     * @param {String|ScreenModel~ScreenConfig} [html] - контент модели
+     * @param {ScreenModel[]} [children] - потомки модели
+     * @param {ScreenModel[]} [parents] - предки модели
+     * @constructor ScreenModel
+     */
+    function ScreenModel(html, children, parents) {
+        if (!ScreenModel._mainScreenSetted) {
+            ScreenModel._mainScreen = this;
+        }
+&nbsp;
+        this._children = [];
+        this._parents = [];
+&nbsp;
+        var isPermanent, isDirectedGraph, defaultChildIndex, defaultParentIndex;
+&nbsp;
+        if (typeof html === 'object') {
+            children = html.children;
+            parents = html.parents;
+            isPermanent = html.isPermanent;
+            isDirectedGraph = html.isDirectedGraph;
+            defaultChildIndex = html.defaultChildIndex;
+            defaultParentIndex = html.defaultParentIndex;
+            html = html.html;
+        } else <span class="missing-if-branch" title="if path not taken" >I</span>if (typeof html !== 'string') {
+<span class="cstat-no" title="statement not covered" >            html = '';</span>
+        }
+&nbsp;
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (isPermanent === undefined) {
+            isPermanent = ScreenModel.isPermanent;
+        }
+        if (isDirectedGraph === undefined) {
+            isDirectedGraph = ScreenModel.isDirectedGraph;
+        }
+        if (defaultChildIndex === undefined) {
+            defaultChildIndex = ScreenModel.defaultChildIndex;
+        }
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (defaultParentIndex === undefined) {
+            defaultParentIndex = ScreenModel.defaultParentIndex;
+        }
+&nbsp;
+        this._id = 'screen_' + ScreenModel._length++;
+        this._html = html;
+        this.resetChildren(children);
+        this.resetParents(parents);
+        this._temporary = !isPermanent; // Todo на изменение тут менять и там где используется
+        this._isDirectedGraph = !!isDirectedGraph; // Todo на изменение тут менять и там где используется
+        this._defaultChildIndex = defaultChildIndex;
+        this._defaultParentIndex = defaultParentIndex;
+    }
+&nbsp;
+    /**
+     * Возвращает идентификатор модели
+     * @returns {string} идентификатор модели
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.toString = function() {
+        return this._id;
+    };
+&nbsp;
+    /**
+     * Возвращает контент модели
+     * @returns {string} контент модели
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.getHtml = function () {
+        return this._html;
+    };
+&nbsp;
+    /**
+     * Задать контент модели
+     * @param {string} html - контент модели
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.setHtml = function (html) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        this._html = html;</span>
+        // todo обновить все ячейки в которых лежит эта модель
+    };
+    /**
+     * Возвращает опцию "временная модель". Если модель временная, она не будет храниться на странице, если не отображается.
+     * @returns {boolean} опция "временная модель"
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.isTemporary = function() {
+        return this._temporary;
+    };
+    /**
+     * Возвращает опцию "ориентированный граф". Если true, модель является частью ориентированного графа.
+     * @returns {boolean} опция "ориентированный граф"
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.isDirectedGraph = function() <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        return this._isDirectedGraph;</span>
+    };
+    /**
+     * Возвращает индекс модели по умолчанию среди моделей-потомков
+     * @returns {number} индекс модели по умолчанию среди моделей-потомков
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.defaultChildIndex = function() {
+        return this._defaultChildIndex;
+    };
+    /**
+     * Возвращает индекс модели по умолчанию среди моделей-предков
+     * @returns {number} индекс модели по умолчанию среди моделей-предков
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.defaultParentIndex = function() {
+        return this._defaultParentIndex;
+    };
+&nbsp;
+    ScreenModel.prototype._addScreen = function(screen, isChild) {
+        if (isChild) {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (this.getChildIndex(screen) !== -1) {
+<span class="cstat-no" title="statement not covered" >                console.log('screenModel: "' + screen.toString() + '" child screen exists!');</span>
+            } else {
+                this._children.push(screen); //todo смотреть что оба скрина одного типа isDirectGraph
+                screen._parents.push(this);
+            }
+        } else {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (this.getParentIndex(screen) !== -1) {
+<span class="cstat-no" title="statement not covered" >                console.log('screenModel: "' + screen.toString() + '" parent screen exists!');</span>
+            } else {
+                this._parents.push(screen);
+                screen._children.push(this);
+            }
+        }
+        if (!this._isDirectedGraph) {
+            if (!screen._isAddingState) {
+                this._isAddingState = true;
+                screen._addScreen(this, isChild);
+                this._isAddingState = false;
+            }
+        }
+&nbsp;
+        ScreenModel._runUpdateFn(this);
+        return this;
+    };
+&nbsp;
+    ScreenModel.prototype._getScreenIndex = function(screen, arr, cyclic) {
+        var index = -1;
+        if (typeof screen === 'number') {
+            if (cyclic) {
+                screen = (screen % arr.length + arr.length) % arr.length;
+            }
+            index = screen;
+        } else <span class="missing-if-branch" title="if path not taken" >I</span>if (typeof screen === 'string') {
+<span class="cstat-no" title="statement not covered" >            screen = arr.find(function(curScreen, curIndex) <span class="fstat-no" title="function not covered" >{</span></span>
+<span class="cstat-no" title="statement not covered" >                if (curScreen.toString() === screen) {</span>
+<span class="cstat-no" title="statement not covered" >                    index = curIndex;</span>
+<span class="cstat-no" title="statement not covered" >                    return true;</span>
+                }
+            });
+        } else <span class="missing-if-branch" title="else path not taken" >E</span>if (screen instanceof ScreenModel) {
+            index = arr.indexOf(screen);
+        } else {
+<span class="cstat-no" title="statement not covered" >            throw new Errors.ArgumentError('screen', screen);</span>
+        }
+        return index;
+    };
+    ScreenModel.prototype._removeScreen = function(screen, isChild, cyclic) <span class="fstat-no" title="function not covered" >{</span>
+        var arr = <span class="cstat-no" title="statement not covered" >isChild ? this._children : this._parents,</span>
+            index = <span class="cstat-no" title="statement not covered" >this._getScreenIndex(screen, arr, cyclic);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        if (index !== -1) {</span>
+            var removed = <span class="cstat-no" title="statement not covered" >arr.splice(index, 1)[0];</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >            return;</span>
+        }
+<span class="cstat-no" title="statement not covered" >        if (isChild) {</span>
+<span class="cstat-no" title="statement not covered" >            removed.removeParent(this);</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >            removed.removeChild(this);</span>
+        }
+<span class="cstat-no" title="statement not covered" >        if (!this._isDirectedGraph) {</span>
+<span class="cstat-no" title="statement not covered" >            removed._removeScreen(this, isChild);</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        ScreenModel._runUpdateFn(this);</span>
+<span class="cstat-no" title="statement not covered" >        return this;</span>
+    };
+&nbsp;
+    /**
+     * Добавляет модель-потомка в конец набора потомков
+     * @param {ScreenModel} child - добавляемая модель
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.pushChild = function(child) {
+        return this._addScreen(child, true);
+    };
+    /**
+     * Находит индекс модели среди набора потомков
+     * @param {ScreenModel|string|number} child - искомая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {number} искомый индекс модели
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.getChildIndex = function(child, cyclic) {
+        //todo (screen + arr.length) % arr.length неправильный алгоритм. надо чтобы -11 % 5 было 4. а тут -1
+        return this._getScreenIndex(child, this._children, cyclic);
+    };
+    /**
+     * Находит модель среди набора потомков
+     * @param {ScreenModel|string|number} child - искомая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {ScreenModel} искомая модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.getChild = function(child, cyclic) {
+        var index = this.getChildIndex(child, cyclic);
+        return this._children[index];
+    };
+    /**
+     * Удаляет модель из набора потомков
+     * @param {ScreenModel|string|number} child - удаляемая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.removeChild = function(child, cyclic) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        return this._removeScreen(child, true, cyclic);</span>
+    };
+    /**
+     * Добавить набор моделей в конец к набору потомков
+     * @param {ScreenModel[]} children - набор добавляемый моделей
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.pushChildren = function(children) {
+        if (children &amp;&amp; Array.isArray(children)) {
+            for (var i = 0; i &lt; children.length; i++) {
+                this.pushChild(children[i]);
+            }
+        }
+        ScreenModel._runUpdateFn(this);
+        return this;
+    };
+    /**
+     * Переопределить набор моделей потомков, то есть удалить старые и установить новые
+     * @param {ScreenModel[]} children - набор добавляемый моделей
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.resetChildren = function(children) {
+        return this.clearChildren().pushChildren(children);
+    };
+    /**
+     * Очищает набор потомков
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.clearChildren = function() {
+        for (var i = this._children.length - 1; i &gt;= 0; i--) {
+<span class="cstat-no" title="statement not covered" >            this.removeChild(this._children[i]);</span>
+        }
+        ScreenModel._runUpdateFn(this);
+        return this;
+    };
+&nbsp;
+    /**
+     * Добавляет модель-предка в конец набора предков
+     * @param {ScreenModel} parent - добавляемая модель
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.pushParent = function(parent) {
+        return this._addScreen(parent, false);
+    };
+    /**
+     * Находит индекс модели среди набора предков
+     * @param {ScreenModel|string|number} parent - искомая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {number} искомый индекс модели
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.getParentIndex = function(parent, cyclic) {
+        return this._getScreenIndex(parent, this._parents, cyclic);
+    };
+    /**
+     * Находит модель среди набора предков
+     * @param {ScreenModel|string|number} parent - искомая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {ScreenModel} искомая модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.getParent = function(parent, cyclic) {
+        var index = this.getParentIndex(parent, cyclic);
+        return this._parents[index];
+    };
+    /**
+     * Удаляет модель из набора предков
+     * @param {ScreenModel|string|number} parent - удаляемая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.removeParent = function(parent, cyclic) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        return this._removeScreen(parent, false, cyclic);</span>
+    };
+    /**
+     * Добавить набор моделей в конец к набору предков
+     * @param {ScreenModel[]} parents - набор добавляемый моделей
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.pushParents = function(parents) {
+        if (parents &amp;&amp; Array.isArray(parents)) {
+            for (var i = 0; i &lt; parents.length; i++) {
+                this.pushParent(parents[i]);
+            }
+        }
+        ScreenModel._runUpdateFn(this);
+        return this;
+    };
+    /**
+     * Переопределить набор моделей предков, то есть удалить старые и установить новые
+     * @param {ScreenModel[]} parents - набор добавляемый моделей
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.resetParents = function(parents) {
+        return this.clearParents().pushParents(parents);
+    };
+    /**
+     * Очищает набор предков
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.clearParents = function() {
+        for (var i = this._parents.length - 1; i &gt;= 0; i--) {
+<span class="cstat-no" title="statement not covered" >            this.removeParent(this._parents[i]);</span>
+        }
+        ScreenModel._runUpdateFn(this);
+        return this;
+    };
+&nbsp;
+    /**
+     * Устанавливает конфигурацию моделей по умолчанию. Изначальные значения по умоланию: &lt;br&gt;
+     * isPermanent: false, &lt;br&gt;
+     * isDirectedGraph: true, &lt;br&gt;
+     * defaultChildIndex: 0, &lt;br&gt;
+     * defaultParentIndex: 0
+     * @param {ScreenModel~DefaultScreenConfig} config - конфигурация
+     * @memberOf ScreenModel
+     */
+    ScreenModel.configure = function(config) {
+        ScreenModel.isPermanent = config.isPermanent;
+        ScreenModel.isDirectedGraph = config.isDirectedGraph;
+        ScreenModel.defaultChildIndex = config.defaultChildIndex;
+        ScreenModel.defaultParentIndex = config.defaultParentIndex;
+    };
+    ScreenModel.configure({
+        isPermanent: false,
+        isDirectedGraph: true,
+        defaultChildIndex: 0,
+        defaultParentIndex: 0
+    });
+    ScreenModel._length = 1;
+    ScreenModel._relativeUpdateFn = [];
+&nbsp;
+    /**
+     * Установить модель по умолчанию, она будет использоваться в качестве стартовой для панелей, если при старте не заданы иные модели.
+     * Если модель по умолчанию не установлена вручную, будет использован первый созданный экземпляр модели.
+     * @param {ScreenModel} screen - модель по умолчанию
+     * @memberOf ScreenModel
+     * @see {@link module:RbManager.initLayout}
+     */
+    ScreenModel.setMainScreen = function(screen) {
+        ScreenModel._mainScreen = screen;
+        ScreenModel._mainScreenSetted = true;
+    };
+    /**
+     * Получить модель по умолчанию
+     * @returns {ScreenModel} модель по умолчанию
+     * @memberOf ScreenModel
+     */
+    ScreenModel.getMainScreen = function() {
+        return ScreenModel._mainScreen;
+    };
+    /**
+     * Зарегистрировать функцию для запуска, когда изменится структура графа
+     * @param {function} fn - функция для запуска
+     * @memberOf ScreenModel
+     */
+    ScreenModel.registerUpdateFn = function(fn) {
+        ScreenModel._relativeUpdateFn.push(fn);
+    };
+    /**
+     * Удалить функцию из списка функций для запуска, когда изменится структура графа
+     * @param {function} fn - функция для запуска
+     * @memberOf ScreenModel
+     */
+    ScreenModel.unregisterUpdateFn = function(fn) {
+        ScreenModel._relativeUpdateFn = ScreenModel._relativeUpdateFn.filter(function(value) {
+            return value !== fn;
+        });
+    };
+    /**
+     * Очистить набор функций для запуска, когда изменится структура графа
+     * @memberOf ScreenModel
+     */
+    ScreenModel.clearUpdateFn = function() <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        ScreenModel._relativeUpdateFn = [];</span>
+    };
+    ScreenModel._runUpdateFn = function(screen) {
+        ScreenModel._relativeUpdateFn.forEach(function(fn) {
+            fn.call(undefined, screen);
+        });
+    };
+&nbsp;
+    return ScreenModel;
+});
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 13 2017 01:57:49 GMT+0300 (MSK)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

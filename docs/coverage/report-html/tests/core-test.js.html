@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for tests/core-test.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">tests/</a> core-test.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">85.53% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>130/152</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">46.12% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>101/219</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">79.41% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>27/34</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">86.09% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>130/151</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245</td><td class="line-coverage quiet"><span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">167×</span>
+<span class="cline-any cline-yes">167×</span>
+<span class="cline-any cline-yes">167×</span>
+<span class="cline-any cline-yes">167×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">167×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">101×</span>
+<span class="cline-any cline-yes">101×</span>
+<span class="cline-any cline-yes">101×</span>
+<span class="cline-any cline-yes">101×</span>
+<span class="cline-any cline-yes">101×</span>
+<span class="cline-any cline-yes">101×</span>
+<span class="cline-any cline-yes">101×</span>
+<span class="cline-any cline-yes">101×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">129×</span>
+<span class="cline-any cline-yes">129×</span>
+<span class="cline-any cline-yes">129×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">define(['../js/main', './testsWrapper'], function(rb, TestsWrapper) {
+    'use strict';
+&nbsp;
+    function count(elem, length) <span class="fstat-no" title="function not covered" >{</span>
+        var res = <span class="cstat-no" title="statement not covered" >$(elem).length === length;</span>
+<span class="cstat-no" title="statement not covered" >        expect(res).toBe(true);</span>
+    }
+    function checkScreen(screenName) {
+        return function () {
+            var curScreen = rb.Instances.rb1._screenManager.getCurScreen();
+            var res = screenName === curScreen.toString();
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (!res) {
+<span class="cstat-no" title="statement not covered" >                console.log(screenName + ' != ' + curScreen.toString());</span>
+            }
+            return res;
+        };
+    }
+    function nop() {
+    }
+    function nopDone(done) {
+        done();
+    }
+    function checkMarkup(niceMarkup) {
+        return function () {
+            var initMarkup = $('.rb').html();
+            var res = initMarkup === niceMarkup;
+            if (!res) {
+                console.log(initMarkup + ' != ' + niceMarkup);
+            }
+            return res;
+        };
+    }
+&nbsp;
+    function checkElementsPool(mainScreen, screens, elementsBySide) {
+        return function () {
+            var res = true;
+            var curRb = rb.Instances.rb1;
+            var mainScreenName = mainScreen.toString();
+            var elements = curRb._elementsPool._elements;
+            var count = 1 + screens.length;
+&nbsp;
+            res = res &amp;&amp; Object.keys(elements).length === count;
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: Object.keys(elements).length === count', Object.keys(elements), Object.keys(elements).length, count);</span>
+            res = res &amp;&amp; elements[mainScreenName];
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: elements[mainScreenName]', Object.keys(elements), mainScreenName);</span>
+            screens.forEach(function (screen) {
+                res = res &amp;&amp; elements[screen.toString()];
+                !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: elements[screen.toString()]', Object.keys(elements), screen &amp;&amp; screen.toString());</span>
+            });
+&nbsp;
+            var element = elements[mainScreenName];
+            res = res &amp;&amp; element.state === 'loaded';
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: element.state === "loaded"', element &amp;&amp; element.state);</span>
+            res = res &amp;&amp; element.screen === mainScreen;
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: element.screen === mainScreen', element &amp;&amp; element.screen &amp;&amp; element.screen.toString(), mainScreen &amp;&amp; mainScreen.toString());</span>
+            res = res &amp;&amp; element.element.is('.rb__center');
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: element.element.is(".rb__center")', element &amp;&amp; element.element);</span>
+            screens.forEach(function (screen) {
+                var element = elements[screen.toString()];
+                res = res &amp;&amp; element.state === 'loaded';
+                !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: element.state === "loaded"', element &amp;&amp; element.state);</span>
+                res = res &amp;&amp; element.screen === screen;
+                !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: element.screen === screen', element &amp;&amp; element.screen &amp;&amp; element.screen.toString(), screen &amp;&amp; screen.toString());</span>
+            });
+&nbsp;
+            res = res &amp;&amp; curRb._elementsPool._elementsBySide['center'] === elementsBySide['center'];
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curRb._elementsPool._elementsBySide["center"] === elementsBySide["center"]', curRb._elementsPool._elementsBySide["center"], elementsBySide["center"]);</span>
+            res = res &amp;&amp; curRb._elementsPool._elementsBySide['left'] === elementsBySide['left'];
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curRb._elementsPool._elementsBySide["left"] === elementsBySide["left"]', curRb._elementsPool._elementsBySide["left"], elementsBySide["left"]);</span>
+            res = res &amp;&amp; curRb._elementsPool._elementsBySide['top'] === elementsBySide['top'];
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curRb._elementsPool._elementsBySide["top"] === elementsBySide["top"]', curRb._elementsPool._elementsBySide["top"], elementsBySide["top"]);</span>
+            res = res &amp;&amp; curRb._elementsPool._elementsBySide['right'] === elementsBySide['right'];
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curRb._elementsPool._elementsBySide["right"] === elementsBySide["right"]', curRb._elementsPool._elementsBySide["right"], elementsBySide["right"]);</span>
+            res = res &amp;&amp; curRb._elementsPool._elementsBySide['bottom'] === elementsBySide['bottom'];
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curRb._elementsPool._elementsBySide["bottom"] === elementsBySide["bottom"]', curRb._elementsPool._elementsBySide["bottom"], elementsBySide["bottom"]);</span>
+            return res;
+        };
+    }
+    function checkScreenManager(curScreen, sides) {
+        return function() {
+            var res = true;
+            var curRb = rb.Instances.rb1;
+            var screenManager = curRb._screenManager;
+            var screen = screenManager.getCurScreen();
+&nbsp;
+            res = res &amp;&amp; screenManager.getCurScreen() &amp;&amp; screenManager.getCurScreen() === curScreen;
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: screenManager.getCurScreen() &amp;&amp; screenManager.getCurScreen() === curScreen', screenManager.getCurScreen() &amp;&amp; screenManager.getCurScreen().toString(), curScreen &amp;&amp; curScreen.toString());</span>
+            res = res &amp;&amp; screenManager._getLeft(screen) === sides.left;
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: screenManager._getLeft(screen) === sides.left', screenManager._getLeft(screen) &amp;&amp; screenManager._getLeft(screen).toString(), sides.left &amp;&amp; sides.left.toString());</span>
+            res = res &amp;&amp; screenManager._getTop(screen) === sides.top;
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: screenManager._getTop(screen) === sides.top', screenManager._getTop(screen) &amp;&amp; screenManager._getTop(screen).toString(), sides.top &amp;&amp; sides.top.toString());</span>
+            res = res &amp;&amp; screenManager._getTop(screen, true) === sides.topCycled;
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: screenManager._getTop(screen, true) === sides.topCycled', screenManager._getTop(screen, true) &amp;&amp; screenManager._getTop(screen, true).toString(), sides.topCycled &amp;&amp; sides.topCycled.toString());</span>
+            res = res &amp;&amp; screenManager._getRight(screen) === sides.right;
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: screenManager._getRight(screen) === sides.right', screenManager._getRight(screen) &amp;&amp; screenManager._getRight(screen).toString(), sides.right &amp;&amp; sides.right.toString());</span>
+            res = res &amp;&amp; screenManager._getBottom(screen) === sides.bottom;
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: screenManager._getBottom(screen) === sides.bottom', screenManager._getBottom(screen) &amp;&amp; screenManager._getBottom(screen).toString(), sides.bottom &amp;&amp; sides.bottom.toString());</span>
+            res = res &amp;&amp; screenManager._getBottom(screen, true) === sides.bottomCycled;
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: screenManager._getBottom(screen, true) === sides.bottomCycled', screenManager._getBottom(screen, true) &amp;&amp; screenManager._getBottom(screen, true).toString(), sides.bottomCycled &amp;&amp; sides.bottomCycled.toString());</span>
+&nbsp;
+            return res;
+        };
+    }
+    function checkRelativeScreens(relativeScreens) {
+        return function() {
+            var curRb = rb.Instances.rb1;
+            var screenManager = curRb._screenManager;
+            var curRelativeScreens = screenManager._relativeScreens;
+&nbsp;
+            var res = true;
+            res = res &amp;&amp; relativeScreens.length === curRelativeScreens.length;
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: relativeScreens.length === curRelativeScreens.length', relativeScreens.length, curRelativeScreens.length);</span>
+            for (var relativeScreenName in relativeScreens) {
+                <span class="missing-if-branch" title="else path not taken" >E</span>if (relativeScreens.hasOwnProperty(relativeScreenName)) {
+                    var relativeScreen = relativeScreens[relativeScreenName];
+                    res = res &amp;&amp; curRelativeScreens[relativeScreenName];
+                    !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curRelativeScreens[' + relativeScreenName + ']', relativeScreenName, curRelativeScreens[relativeScreenName] &amp;&amp; curRelativeScreens[relativeScreenName].toString());</span>
+                    res = res &amp;&amp; curRelativeScreens[relativeScreenName]['left'] === relativeScreen['left'];
+                    !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curRelativeScreens[' + relativeScreenName + ']["left"] === relativeScreen["left"]', curRelativeScreens[relativeScreenName]['left'] &amp;&amp; curRelativeScreens[relativeScreenName]['left'].toString(), relativeScreen['left'] &amp;&amp; relativeScreen['left'].toString());</span>
+                    res = res &amp;&amp; curRelativeScreens[relativeScreenName]['top'] === relativeScreen['top'];
+                    !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curRelativeScreens[' + relativeScreenName + ']["top"] === relativeScreen["top"]', curRelativeScreens[relativeScreenName]['top'] &amp;&amp; curRelativeScreens[relativeScreenName]['top'].toString(), relativeScreen['top'] &amp;&amp; relativeScreen['top'].toString());</span>
+                    res = res &amp;&amp; curRelativeScreens[relativeScreenName]['right'] === relativeScreen['right'];
+                    !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curRelativeScreens[' + relativeScreenName + ']["right"] === relativeScreen["right"]', curRelativeScreens[relativeScreenName]['right'] &amp;&amp; curRelativeScreens[relativeScreenName]['right'].toString(), relativeScreen['right'] &amp;&amp; relativeScreen['right'].toString());</span>
+                    res = res &amp;&amp; curRelativeScreens[relativeScreenName]['bottom'] === relativeScreen['bottom'];
+                    !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curRelativeScreens[' + relativeScreenName + ']["bottom"] === relativeScreen["bottom"]', curRelativeScreens[relativeScreenName]['bottom'] &amp;&amp; curRelativeScreens[relativeScreenName]['bottom'].toString(), relativeScreen['bottom'] &amp;&amp; relativeScreen['bottom'].toString());</span>
+                }
+            }
+            return res;
+        };
+    }
+    function checkHistory(history) {
+        return function() {
+            var res = true;
+            var curRb = rb.Instances.rb1;
+            var screenManager = curRb._screenManager;
+            var curHistory = screenManager._history;
+&nbsp;
+            res = res &amp;&amp; curHistory.length === history.length;
+            !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curHistory.length === history.length', curHistory.length, history.length);</span>
+            history.forEach(function (historyStep, index) {
+                res = res &amp;&amp; curHistory[index].lastScreen === historyStep.lastScreen;
+                !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curHistory[' + index + '].lastScreen === historyStep.lastScreen', index, curHistory[index].lastScreen &amp;&amp; curHistory[index].lastScreen.toString(), historyStep.lastScreen &amp;&amp; historyStep.lastScreen.toString());</span>
+                res = res &amp;&amp; curHistory[index].lastSide === historyStep.lastSide;
+                !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curHistory[' + index + '].lastSide === historyStep.lastSide', index, curHistory[index].lastSide &amp;&amp; curHistory[index].lastSide.toString(), historyStep.lastSide &amp;&amp; historyStep.lastSide.toString());</span>
+                res = res &amp;&amp; curHistory[index].side === historyStep.side;
+                !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curHistory[' + index + '].side === historyStep.side', index, curHistory[index].side &amp;&amp; curHistory[index].side.toString(), historyStep.side &amp;&amp; historyStep.side.toString());</span>
+                res = res &amp;&amp; curHistory[index].screen === historyStep.screen;
+                !res &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >console.log('fail: curHistory[' + index + '].screen === historyStep.screen', index, curHistory[index].screen &amp;&amp; curHistory[index].screen.toString(), historyStep.screen &amp;&amp; historyStep.screen.toString());</span>
+            });
+            return res;
+        };
+    }
+&nbsp;
+    function move(side) {
+        return function (done) {
+            var rb1 = rb.Instances.rb1;
+            rb1.move(side).then(done, done);
+        }
+    }
+    function moveBack() {
+        return function (done) {
+            var rb1 = rb.Instances.rb1;
+            var res = rb1.moveBack();
+            if (res) {
+                res.then(done, done);
+            } else {
+                done();
+            }
+        }
+    }
+    function configure(config) {
+        return function (done) {
+            var rb1 = rb.Instances.rb1;
+            try {
+                rb1.configure(config);
+            } catch(e) {
+<span class="cstat-no" title="statement not covered" >                console.error(e);</span>
+<span class="cstat-no" title="statement not covered" >                done(e);</span>
+            }
+            done();
+        }
+    }
+    function setScreen(screen, isSaveHistory) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        return function (done) <span class="fstat-no" title="function not covered" >{</span></span>
+            var rb1 = <span class="cstat-no" title="statement not covered" >rb.Instances.rb1;</span>
+<span class="cstat-no" title="statement not covered" >            rb1.setScreen(screen, isSaveHistory).then(done, done);</span>
+        }
+    }
+    function reload(side) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        return function (done) <span class="fstat-no" title="function not covered" >{</span></span>
+            var rb1 = <span class="cstat-no" title="statement not covered" >rb.Instances.rb1;</span>
+<span class="cstat-no" title="statement not covered" >            try {</span>
+<span class="cstat-no" title="statement not covered" >                rb1.reload(side);</span>
+            } catch(e) {
+<span class="cstat-no" title="statement not covered" >                console.error(e);</span>
+<span class="cstat-no" title="statement not covered" >                done(e);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            done();</span>
+        }
+    }
+    function goToScreen(screen, correctErr) {
+        return function (done) {
+            var rb1 = rb.Instances.rb1;
+            rb1.goToScreen(screen).then(done, function(err) {
+                <span class="missing-if-branch" title="else path not taken" >E</span>if (correctErr) {
+                    console.error(err);
+                    expect(err instanceof correctErr).toBe(true);
+                }
+                done();
+            });
+        }
+    }
+&nbsp;
+    function checkError(correctError) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        return function (error) <span class="fstat-no" title="function not covered" >{</span></span>
+<span class="cstat-no" title="statement not covered" >            if (!error) <span class="cstat-no" title="statement not covered" >return true;</span></span>
+            var res = <span class="cstat-no" title="statement not covered" >error instanceof correctError;</span>
+<span class="cstat-no" title="statement not covered" >            if (!res) {</span>
+<span class="cstat-no" title="statement not covered" >                console.error(error);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return res;</span>
+        };//todo надо done(error) делать
+    }
+&nbsp;
+    return {
+        count: count,
+        checkScreen: checkScreen,
+        checkMarkup: checkMarkup,
+        checkElementsPool: checkElementsPool,
+        checkScreenManager: checkScreenManager,
+        checkRelativeScreens: checkRelativeScreens,
+        checkHistory: checkHistory,
+        checkError: checkError,
+        nop: nop,
+        nopDone: nopDone,
+        move: move,
+        moveBack: moveBack,
+        configure: configure,
+        setScreen: setScreen,
+        reload: reload,
+        goToScreen: goToScreen,
+        TestsWrapper: TestsWrapper
+    };
+});
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 13 2017 01:57:49 GMT+0300 (MSK)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

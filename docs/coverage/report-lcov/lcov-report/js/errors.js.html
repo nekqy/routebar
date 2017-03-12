@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/errors.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">js/</a> errors.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">64% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>16/25</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.33% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>2/6</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">60% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>3/5</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">64% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>16/25</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+ * Модуль, содержащий всякие полезные переменные и функции
+ * @module Errors
+ */
+define([], function() {
+&nbsp;
+    function CustomError(property) {
+        this.name = this.name || <span class="branch-1 cbranch-no" title="branch not covered" >"CustomError";</span>
+&nbsp;
+        this.property = property;
+        this.message = this.name + ": " + property;
+&nbsp;
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, CustomError);
+        } else {
+<span class="cstat-no" title="statement not covered" >            this.stack = (new Error()).stack;</span>
+        }
+    }
+&nbsp;
+    /**
+     * @class
+     * Класс ошибки, означающий неправильно переданный в функцию аргумент
+     * @param {string} argName - название аргумента
+     * @param {Object} arg - значение аргумента
+     * @constructor module:Errors~ArgumentError
+     */
+    function ArgumentError(argName, arg) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        if (typeof arg === 'function') {</span>
+<span class="cstat-no" title="statement not covered" >            arg = 'function() {...}';</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >            arg = JSON.stringify(arg);</span>
+        }
+<span class="cstat-no" title="statement not covered" >        arg = 'wrong function argument "' + argName + '": ' + arg;</span>
+<span class="cstat-no" title="statement not covered" >        this.name = 'ArgumentError';</span>
+<span class="cstat-no" title="statement not covered" >        CustomError.apply(this, [arg]);</span>
+    }
+    ArgumentError.prototype = Object.create(CustomError.prototype);
+    ArgumentError.prototype.constructor = ArgumentError;
+&nbsp;
+    /**
+     * @class
+     * Класс ошибки, означающий, что путь от одной модели до другой модели не был найден
+     * @param {ScreenModel} fromScreen - модель, из которой осуществлялся поиск
+     * @param {ScreenModel} toScreen - модель, в которую осуществлялся поиск
+     * @constructor module:Errors~PathNotFoundError
+     */
+    function PathNotFoundError(fromScreen, toScreen) {
+        this.name = 'PathNotFoundError';
+        var arg = 'path not found: from ' + fromScreen.toString() + ' to ' + toScreen.toString();
+        CustomError.apply(this, [arg]);
+    }
+    PathNotFoundError.prototype = Object.create(CustomError.prototype);
+    PathNotFoundError.prototype.constructor = PathNotFoundError;
+&nbsp;
+    /**
+     * @class
+     * Класс ошибки, означающий критическую ошибку логики
+     * @param {string} property - подробности ошибки
+     * @constructor module:Errors~FatalError
+     */
+    function FatalError(property) <span class="fstat-no" title="function not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        this.name = 'FatalError';</span>
+<span class="cstat-no" title="statement not covered" >        CustomError.apply(this, arguments);</span>
+    }
+    FatalError.prototype = Object.create(CustomError.prototype);
+    FatalError.prototype.constructor = FatalError;
+&nbsp;
+    return /** @alias module:Errors */ {
+        /**
+         * Класс ошибки, означающий неправильно переданный в функцию аргумент
+         * @type {module:Errors~ArgumentError}
+         */
+        ArgumentError: ArgumentError,
+        /**
+         * Класс ошибки, означающий, что путь от одной модели до другой модели не был найден
+         * @type {module:Errors~PathNotFoundError}
+         */
+        PathNotFoundError: PathNotFoundError,
+        /**
+         * Класс ошибки, означающий критическую ошибку логики
+         * @type {module:Errors~FatalError}
+         */
+        FatalError: FatalError
+    };
+});</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 13 2017 01:57:49 GMT+0300 (MSK)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

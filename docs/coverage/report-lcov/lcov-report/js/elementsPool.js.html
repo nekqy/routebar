@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/elementsPool.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">js/</a> elementsPool.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>64/64</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">94.59% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>35/37</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>11/11</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>64/64</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112</td><td class="line-coverage quiet"><span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">85×</span>
+<span class="cline-any cline-yes">85×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">85×</span>
+<span class="cline-any cline-yes">42×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2164×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2164×</span>
+<span class="cline-any cline-yes">193×</span>
+<span class="cline-any cline-yes">193×</span>
+<span class="cline-any cline-yes">193×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1971×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2164×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2164×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">1301×</span>
+<span class="cline-any cline-yes">1301×</span>
+<span class="cline-any cline-yes">1233×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">68×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">559×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">559×</span>
+<span class="cline-any cline-yes">1518×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1518×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1422×</span>
+<span class="cline-any cline-yes">193×</span>
+<span class="cline-any cline-yes">193×</span>
+<span class="cline-any cline-yes">193×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">96×</span>
+<span class="cline-any cline-yes">96×</span>
+<span class="cline-any cline-yes">91×</span>
+<span class="cline-any cline-yes">91×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">102×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">define(['utils', 'IPlugin'], function(Utils, IPlugin) {
+    "use strict";
+&nbsp;
+    function ElementsPool(mainDiv, screenManager) {
+        this._mainDiv = mainDiv;
+        this._screenManager = screenManager;
+        this._elements = {};
+        this._elementsBySide = {};
+    }
+    Utils.inherite(ElementsPool, IPlugin);
+    ElementsPool.prototype.configure = function(config) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof config === 'object') {
+            if (config.loadingHtml !== undefined) {
+                this._loadingHtml = config.loadingHtml;
+            }
+            if (config.saveHistoryInPool !== undefined) {
+                this._saveHistoryInPool = config.saveHistoryInPool;
+            }
+        }
+    };
+&nbsp;
+    // todo load зависит от prepare, поэтому из prepare надо возвращать функцию load
+    ElementsPool.prototype.prepareSide = function() {
+        function getScreen(side) {
+            return self._screenManager._getRelativeScreenByScreen(newScreen, side);
+        }
+        function prepareRelativeSide(side, screen) {
+            var id = screen.toString(),
+                element;
+            if (!self._elements.hasOwnProperty(id)) {
+                element = $('&lt;div class="rb__side rb__hidden rb__loading" data-id="' + id + '"&gt;' + self._loadingHtml + '&lt;/div&gt;');
+                self._mainDiv.prepend(element);
+                self._elements[id] = {
+                    element: element,
+                    screen: screen,
+                    state: 'loading'
+                };
+            } else {
+                element = self._elements[id].element;
+            }
+            if (side === 'center') {
+                element.toggleClass('rb__center', true);
+                element.toggleClass('rb__hidden', false);
+            }
+&nbsp;
+            self._elementsBySide[side] = id;
+        }
+&nbsp;
+        var newScreen = this._screenManager.getCurScreen(),
+            self = this,
+            leftScreen = getScreen('left'),
+            topScreen = getScreen('top'),
+            rightScreen = getScreen('right'),
+            bottomScreen = getScreen('bottom');
+&nbsp;
+        this.getElementBySide('center').toggleClass('rb__center', false);
+        this._mainDiv.find('&gt;.rb__side').toggleClass('rb__hidden', true);
+&nbsp;
+        self._elementsBySide = {};
+        newScreen &amp;&amp; prepareRelativeSide('center', newScreen);
+        leftScreen &amp;&amp; prepareRelativeSide('left', leftScreen);
+        topScreen &amp;&amp; prepareRelativeSide('top', topScreen);
+        rightScreen &amp;&amp; prepareRelativeSide('right', rightScreen);
+        bottomScreen &amp;&amp; prepareRelativeSide('bottom', bottomScreen);
+    };
+    ElementsPool.prototype.getElementBySide = function(side) {
+        var id = this._elementsBySide[side];
+        if (id) {
+            return this._elements[id].element;
+        } else {
+            return $();
+        }
+    };
+    ElementsPool.prototype.loadElements = function() {
+        var self = this;
+&nbsp;
+        Object.keys(this._elements).forEach(function(id) {
+            var elem = self._elements[id];
+&nbsp;
+            if (self._elementsBySide['center'] === id
+                || self._elementsBySide['left'] === id
+                || self._elementsBySide['top'] === id
+                || self._elementsBySide['right'] === id
+                || self._elementsBySide['bottom'] === id) {
+                if (elem.state === 'loading') {
+                    elem.element.html(elem.screen.getHtml());
+                    elem.element.toggleClass('rb__loading', false);
+                    elem.state = 'loaded';
+                }
+            } else {
+                <span class="missing-if-branch" title="else path not taken" >E</span>if (elem.screen.isTemporary()) {
+                    if (!(self._saveHistoryInPool &amp;&amp; self._screenManager._containsHistory(self._elements[id].screen))) {
+                        self._elements[id].element.remove();
+                        delete self._elements[id];
+                    }
+                }
+            }
+        });
+    };
+&nbsp;
+    ElementsPool.prototype.destroy = function() {
+        var self = this;
+        Object.keys(this._elements).forEach(function(id) {
+            self._elements[id].element.remove();
+        });
+        this._elements = null;
+        this._elementsBySide = null;
+        this._screenManager = null;
+    };
+&nbsp;
+    return ElementsPool;
+});</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 13 2017 01:57:49 GMT+0300 (MSK)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

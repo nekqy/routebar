@@ -1,3 +1,7 @@
+/**
+ * Модуль, содержащий всякие полезные переменные и функции
+ * @module Errors
+ */
 define([], function() {
 
     function CustomError(property) {
@@ -13,6 +17,13 @@ define([], function() {
         }
     }
 
+    /**
+     * @class
+     * Класс ошибки, означающий неправильно переданный в функцию аргумент
+     * @param {string} argName - название аргумента
+     * @param {Object} arg - значение аргумента
+     * @constructor module:Errors~ArgumentError
+     */
     function ArgumentError(argName, arg) {
         if (typeof arg === 'function') {
             arg = 'function() {...}';
@@ -26,13 +37,27 @@ define([], function() {
     ArgumentError.prototype = Object.create(CustomError.prototype);
     ArgumentError.prototype.constructor = ArgumentError;
 
-    function PathNotFoundError(property) {
+    /**
+     * @class
+     * Класс ошибки, означающий, что путь от одной модели до другой модели не был найден
+     * @param {ScreenModel} fromScreen - модель, из которой осуществлялся поиск
+     * @param {ScreenModel} toScreen - модель, в которую осуществлялся поиск
+     * @constructor module:Errors~PathNotFoundError
+     */
+    function PathNotFoundError(fromScreen, toScreen) {
         this.name = 'PathNotFoundError';
-        CustomError.apply(this, arguments);
+        var arg = 'path not found: from ' + fromScreen.toString() + ' to ' + toScreen.toString();
+        CustomError.apply(this, [arg]);
     }
     PathNotFoundError.prototype = Object.create(CustomError.prototype);
     PathNotFoundError.prototype.constructor = PathNotFoundError;
 
+    /**
+     * @class
+     * Класс ошибки, означающий критическую ошибку логики
+     * @param {string} property - подробности ошибки
+     * @constructor module:Errors~FatalError
+     */
     function FatalError(property) {
         this.name = 'FatalError';
         CustomError.apply(this, arguments);
@@ -40,9 +65,21 @@ define([], function() {
     FatalError.prototype = Object.create(CustomError.prototype);
     FatalError.prototype.constructor = FatalError;
 
-    return {
+    return /** @alias module:Errors */ {
+        /**
+         * Класс ошибки, означающий неправильно переданный в функцию аргумент
+         * @type {module:Errors~ArgumentError}
+         */
         ArgumentError: ArgumentError,
+        /**
+         * Класс ошибки, означающий, что путь от одной модели до другой модели не был найден
+         * @type {module:Errors~PathNotFoundError}
+         */
         PathNotFoundError: PathNotFoundError,
-        FatalError: FatalError,
+        /**
+         * Класс ошибки, означающий критическую ошибку логики
+         * @type {module:Errors~FatalError}
+         */
+        FatalError: FatalError
     };
 });

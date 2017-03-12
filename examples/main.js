@@ -2,8 +2,8 @@
 var
     mainScreenHtml = '<div class="mainScreen">mainScreen</div>',
     firstHtml = '<div class="child1">child1</div>',
-    secondHtml = '<iframe width="100%" height="100%" frameborder="0" src="examples/example1.html"></iframe>',
-    thirdHtml = '<iframe width="100%" height="100%" frameborder="0" src="examples/example1.html"></iframe>';
+    secondHtml = '<iframe width="100%" height="100%" frameborder="0" src="example1.html"></iframe>',
+    thirdHtml = '<iframe width="100%" height="100%" frameborder="0" src="example1.html"></iframe>';
 
 // main screen defining
 var mainScreen = new rb.Screen(mainScreenHtml);
@@ -22,7 +22,7 @@ function action() {
     var newScreen = mainScreen.getChild(0);
     //var count = 0;
     function loadPage(resolve, reject) {
-        $.get('examples/example2.html', function(data) {
+        $.get('example2.html', function(data) {
 
             newScreen.pushChild(newScreen = new rb.Screen(data));
 
@@ -44,7 +44,7 @@ function action() {
     }
 }
 
-$.get('examples/example2.html', function(data) {
+$.get('example2.html', function(data) {
     var lastScreen = new rb.Screen(data);
     secondScreen.pushChild(lastScreen);
 
@@ -73,7 +73,6 @@ $.get('examples/example2.html', function(data) {
         for (var id in instances) {
             if (instances.hasOwnProperty(id)) {
                 instances[id].afterRenderDispatcher.add(randomStep);
-                randomStep(undefined, undefined, instances[id]);
             }
         }
     });

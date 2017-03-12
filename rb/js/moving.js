@@ -4,6 +4,13 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
 
     var sides = Utils.sidesWithCenter;
 
+    /**
+     * @class
+     * Класс управления панелью
+     * @param {JQuery} mainDiv - элемент, в котором располагается панель. Должен содержать класс rb-wrapper.
+     * @param {ScreenModel} startScreen - стартовая модель контента
+     * @constructor Moving
+     */
     function Moving(mainDiv, startScreen) {
         if (mainDiv instanceof $) {
             this._mainDiv = mainDiv;
@@ -11,8 +18,23 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             throw new Errors.ArgumentError('mainDiv', mainDiv);
         }
 
+        /**
+         * Диспетчер, выполняющий зарегистрированные функции до выполнения перехода к новой ячейке в панели
+         * @name beforeMoveDispatcher
+         * @memberOf Moving#
+         */
         this.beforeMoveDispatcher = new BaseDispatcher(mainDiv);
+        /**
+         * Диспетчер, выполняющий зарегистрированные функции до рендеринга контента моделей на странице после перехода
+         * @name beforeRenderDispatcher
+         * @memberOf Moving#
+         */
         this.beforeRenderDispatcher = new BaseDispatcher(mainDiv);
+        /**
+         * Диспетчер, выполняющий зарегистрированные функции после рендеринга контента моделей на странице после перехода
+         * @name afterRenderDispatcher
+         * @memberOf Moving#
+         */
         this.afterRenderDispatcher = new BaseDispatcher(mainDiv);
         this._screenManager = new ScreenManager();
         this._elementsPool = new ElementsPool(mainDiv, this._screenManager);
@@ -28,7 +50,6 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         }
 
         this._plugins = [];
-        //SmartResizer(mainDiv, mainDiv.width(), mainDiv.height());
 
         this.resetConfig();
         this._loadingPromise = this.setScreen(startScreen || ScreenModel.getMainScreen(), false);
@@ -47,8 +68,13 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         mainDiv.on('click', this._clickHandler);
 
         this._relativeUpdateFn = this._reloadScreen.bind(this);
-        ScreenModel.registerRelativeUpdateFn(this._relativeUpdateFn);
+        ScreenModel.registerUpdateFn(this._relativeUpdateFn);
     }
+
+    /**
+     * Сбросить конфигурацию панели к значению по умолчанию (какое именно - см. в коде).
+     * @memberOf Moving
+     */
     Moving.prototype.resetConfig = function() {
         this.configure({
             wrongTime1: 500,
@@ -79,7 +105,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
 
             getRight: function(screen) {
                 var childIndex = screen.defaultChildIndex();
-                //this._lastScreen = screen;
+                //this._lastScreen = screen; // todo эта логика нужна здесь а не так где она сейчас, чтобы все было инкапсулировано в эти функции
                 //this._lastSide = 'right';
                 return screen.getChild(childIndex);
             },
@@ -123,7 +149,87 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             }
         });
     };
-
+    /**
+     * @typedef {function} Moving~getLeft
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход влево.
+     * По умолчанию берет опцию defaultParentIndex у экземпляра ScreenModel и ищет предка модели с этим индексом.
+     * @param {ScreenModel} screen - текущая модель контента панели
+     */
+    /**
+     * @typedef {function} Moving~getTop
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вверх.
+     * По умолчанию смотрит, осуществлялись ли переходы влево-вправо,
+     * если последним таким был переход вправо, то берется модель, из которой был сделан шаг вправо и в контексте ее потомков
+     * от текущего потомка будет найден предыдущий потомок и возвращен в качестве результата.
+     * Если при этом стоит опция cyclicStep = true, то в случае самого верхнего потомка следующим будет возвращен самый нижний потомок.
+     * Если последним был переход влево, то берется модель, из которой был сделан шаг влево и в контексте ее предков
+     * от текущего предка будет найден предыдущий предок и возвращен в качестве результата.
+     * Если при этом стоит опция cyclicStep = true, то в случае самого верхнего предка следующим будет возвращен самый нижний предок.
+     * А если переходов влево-вправо не было, будет считаться, будто бы переход был вправо из первого предка данной модели.
+     * Если у модели нет предков, следующая модель не будет найдена.
+     * @param {ScreenModel} screen - текущая модель контента панели
+     * @param {boolean} cyclicStep - делать ли цикличный переход в контексте массива моделей, в котором будет искаться новая модель.
+     */
+    /**
+     * @typedef {function} Moving~getRight
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вправо.
+     * По умолчанию берет опцию defaultChildIndex у экземпляра ScreenModel и ищет потомка модели с этим индексом.
+     * @param {ScreenModel} screen - текущая модель контента панели
+     */
+    /**
+     * @typedef {function} Moving~getBottom
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вниз.
+     * По умолчанию смотрит, осуществлялись ли переходы влево-вправо,
+     * если последним таким был переход вправо, то берется модель, из которой был сделан шаг вправо и в контексте ее потомков
+     * от текущего потомка будет найден следующий потомок и возвращен в качестве результата.
+     * Если при этом стоит опция cyclicStep = true, то в случае самого нижнего потомка следующим будет возвращен самый верхний потомок.
+     * Если последним был переход влево, то берется модель, из которой был сделан шаг влево и в контексте ее предков
+     * от текущего предка будет найден следующий предок и возвращен в качестве результата.
+     * Если при этом стоит опция cyclicStep = true, то в случае самого нижнего предка следующим будет возвращен самый верхний предок.
+     * А если переходов влево-вправо не было, будет считаться, будто бы переход был вправо из первого предка данной модели.
+     * Если у модели нет предков, следующая модель не будет найдена.
+     * @param {ScreenModel} screen - текущая модель контента панели
+     * @param {boolean} cyclicStep - делать ли цикличный переход в контексте массива моделей, в котором будет искаться новая модель.
+     */
+    /**
+     * Конфигурация панели
+     * @typedef {Object} Moving~config
+     * @property {number} [wrongTime1] - Время, затрачиваемое на первую часть неудачного перехода
+     * @property {number} [wrongTime2] - Время, затрачиваемое на вторую часть неудачного перехода
+     * @property {number} [correctTime] - Время, затрачиваемое на удачный переход
+     * @property {string} [wrongEasing1] - Анимация первой части неудачного перехода.<br> jQuery Easing v1.3 - http://gsgd.co.uk/sandbox/jquery/easing/
+     * @property {string} [wrongEasing2] - Анимация второй части неудачного перехода.<br> jQuery Easing v1.3 - http://gsgd.co.uk/sandbox/jquery/easing/
+     * @property {string} [correctEasing] - Анимация удачного перехода.<br> jQuery Easing v1.3 - http://gsgd.co.uk/sandbox/jquery/easing/
+     * @property {boolean} [hideArrowsAfterTime] - Скрывать ли стрелки перемещения после некоторого времени, чтобы можно было нажимать на элементы, которые находятся под этими стрелками.
+     * @property {number} [hideArrowsTime] - Через какой промежуток времени скрывать стрелки перемещения
+     * @property {boolean} [showArrowsOutside] - Показывать ли стрелки перемещения снаружи от панели (иначе показывать внутри панели)
+     * @property {boolean} [showArrowsOnHover] - Показывать ли стрелки при наведении мыши (иначе показывать всегда)
+     * @property {string} [loadingHtml] - Верстка ожидания, показываемая во время, пока контент еще не был вставлен в панель
+     * @property {(string|number|Array.<string|number>)} [leftKey] - Клавиши, при нажатии на которые будет сделан переход влево.
+     * Могут использоваться строковые или числовые нотации клавиш.<br>
+     * http://www.javascripter.net/faq/keycodes.htm<br>
+     * https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+     * @property {(string|number|Array.<string|number>)} [topKey] - Клавиши, при нажатии на которые будет сделан переход вверх.
+     * @property {(string|number|Array.<string|number>)} [rightKey] - Клавиши, при нажатии на которые будет сделан переход вправо.
+     * @property {(string|number|Array.<string|number>)} [bottomKey] - Клавиши, при нажатии на которые будет сделан переход вниз.
+     * @property {number} [maxHistoryLength] - Максимальная длина хранимой истории удачных переходов.
+     * @property {boolean} [lockControls] - Заблокированы ли элементы управления переходами (любые способы управления).
+     * @property {boolean} [showAdjacentScreens] - Отображать ли старую ячейку при анимации перехода на новую ячейку панели.
+     * @property {boolean} [saveHistoryInPool] - Хранить ли верстку ячеек панели, которые хранятся в истории переходов.
+     * @property {number} [pointersForSwipe] - Количество пальцев, необходимых для свайпа при переходе на новую ячейку на мобильных устройствах.
+     * @property {boolean} [isDirectPath] - Использовать ли при поиске кратчайшего пути до указанной модели только переходы
+     * от потомков к предкам и от предков к потомкам (иначе переходы по массивам предков и по массивам потомков тоже будут считаться отдельными переходами)
+     * @property {boolean} [cyclicStep] - делать ли цикличный переход в контексте массива моделей, в котором будет искаться новая модель.
+     * @property {Moving~getRight} [getRight] - Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вправо
+     * @property {Moving~getLeft} [getLeft] - Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход влево
+     * @property {Moving~getTop} [getTop] - Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вверх
+     * @property {Moving~getBottom} [getBottom] - Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вниз
+     */
+    /**
+     * Применить конфигурацию к панели
+     * @param {Moving~config} config - конфигурация
+     * @memberOf Moving
+     */
     Moving.prototype.configure = function(config) {
         if (!config) return;
 
@@ -159,14 +265,35 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
     };
 
     // todo defineProperty, и вообще доступ к объектам в api сделать через defineProperty
+    /**
+     * Получить менеджер управления
+     * @returns {ControlManager} ControlManager
+     * @memberOf Moving
+     */
     Moving.prototype.getControlManager = function() {
         return this._controlManager;
     };
-    
-    Moving.prototype.move = function(side, screen, isSaveHistory) {
-        var self = this;
+    /**
+     * Получить менеджер моделей контента
+     * @returns {ScreenManager} ScreenManager
+     * @memberOf Moving
+     */
+    Moving.prototype.getScreenManager = function() {
+        return this._screenManager;
+    };
+
+    /**
+     * Осуществить переход в указанную сторону.
+     * @param {string} side - сторона, в которую осуществляется переход
+     * @param {Boolean} [isSaveHistory] - сохранять ли осуществляемый переход в историю переходов
+     * @returns {Promise|undefined} promise о завершении действия, либо undefined, если переход не требуется
+     * @memberOf Moving
+     */
+    Moving.prototype.move = function(side, isSaveHistory) {
+        var self = this,
+            screen = this._screenManager.getCurScreen();
         if (side) {
-            return Promise.race([ this.beforeMoveDispatcher._runActions(
+            return Promise.race([ this.beforeMoveDispatcher.runActions(
                 self._moveInner.bind(self, side, screen, isSaveHistory),
                 [side, self._screenManager.getCurScreen(), self]
             ) ]);
@@ -179,7 +306,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             this._locks = this._controlManager.disableAll();
         }
 
-        this._screenManager.updateScreens('center', screen, isSaveHistory);
+        this._screenManager._updateScreens('center', screen, isSaveHistory);
 
         return new Promise(function (moveResolve, moveReject) {
 
@@ -205,7 +332,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                     self._screenManager._lastScreen = self._screenManager.getCurScreen();
                 }
 
-                self._screenManager.updateScreens(side, undefined, isSaveHistory);
+                self._screenManager._updateScreens(side, undefined, isSaveHistory);
                 self._elementsPool.prepareSide();
 
                 self._animation.goToCorrectSide(side).then(function(result) {
@@ -242,6 +369,12 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         else if (check(value, ltrbValues[3])) side = 'bottom';
         return this.move(side);
     };
+
+    /**
+     * Осуществить откат последнего удачного хода, воспользовавшись историей переходов.
+     * @returns {Promise|undefined} promise о завершении действия, либо undefined, если переход не требуется
+     * @memberOf Moving
+     */
     Moving.prototype.moveBack = function() {
         var lastStep = this._screenManager.popHistory();
         if (lastStep) {
@@ -250,7 +383,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 nextScreen = lastStep.screen,
                 side = lastStep.side,
                 mustUpdate = false;
-            if (side === 'left' && curScreen.getParent(nextScreen)) {
+            if (side === 'left' && curScreen.getParent(nextScreen)) { // todo неправильно! нельзя затачиваться на структуру
                 mustUpdate = true;
             } else if (side === 'right' && curScreen.getChild(nextScreen)) {
                 mustUpdate = true;
@@ -265,27 +398,59 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 this._screenManager._setRelativeScreen(this._screenManager.getCurScreen(), side, nextScreen);
             }
 
-            return this.move(lastStep.side, curScreen, false);
+            var self = this;
+            if (side) {
+                return Promise.race([ this.beforeMoveDispatcher.runActions(
+                    self._moveInner.bind(self, lastStep.side, curScreen, false),
+                    [side, self._screenManager.getCurScreen(), self]
+                ) ]);
+            }
         }
         return null;
     };
+
+    /**
+     * Анимировать запрещенное перемещение в одну из сторон. В панели в эту сторону перемещение может быть запрещено,
+     * но будет анимировано, будто запрещено.
+     * @param {string} side - сторона, в которую осуществляется переход
+     * @returns {Promise} promise о завершении действия
+     * @memberOf Moving
+     */
     Moving.prototype.animateWrongSide = function(side) {
         return this._animation.goToWrongSide(side);
     };
 
+    /**
+     * Установить модель контента в текущую ячейку панели.
+     * @param {ScreenModel} screen - Устанавливаемая модель контента
+     * @param {Boolean} [isSaveHistory] - Сохранять ли устанавливаемую модель в историю переходов
+     * @returns {Promise} promise о завершении установки модели
+     * @memberOf Moving
+     */
     Moving.prototype.setScreen = function(screen, isSaveHistory) {
-        return this.move('center', screen, isSaveHistory);
+        var self = this;
+        return Promise.race([ this.beforeMoveDispatcher.runActions(
+            self._moveInner.bind(self, 'center', screen, isSaveHistory),
+            ['center', self._screenManager.getCurScreen(), self]
+        ) ]);
     };
     // todo это слишком много, нужно выделить тот функционал который реально релоадит, и вызывать его везде в том числе в ините где сейчас дергается move
     Moving.prototype._reloadScreen = function() {
-        return this.move('center', this._screenManager.getCurScreen(), false);
+        return this.setScreen(this._screenManager.getCurScreen(), false);
     };
 
+    /**
+     * Перезагрузить все панели на странице. Перезагрузка предполагает обновление верстки ячейки панели,
+     * сброс состояния в верстке. Если в элементах верстки есть подписки, необходимо позаботиться об отписке и
+     * последующей подписке к новым элементам верстки.
+     * @prop {string} side - сторона, с которой будет перезагружаться ячейка панели относительно текущей ячейки.
+     * @memberOf Moving
+     */
     Moving.prototype.reload = function(side) {
         side = side || 'center';
         var rbSide = this._elementsPool.getElementBySide(side);
         var screen = this._screenManager.getRelativeScreen(side);
-        rbSide.html(screen.html);
+        rbSide.html(screen.getHtml());
     };
 
     Moving.prototype._renderHtml = function(side, moveResolve) {
@@ -294,7 +459,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
 
         function afterRender() {
             self.activate();
-            self.afterRenderDispatcher._runActions(Utils.nop, args);
+            self.afterRenderDispatcher.runActions(Utils.nop, args);
             if (self._lockControls) {
                 self._controlManager.enableByValues(self._locks);
                 self._locks = null;
@@ -302,7 +467,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             moveResolve();
         }
 
-        this.beforeRenderDispatcher._runActions(function() {
+        this.beforeRenderDispatcher.runActions(function() {
             var iframeCount, loadedIframeCount = 0, iframes;
 
             iframes = self._mainDiv.find('iframe');
@@ -325,11 +490,21 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         }, args);
     };
 
+    /**
+     * Активировать панель. Переводит фокус на панель, и, как следствие, панель ловит все события нажатия клавиш.
+     * @memberOf Moving
+     */
     Moving.prototype.activate = function() {
         this._mainDiv.find('>.rb__fake-element').focus();
     };
 
-    Moving.prototype.goToScreen = function(screen) {
+    /**
+     * Находит кратчайший путь до указанной модели и пошагово переходит от текущей ячейки к той ячейке, в которой располагается найденная модель.
+     * @param {ScreenModel} toScreen - Искомая модель контента
+     * @returns {Promise} promise о завершении переходов к намеченной цели
+     * @memberOf Moving
+     */
+    Moving.prototype.goToScreen = function(toScreen) {
         function firstStep(path) {
             return new Promise(function(resolve, reject) {
                 nextStep(path, 0, resolve, reject);
@@ -338,7 +513,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         function nextStep(path, i, resolve, reject) {
             if (!path) {
                 self._controlManager.enableByValues(locks);
-                reject(new Errors.PathNotFoundError('goToScreen : path not found'));
+                reject(new Errors.PathNotFoundError(fromScreen, toScreen));
                 return;
             }
             if (i === path.length - 1) {
@@ -356,7 +531,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 nextScreen = path[i+1],
                 side;
 
-            if (curScreen.getParent(nextScreen)) {
+            if (curScreen.getParent(nextScreen)) { // todo неправильно! нельзя затачиваться на структуру
                 side = 'left';
             } else if (curScreen.getChild(nextScreen)) {
                 side = 'right';
@@ -382,11 +557,17 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         }
         var self = this,
             locks = this._controlManager.disableAll(),
-            path = this._screenManager.findShortestPath(this._screenManager.getCurScreen(), screen);
+            fromScreen = this._screenManager.getCurScreen(),
+            path = this._screenManager.findShortestPath(fromScreen, toScreen);
 
         return firstStep(path);
     };
 
+    /**
+     * Добавить плагин, расширяющий функционал панели, к общему списку плагинов.
+     * @param {IPlugin} plugin - добавляемый плагин
+     * @memberOf Moving
+     */
     Moving.prototype.addPlugin = function(plugin) {
         if (plugin instanceof IPlugin) {
             this._plugins.push(plugin);
@@ -394,6 +575,11 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             console.error('Moving - addPlugin - argument must be IPlugin');
         }
     };
+    /**
+     * Удалить плагин из общего списка плагинов
+     * @param {IPlugin} plugin - удаляемый плагин
+     * @memberOf Moving
+     */
     Moving.prototype.removePlugin = function(plugin) {
         var index = this._plugins.indexOf(plugin);
         if (index != -1) {
@@ -402,8 +588,12 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         }
     };
 
+    /**
+     * Уничтожить панель
+     * @memberOf Moving
+     */
     Moving.prototype.destroy = function() {
-        ScreenModel.unregisterRelativeUpdateFn(this._relativeUpdateFn);
+        ScreenModel.unregisterUpdateFn(this._relativeUpdateFn);
 
         this._plugins.forEach(function(plugin) {
             plugin.destroy();

@@ -1,6 +1,14 @@
 define(['utils', 'IPlugin'], function(Utils, IPlugin) {
     "use strict";
 
+    //todo может например перейти на https://github.com/component/emitter
+    /**
+     * @class
+     * Класс диспетчера, инкапсулирует событийную модель, каждый экземпляр представляет собой событие.
+     * @param {JQuery} mainDiv - элемент, в котором располагается панель. Должен содержать класс rb-wrapper.
+     * @constructor BaseDispatcher
+     * @extends IPlugin
+     */
     function BaseDispatcher(mainDiv) {
         this._actions = {};
         this._index = 0;
@@ -17,6 +25,13 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
 
     // todo сделать не once, а дать возможность указать число - количество срабатываний,
     // или функцию которая если вернет true - не отписываться, false - отписываться
+    /**
+     * Зарегистрировать действие, которое выполнится при запуске действий
+     * @param {function} action - регистрируемое действие
+     * @param {boolean} [once] - выполнить действие только в первый раз
+     * @returns {number|null} индекс зарегистрированного действия (null, если действие не было зарегистрировано)
+     * @memberOf BaseDispatcher
+     */
     BaseDispatcher.prototype.add = function(action, once) {
         if (typeof action === 'function') {
             this._actions[this._index++] = {
@@ -28,12 +43,26 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         return null;
     };
     // todo отписка не по индексу, а по функции
+    /**
+     * Удалить действие из списка зарегистрированных действий
+     * @param {number} index - индекс удаляемого действия
+     * @memberOf BaseDispatcher
+     */
     BaseDispatcher.prototype.remove = function(index) {
         if (this._actions.hasOwnProperty(index)) {
             delete this._actions[index];
         }
     };
-    BaseDispatcher.prototype._runActions = function(fn, actionArgs) {
+    /**
+     * Запустить зарегистрированные действия
+     * @param {function} [fn] - функция, которая будет выполнена после того, как выполнятся все зарегистрированные действия.
+     * Если зарегистрированные функции возвращают Promise, функция выполнится после завершения этих Promise.
+     * Если хотя бы одна из зарегистрированных функций (или их Promise) вернет false, фунция fn не будет вызвана.
+     * @param {Array} [actionArgs] - аргументы для зарегистрированных функций (для всех функций будут переданы одни и те же аргументы).
+     * @returns {*} Результат выполнения функции fn, либо undefined если функция fn не была вызвана
+     * @memberOf BaseDispatcher
+     */
+    BaseDispatcher.prototype.runActions = function(fn, actionArgs) {
         var
             actions = [],
             results = [],
@@ -81,6 +110,10 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         }
     };
 
+    /**
+     * Уничтожить экземпляр класса
+     * @memberOf BaseDispatcher
+     */
     BaseDispatcher.prototype.destroy = function() {
         this._actions = null;
     };

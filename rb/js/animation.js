@@ -1,6 +1,14 @@
 define(['utils', 'IPlugin', 'errors', 'jquery.easing'], function(Utils, IPlugin, Errors) {
     "use strict";
 
+    /**
+     * @class
+     * Класс анимации переходов в панели
+     * @param {JQuery} mainDiv - элемент, в котором располагается панель. Должен содержать класс rb-wrapper.
+     * @param {ElementsPool} elementsPool - хранилище элементов ячеек панели
+     * @constructor Animation
+     * @extends IPlugin
+     */
     function Animation(mainDiv, elementsPool) {
         this._elementsPool = elementsPool;
 
@@ -11,6 +19,11 @@ define(['utils', 'IPlugin', 'errors', 'jquery.easing'], function(Utils, IPlugin,
         }
     }
     Utils.inherite(Animation, IPlugin);
+    /**
+     * Применить конфигурацию. Учитывает опции wrongTime1, wrongTime2, correctTime, wrongEasing1, wrongEasing2, correctEasing, showAdjacentScreens.
+     * @param {Moving~config} config - конфигурация
+     * @memberOf Animation
+     */
     Animation.prototype.configure = function(config) {
         function fixTime(argName, time) {
             if (typeof time === 'number') {
@@ -84,6 +97,11 @@ define(['utils', 'IPlugin', 'errors', 'jquery.easing'], function(Utils, IPlugin,
         this._res = res;
     };
 
+    /**
+     * Анимация неудачного перехода
+     * @param {string} side - сторона перехода
+     * @memberOf Animation
+     */
     Animation.prototype.goToWrongSide = function(side) {
         var self = this,
             width = 100,
@@ -150,6 +168,11 @@ define(['utils', 'IPlugin', 'errors', 'jquery.easing'], function(Utils, IPlugin,
         });
     };
 
+    /**
+     * Анимация удачного перехода
+     * @param {string} side - сторона перехода
+     * @memberOf Animation
+     */
     Animation.prototype.goToCorrectSide = function(side) {
         var self = this,
             newElem = this._elementsPool.getElementBySide('center'),
@@ -207,11 +230,19 @@ define(['utils', 'IPlugin', 'errors', 'jquery.easing'], function(Utils, IPlugin,
         });
     };
 
+    /**
+     * Переход в центральную ячейку
+     * @memberOf Animation
+     */
     Animation.prototype.goToCenter = function() {
         var elem = this._elementsPool.getElementBySide('center');
         elem.css({'left': '0%', 'top': '0%'});
     };
 
+    /**
+     * Уничтожить экземпляр класса анимации
+     * @memberOf Animation
+     */
     Animation.prototype.destroy = function() {
         this._new && this._new.stop();
         this._old && this._old.stop();

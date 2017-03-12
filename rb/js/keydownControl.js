@@ -1,6 +1,14 @@
-define(['utils', 'IPlugin', 'errors'], function(Utils, IPlugin, Errors) {
+define(['utils', 'IControl', 'errors'], function(Utils, IControl, Errors) {
     "use strict";
 
+    /**
+     * @class
+     * Класс управления панелью с помощью клавиш на клавиатуре.
+     * @param {JQuery} mainDiv - элемент, в котором располагается панель. Должен содержать класс rb-wrapper.
+     * @param {function} actionFn - функция, определяющая действие при переходе в одну из сторон (Moving.prototype._moveByActionValue)
+     * @constructor KeydownControl
+     * @extends IControl
+     */
     function KeydownControl(mainDiv, actionFn) {
         if (!(mainDiv instanceof $)) {
             throw new Errors.ArgumentError('mainDiv', mainDiv);
@@ -13,7 +21,12 @@ define(['utils', 'IPlugin', 'errors'], function(Utils, IPlugin, Errors) {
         this._mainDiv = mainDiv;
         this._actionFn = actionFn;
     }
-    Utils.inherite(KeydownControl, IPlugin);
+    Utils.inherite(KeydownControl, IControl);
+    /**
+     * Применить конфигурацию. Учитывает опции leftKey, topKey, rightKey, bottomKey.
+     * @param {Moving~config} config
+     * @memberOf KeydownControl
+     */
     KeydownControl.prototype.configure = function(config) {
         if (typeof config === 'object') {
             if (config.leftKey !== undefined) {
@@ -30,11 +43,18 @@ define(['utils', 'IPlugin', 'errors'], function(Utils, IPlugin, Errors) {
             }
         }
     };
-
+    /**
+     *
+     * @returns {boolean}
+     * @memberOf KeydownControl
+     */
     KeydownControl.prototype.isEnable = function() {
         return this._isEnable;
     };
-
+    /**
+     *
+     * @memberOf KeydownControl
+     */
     KeydownControl.prototype.enable = function() {
         if (this._isEnable) return;
 
@@ -57,7 +77,10 @@ define(['utils', 'IPlugin', 'errors'], function(Utils, IPlugin, Errors) {
 
         this._isEnable = true;
     };
-
+    /**
+     *
+     * @memberOf KeydownControl
+     */
     KeydownControl.prototype.disable = function() {
         if (!this._isEnable) return;
 
@@ -66,7 +89,10 @@ define(['utils', 'IPlugin', 'errors'], function(Utils, IPlugin, Errors) {
 
         this._isEnable = false;
     };
-
+    /**
+     *
+     * @memberOf KeydownControl
+     */
     KeydownControl.prototype.destroy = function() {
         this.disable();
     };

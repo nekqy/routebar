@@ -83,7 +83,7 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
                 || self._elementsBySide['right'] === id
                 || self._elementsBySide['bottom'] === id) {
                 if (elem.state === 'loading') {
-                    elem.element.html(elem.screen.html);
+                    elem.element.html(elem.screen.getHtml());
                     elem.element.toggleClass('rb__loading', false);
                     elem.state = 'loaded';
                 }

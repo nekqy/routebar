@@ -1,9 +1,36 @@
 define(['errors'], function(Errors) {
     "use strict";
 
-    function Screen(html, children, parents) {
-        if (!Screen._mainScreenSetted) {
-            Screen._mainScreen = this;
+    /**
+     * Конфигурация модели
+     * @typedef {Object} ScreenModel~ScreenConfig
+     * @property {ScreenModel[]} [children] - Потомки модели
+     * @property {ScreenModel[]} [parents] - Предки модели
+     * @property {boolean} [isPermanent] - Является ли модель постоянно хранимой, если да, то попав на страницу не будет оттуда удаляться.
+     * @property {boolean} [isDirectedGraph] - Является ли строящийся граф моделей ориентированным.
+     * @property {string} [html] - Контент модели
+     * @property {number} [defaultChildIndex] - Индекс модели по умолчанию среди моделей-потомков
+     * @property {number} [defaultParentIndex] - Индекс модели по умолчанию среди моделей-предков
+     */
+    /**
+     * Конфигурация моделей по умолчанию
+     * @typedef {Object} ScreenModel~DefaultScreenConfig
+     * @property {boolean} [isPermanent] - Является ли модель постоянно хранимой, если да, то попав на страницу не будет оттуда удаляться.
+     * @property {boolean} [isDirectedGraph] - Является ли строящийся граф моделей ориентированным.
+     * @property {number} [defaultChildIndex] - Индекс модели по умолчанию среди моделей-потомков
+     * @property {number} [defaultParentIndex] - Индекс модели по умолчанию среди моделей-предков
+     */
+    /**
+     * @class
+     * Модель контента, отображаемая в ячейке панели.
+     * @param {String|ScreenModel~ScreenConfig} [html] - контент модели
+     * @param {ScreenModel[]} [children] - потомки модели
+     * @param {ScreenModel[]} [parents] - предки модели
+     * @constructor ScreenModel
+     */
+    function ScreenModel(html, children, parents) {
+        if (!ScreenModel._mainScreenSetted) {
+            ScreenModel._mainScreen = this;
         }
 
         this._children = [];
@@ -24,20 +51,20 @@ define(['errors'], function(Errors) {
         }
 
         if (isPermanent === undefined) {
-            isPermanent = Screen.isPermanent;
+            isPermanent = ScreenModel.isPermanent;
         }
         if (isDirectedGraph === undefined) {
-            isDirectedGraph = Screen.isDirectedGraph;
+            isDirectedGraph = ScreenModel.isDirectedGraph;
         }
         if (defaultChildIndex === undefined) {
-            defaultChildIndex = Screen.defaultChildIndex;
+            defaultChildIndex = ScreenModel.defaultChildIndex;
         }
         if (defaultParentIndex === undefined) {
-            defaultParentIndex = Screen.defaultParentIndex;
+            defaultParentIndex = ScreenModel.defaultParentIndex;
         }
 
-        this._id = 'screen_' + Screen._length++;
-        this.html = html; // TODO на изменение html изменять элементы
+        this._id = 'screen_' + ScreenModel._length++;
+        this._html = html;
         this.resetChildren(children);
         this.resetParents(parents);
         this._temporary = !isPermanent; // Todo на изменение тут менять и там где используется
@@ -46,28 +73,72 @@ define(['errors'], function(Errors) {
         this._defaultParentIndex = defaultParentIndex;
     }
 
-    Screen.prototype.toString = function() {
+    /**
+     * Возвращает идентификатор модели
+     * @returns {string} идентификатор модели
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.toString = function() {
         return this._id;
     };
-    Screen.prototype.isTemporary = function() {
+
+    /**
+     * Возвращает контент модели
+     * @returns {string} контент модели
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.getHtml = function () {
+        return this._html;
+    };
+
+    /**
+     * Задать контент модели
+     * @param {string} html - контент модели
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.setHtml = function (html) {
+        this._html = html;
+        // todo обновить все ячейки в которых лежит эта модель
+    };
+    /**
+     * Возвращает опцию "временная модель". Если модель временная, она не будет храниться на странице, если не отображается.
+     * @returns {boolean} опция "временная модель"
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.isTemporary = function() {
         return this._temporary;
     };
-    Screen.prototype.isDirectedGraph = function() {
+    /**
+     * Возвращает опцию "ориентированный граф". Если true, модель является частью ориентированного графа.
+     * @returns {boolean} опция "ориентированный граф"
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.isDirectedGraph = function() {
         return this._isDirectedGraph;
     };
-    Screen.prototype.defaultChildIndex = function() {
+    /**
+     * Возвращает индекс модели по умолчанию среди моделей-потомков
+     * @returns {number} индекс модели по умолчанию среди моделей-потомков
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.defaultChildIndex = function() {
         return this._defaultChildIndex;
     };
-    Screen.prototype.defaultParentIndex = function() {
+    /**
+     * Возвращает индекс модели по умолчанию среди моделей-предков
+     * @returns {number} индекс модели по умолчанию среди моделей-предков
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.defaultParentIndex = function() {
         return this._defaultParentIndex;
     };
 
-    Screen.prototype._addScreen = function(screen, isChild) {
+    ScreenModel.prototype._addScreen = function(screen, isChild) {
         if (isChild) {
             if (this.getChildIndex(screen) !== -1) {
                 console.log('screenModel: "' + screen.toString() + '" child screen exists!');
             } else {
-                this._children.push(screen);
+                this._children.push(screen); //todo смотреть что оба скрина одного типа isDirectGraph
                 screen._parents.push(this);
             }
         } else {
@@ -86,25 +157,15 @@ define(['errors'], function(Errors) {
             }
         }
 
-        Screen._runRelativeUpdateFn(this);
+        ScreenModel._runUpdateFn(this);
         return this;
     };
-    //Screen.prototype._addScreenAfter = function(screen, after, arr, oppositeArr, cyclic) {
-    //    var afterIndex = this._getScreenIndex(after, arr, cyclic);
-    //
-    //    if (!this._isDirectedGraph) {
-    //        oppositeArr.push(this);
-    //    }
-    //
-    //    arr.push(screen);
-    //    Screen._runRelativeUpdateFn(this);
-    //    return this;
-    //};
-    Screen.prototype._getScreenIndex = function(screen, arr, cyclic) {
+
+    ScreenModel.prototype._getScreenIndex = function(screen, arr, cyclic) {
         var index = -1;
         if (typeof screen === 'number') {
             if (cyclic) {
-                screen = (screen + arr.length) % arr.length;
+                screen = (screen % arr.length + arr.length) % arr.length;
             }
             index = screen;
         } else if (typeof screen === 'string') {
@@ -114,14 +175,14 @@ define(['errors'], function(Errors) {
                     return true;
                 }
             });
-        } else if (screen instanceof Screen) {
+        } else if (screen instanceof ScreenModel) {
             index = arr.indexOf(screen);
         } else {
             throw new Errors.ArgumentError('screen', screen);
         }
         return index;
     };
-    Screen.prototype._removeScreen = function(screen, isChild, cyclic) {
+    ScreenModel.prototype._removeScreen = function(screen, isChild, cyclic) {
         var arr = isChild ? this._children : this._parents,
             index = this._getScreenIndex(screen, arr, cyclic);
 
@@ -139,113 +200,238 @@ define(['errors'], function(Errors) {
             removed._removeScreen(this, isChild);
         }
 
-        Screen._runRelativeUpdateFn(this);
+        ScreenModel._runUpdateFn(this);
         return this;
     };
 
-    Screen.prototype.pushChild = function(child) {
+    /**
+     * Добавляет модель-потомка в конец набора потомков
+     * @param {ScreenModel} child - добавляемая модель
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.pushChild = function(child) {
         return this._addScreen(child, true);
     };
-    Screen.prototype.getChildIndex = function(child, cyclic) {
+    /**
+     * Находит индекс модели среди набора потомков
+     * @param {ScreenModel|string|number} child - искомая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {number} искомый индекс модели
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.getChildIndex = function(child, cyclic) {
+        //todo (screen + arr.length) % arr.length неправильный алгоритм. надо чтобы -11 % 5 было 4. а тут -1
         return this._getScreenIndex(child, this._children, cyclic);
     };
-    Screen.prototype.getChild = function(child, cyclic) {
+    /**
+     * Находит модель среди набора потомков
+     * @param {ScreenModel|string|number} child - искомая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {ScreenModel} искомая модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.getChild = function(child, cyclic) {
         var index = this.getChildIndex(child, cyclic);
         return this._children[index];
     };
-    Screen.prototype.removeChild = function(child, cyclic) {
+    /**
+     * Удаляет модель из набора потомков
+     * @param {ScreenModel|string|number} child - удаляемая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.removeChild = function(child, cyclic) {
         return this._removeScreen(child, true, cyclic);
     };
-    Screen.prototype.pushChildren = function(children) {
+    /**
+     * Добавить набор моделей в конец к набору потомков
+     * @param {ScreenModel[]} children - набор добавляемый моделей
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.pushChildren = function(children) {
         if (children && Array.isArray(children)) {
             for (var i = 0; i < children.length; i++) {
                 this.pushChild(children[i]);
             }
         }
-        Screen._runRelativeUpdateFn(this);
+        ScreenModel._runUpdateFn(this);
         return this;
     };
-    Screen.prototype.resetChildren = function(children) {
+    /**
+     * Переопределить набор моделей потомков, то есть удалить старые и установить новые
+     * @param {ScreenModel[]} children - набор добавляемый моделей
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.resetChildren = function(children) {
         return this.clearChildren().pushChildren(children);
     };
-    Screen.prototype.clearChildren = function() {
+    /**
+     * Очищает набор потомков
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.clearChildren = function() {
         for (var i = this._children.length - 1; i >= 0; i--) {
             this.removeChild(this._children[i]);
         }
-        Screen._runRelativeUpdateFn(this);
+        ScreenModel._runUpdateFn(this);
         return this;
     };
 
-    Screen.prototype.pushParent = function(parent) {
+    /**
+     * Добавляет модель-предка в конец набора предков
+     * @param {ScreenModel} parent - добавляемая модель
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.pushParent = function(parent) {
         return this._addScreen(parent, false);
     };
-    Screen.prototype.getParentIndex = function(parent, cyclic) {
+    /**
+     * Находит индекс модели среди набора предков
+     * @param {ScreenModel|string|number} parent - искомая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {number} искомый индекс модели
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.getParentIndex = function(parent, cyclic) {
         return this._getScreenIndex(parent, this._parents, cyclic);
     };
-    Screen.prototype.getParent = function(parent, cyclic) {
+    /**
+     * Находит модель среди набора предков
+     * @param {ScreenModel|string|number} parent - искомая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {ScreenModel} искомая модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.getParent = function(parent, cyclic) {
         var index = this.getParentIndex(parent, cyclic);
         return this._parents[index];
     };
-    Screen.prototype.removeParent = function(parent, cyclic) {
+    /**
+     * Удаляет модель из набора предков
+     * @param {ScreenModel|string|number} parent - удаляемая модель, ее идентификатор или порядковый номер в наборе
+     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.removeParent = function(parent, cyclic) {
         return this._removeScreen(parent, false, cyclic);
     };
-    Screen.prototype.pushParents = function(parents) {
+    /**
+     * Добавить набор моделей в конец к набору предков
+     * @param {ScreenModel[]} parents - набор добавляемый моделей
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.pushParents = function(parents) {
         if (parents && Array.isArray(parents)) {
             for (var i = 0; i < parents.length; i++) {
                 this.pushParent(parents[i]);
             }
         }
-        Screen._runRelativeUpdateFn(this);
+        ScreenModel._runUpdateFn(this);
         return this;
     };
-    Screen.prototype.resetParents = function(parents) {
+    /**
+     * Переопределить набор моделей предков, то есть удалить старые и установить новые
+     * @param {ScreenModel[]} parents - набор добавляемый моделей
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.resetParents = function(parents) {
         return this.clearParents().pushParents(parents);
     };
-    Screen.prototype.clearParents = function() {
+    /**
+     * Очищает набор предков
+     * @returns {ScreenModel} данная модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.clearParents = function() {
         for (var i = this._parents.length - 1; i >= 0; i--) {
             this.removeParent(this._parents[i]);
         }
-        Screen._runRelativeUpdateFn(this);
+        ScreenModel._runUpdateFn(this);
         return this;
     };
 
-    Screen.configure = function(config) {
-        Screen.isPermanent = config.isPermanent;
-        Screen.isDirectedGraph = config.isDirectedGraph;
-        Screen.defaultChildIndex = config.defaultChildIndex;
-        Screen.defaultParentIndex = config.defaultParentIndex;
+    /**
+     * Устанавливает конфигурацию моделей по умолчанию. Изначальные значения по умоланию: <br>
+     * isPermanent: false, <br>
+     * isDirectedGraph: true, <br>
+     * defaultChildIndex: 0, <br>
+     * defaultParentIndex: 0
+     * @param {ScreenModel~DefaultScreenConfig} config - конфигурация
+     * @memberOf ScreenModel
+     */
+    ScreenModel.configure = function(config) {
+        ScreenModel.isPermanent = config.isPermanent;
+        ScreenModel.isDirectedGraph = config.isDirectedGraph;
+        ScreenModel.defaultChildIndex = config.defaultChildIndex;
+        ScreenModel.defaultParentIndex = config.defaultParentIndex;
     };
-    Screen.configure({
+    ScreenModel.configure({
         isPermanent: false,
         isDirectedGraph: true,
         defaultChildIndex: 0,
         defaultParentIndex: 0
     });
-    Screen._length = 1;
-    Screen._relativeUpdateFn = [];
-    Screen.setMainScreen = function(screen) {
-        Screen._mainScreen = screen;
-        Screen._mainScreenSetted = true;
+    ScreenModel._length = 1;
+    ScreenModel._relativeUpdateFn = [];
+
+    /**
+     * Установить модель по умолчанию, она будет использоваться в качестве стартовой для панелей, если при старте не заданы иные модели.
+     * Если модель по умолчанию не установлена вручную, будет использован первый созданный экземпляр модели.
+     * @param {ScreenModel} screen - модель по умолчанию
+     * @memberOf ScreenModel
+     * @see {@link module:RbManager.initLayout}
+     */
+    ScreenModel.setMainScreen = function(screen) {
+        ScreenModel._mainScreen = screen;
+        ScreenModel._mainScreenSetted = true;
     };
-    Screen.getMainScreen = function() {
-        return Screen._mainScreen;
+    /**
+     * Получить модель по умолчанию
+     * @returns {ScreenModel} модель по умолчанию
+     * @memberOf ScreenModel
+     */
+    ScreenModel.getMainScreen = function() {
+        return ScreenModel._mainScreen;
     };
-    Screen.registerRelativeUpdateFn = function(fn) {
-        Screen._relativeUpdateFn.push(fn);
+    /**
+     * Зарегистрировать функцию для запуска, когда изменится структура графа
+     * @param {function} fn - функция для запуска
+     * @memberOf ScreenModel
+     */
+    ScreenModel.registerUpdateFn = function(fn) {
+        ScreenModel._relativeUpdateFn.push(fn);
     };
-    Screen.unregisterRelativeUpdateFn = function(fn) {
-        Screen._relativeUpdateFn = Screen._relativeUpdateFn.filter(function(value) {
+    /**
+     * Удалить функцию из списка функций для запуска, когда изменится структура графа
+     * @param {function} fn - функция для запуска
+     * @memberOf ScreenModel
+     */
+    ScreenModel.unregisterUpdateFn = function(fn) {
+        ScreenModel._relativeUpdateFn = ScreenModel._relativeUpdateFn.filter(function(value) {
             return value !== fn;
         });
     };
-    Screen.clearRelativeUpdateFn = function() {
-        Screen._relativeUpdateFn = [];
+    /**
+     * Очистить набор функций для запуска, когда изменится структура графа
+     * @memberOf ScreenModel
+     */
+    ScreenModel.clearUpdateFn = function() {
+        ScreenModel._relativeUpdateFn = [];
     };
-    Screen._runRelativeUpdateFn = function(screen) {
-        Screen._relativeUpdateFn.forEach(function(fn) {
+    ScreenModel._runUpdateFn = function(screen) {
+        ScreenModel._relativeUpdateFn.forEach(function(fn) {
             fn.call(undefined, screen);
         });
     };
 
-    return Screen;
+    return ScreenModel;
 });

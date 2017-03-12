@@ -1,14 +1,25 @@
 define(['utils', 'screenModel', 'IPlugin', 'errors'], function(Utils, Screen, IPlugin, Errors) {
     "use strict";
 
+    /**
+     * @class
+     * Класс-менеджер моделей контента
+     * @constructor ScreenManager
+     * @extends IPlugin
+     */
     function ScreenManager() {
         this._history = [];
-        this._curScreen = undefined;
+        this._curScreen = null;
         this._relativeScreens = {};
         this._relativeUpdateFn = this._updateRelativeScreen.bind(this);
-        Screen.registerRelativeUpdateFn(this._relativeUpdateFn);
+        Screen.registerUpdateFn(this._relativeUpdateFn);
     }
     Utils.inherite(ScreenManager, IPlugin);
+    /**
+     * Применить конфигурацию к панели. Учитывает опции maxHistoryLength, isDirectPath, cyclicStep, getLeft, getTop, getRight, getBottom.
+     * @param {Moving~config} config - конфигурация
+     * @memberOf ScreenManager
+     */
     ScreenManager.prototype.configure = function(config) {
         if (typeof config === 'object') {
             if (config.maxHistoryLength !== undefined) {
@@ -40,7 +51,7 @@ define(['utils', 'screenModel', 'IPlugin', 'errors'], function(Utils, Screen, IP
         }
     };
 
-    ScreenManager.prototype.updateScreens = function(side, screen, isSaveHistory) {
+    ScreenManager.prototype._updateScreens = function(side, screen, isSaveHistory) {
         var updated = false;
         if (screen) {
             if (this._curScreen !== screen) {
@@ -88,34 +99,14 @@ define(['utils', 'screenModel', 'IPlugin', 'errors'], function(Utils, Screen, IP
 
         if (side === 'center') {
             return screen;
-        }
-        if (side === 'left') {
-            //if (screen._parents.length) {
-                return this._relativeScreens[id]['left'] || this._getLeft(screen);
-            //} else {
-            //    return null;
-            //}
-        }
-        if (side === 'top') {
-            //if (screen._prev) {
-                return this._relativeScreens[id]['top'] || this._getTop(screen, this._cyclicStep);
-            //} else {
-            //    return null;
-            //}
-        }
-        if (side === 'right') {
-            //if (screen._children.length) {
-                return this._relativeScreens[id]['right'] || this._getRight(screen);
-            //} else {
-            //    return null;
-            //}
-        }
-        if (side === 'bottom') {
-            //if (screen._next) {
-                return this._relativeScreens[id]['bottom'] || this._getBottom(screen, this._cyclicStep);
-            //} else {
-            //    return null;
-            //}
+        } else if (side === 'left') {
+            return this._relativeScreens[id]['left'] || this._getLeft(screen);
+        } else if (side === 'top') {
+            return this._relativeScreens[id]['top'] || this._getTop(screen, this._cyclicStep);
+        } else if (side === 'right') {
+            return this._relativeScreens[id]['right'] || this._getRight(screen);
+        } else if (side === 'bottom') {
+            return this._relativeScreens[id]['bottom'] || this._getBottom(screen, this._cyclicStep);
         }
         return null;
     };
@@ -161,15 +152,35 @@ define(['utils', 'screenModel', 'IPlugin', 'errors'], function(Utils, Screen, IP
         }
     };
 
+    /**
+     * Возвращает модель текущей ячейки панели.
+     * @returns {ScreenModel|null} модель текущей ячейки панели
+     * @memberOf ScreenManager
+     */
     ScreenManager.prototype.getCurScreen = function() {
         return this._curScreen;
     };
+    /**
+     * Возвращает модель, располагающуюся рядом с текущей ячейкой панели.
+     * @param {string} side - сторона относительно текущей ячейки
+     * @returns {ScreenModel|null} модель текущей ячейки панели
+     * @memberOf ScreenManager
+     */
     ScreenManager.prototype.getRelativeScreen = function(side) {
         return this._getRelativeScreenByScreen(this._curScreen, side);
     };
+    /**
+     * Очистить историю перемещений в панели.
+     * @memberOf ScreenManager
+     */
     ScreenManager.prototype.clearHistory = function() {
         this._history = [];
     };
+    /**
+     * Удаляет из истории перемещений последнее удачное перемещение в панели и возвращает модель, которая располагается в последней посещенной ячейке из истории.
+     * @returns {ScreenModel} Модель из последнего удачного перемещения в истории
+     * @memberOf ScreenManager
+     */
     ScreenManager.prototype.popHistory = function() {
         var res = this._history.pop();
         if (res) {
@@ -187,6 +198,13 @@ define(['utils', 'screenModel', 'IPlugin', 'errors'], function(Utils, Screen, IP
         });
     };
 
+    /**
+     * Поиск кратчайшего пути от одной модели до другой. Если для разных ячеек панели используются одинаковые модели, результат непредсказуем.
+     * @param {ScreenModel} start - Модель, от которой начинает поиск пути
+     * @param {ScreenModel} end - Конечная модель, в которую ищется путь
+     * @returns {null|ScreenModel[]} Путь от начальной модели до конечной модели в панели
+     * @memberOf ScreenManager
+     */
     ScreenManager.prototype.findShortestPath = function (start, end) {
         function findPaths(start, end) {
             var costs = {},
@@ -266,8 +284,12 @@ define(['utils', 'screenModel', 'IPlugin', 'errors'], function(Utils, Screen, IP
         return !predecessors ? null : extractShortest(predecessors, end);
     };
 
+    /**
+     * Уничтожить ScreenManager
+     * @memberOf ScreenManager
+     */
     ScreenManager.prototype.destroy = function() {
-        Screen.unregisterRelativeUpdateFn(this._relativeUpdateFn);
+        Screen.unregisterUpdateFn(this._relativeUpdateFn);
         this._history = null;
         this._curScreen = null;
         this._relativeScreens = null;

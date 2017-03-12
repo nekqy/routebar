@@ -1,6 +1,15 @@
-define(['utils', 'IPlugin', 'errors'], function(Utils, IPlugin, Errors) {
+define(['utils', 'IControl', 'errors'], function(Utils, IControl, Errors) {
     "use strict";
 
+    /**
+     * @class
+     * Класс управления панелью с помощью стрелок, отображаемых по сторонам панели.
+     * @param {JQuery} mainDiv - элемент, в котором располагается панель. Должен содержать класс rb-wrapper.
+     * @param {function} actionFn - функция, определяющая действие при переходе в одну из сторон (Moving.prototype._moveByActionValue)
+     * @param {Moving#afterRenderDispatcher} afterRender - Диспетчер, выполняющий зарегистрированные функции после рендеринга контента моделей на странице после перехода
+     * @constructor ArrowsControl
+     * @extends IControl
+     */
     function ArrowsControl(mainDiv, actionFn, afterRender) {
         if (!(mainDiv instanceof $)) {
             throw new Errors.ArgumentError('mainDiv', mainDiv);
@@ -14,7 +23,13 @@ define(['utils', 'IPlugin', 'errors'], function(Utils, IPlugin, Errors) {
         this._actionFn = actionFn;
         this._afterRender = afterRender;
     }
-    Utils.inherite(ArrowsControl, IPlugin);
+    Utils.inherite(ArrowsControl, IControl);
+
+    /**
+     * Применить конфигурацию. Учитывает опции hideArrowsTime, showArrowsOutside, showArrowsOnHover, hideArrowsAfterTime.
+     * @param {Moving~config} config
+     * @memberOf ArrowsControl
+     */
     ArrowsControl.prototype.configure = function(config) {
         if (typeof config === 'object') {
             if (config.hideArrowsTime !== undefined) {
@@ -32,11 +47,18 @@ define(['utils', 'IPlugin', 'errors'], function(Utils, IPlugin, Errors) {
         }
         this._containerClass = (this._showArrowsOnHover ? 'rb__arrow-container-hover' : 'rb__arrow-container');
     };
-
+    /**
+     *
+     * @returns {boolean}
+     * @memberOf ArrowsControl
+     */
     ArrowsControl.prototype.isEnable = function() {
         return this._isEnable;
     };
-
+    /**
+     *
+     * @memberOf ArrowsControl
+     */
     ArrowsControl.prototype.enable = function() {
         if (this._isEnable) return;
 
@@ -120,7 +142,10 @@ define(['utils', 'IPlugin', 'errors'], function(Utils, IPlugin, Errors) {
 
         this._isEnable = true;
     };
-
+    /**
+     *
+     * @memberOf ArrowsControl
+     */
     ArrowsControl.prototype.disable = function() {
         if (!this._isEnable) return;
 
@@ -139,7 +164,10 @@ define(['utils', 'IPlugin', 'errors'], function(Utils, IPlugin, Errors) {
 
         this._isEnable = false;
     };
-
+    /**
+     *
+     * @memberOf ArrowsControl
+     */
     ArrowsControl.prototype.destroy = function() {
         this.disable();
     };

@@ -3,10 +3,7 @@
  * Объявляется глобально и доступен через переменную <b>rb</b>
  * @module MainModule
  */
-define(['screenModel', 'rbManager', 'IPlugin'], function(
-    ScreenModel,
-    RbManager,
-    IPlugin) {
+define(['screenModel', 'rbManager', 'IPlugin', 'IControl'], function(ScreenModel, RbManager, IPlugin, IControl) {
     "use strict";
 
     return /** @alias module:MainModule */ Object.create(null, {
@@ -21,10 +18,10 @@ define(['screenModel', 'rbManager', 'IPlugin'], function(
         /**
          * Функция, инициализирующая расположенные в данный момент на странице панели.
          * @type {function}
-         * @see {@link module:RbManager.initLayout}
+         * @see {@link module:RbManager.init}
          */
         start: {
-            value: RbManager.initLayout
+            value: RbManager.init
         },
         /**
          * Функция, удаляющая панель со страницы.
@@ -52,11 +49,21 @@ define(['screenModel', 'rbManager', 'IPlugin'], function(
          * Интерфейс плагина панели, который можно добавить в панель для расширения ее фунционала.
          * Добавляемые плагины должны быть именно такого типа.
          * @type {IPlugin}
-         * @see {@link Moving.prototype.addPlugin}
-         * @see {@link Moving.prototype.removePlugin}
+         * @see {@link Moving#addPlugin}
+         * @see {@link Moving#removePlugin}
          */
         IPlugin: {
             value: IPlugin
+        },
+        /**
+         * Интерфейс управления панелью. Позволяет переключаться в соседние ячейки панели.
+         * Добавляемые плагины управления панелью должны быть именно такого типа.
+         * @type {IControl}
+         * @see {@link ControlManager#add}
+         * @see {@link ControlManager#remove}
+         */
+        IControl: {
+            value: IControl
         }
     });
 });

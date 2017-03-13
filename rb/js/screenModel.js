@@ -388,7 +388,7 @@ define(['errors'], function(Errors) {
      * Если модель по умолчанию не установлена вручную, будет использован первый созданный экземпляр модели.
      * @param {ScreenModel} screen - модель по умолчанию
      * @memberOf ScreenModel
-     * @see {@link module:RbManager.initLayout}
+     * @see {@link module:RbManager.init}
      */
     ScreenModel.setMainScreen = function(screen) {
         ScreenModel._mainScreen = screen;

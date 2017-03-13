@@ -65,6 +65,21 @@ define([], function() {
     FatalError.prototype = Object.create(CustomError.prototype);
     FatalError.prototype.constructor = FatalError;
 
+    /**
+     * @class
+     * Класс ошибки, означающий, что функция интерфейса еще не реализована
+     * @param {string} module - название интерфейса
+     * @param {string} functionName - название функции
+     * @constructor module:Errors~NotRealizedError
+     */
+    function NotRealizedError(module, functionName) {
+        this.name = 'NotRealizedError';
+        var arg = 'Not realized ' + module + ':' + functionName;
+        CustomError.apply(this, [arg]);
+    }
+    NotRealizedError.prototype = Object.create(CustomError.prototype);
+    NotRealizedError.prototype.constructor = NotRealizedError;
+
     return /** @alias module:Errors */ {
         /**
          * Класс ошибки, означающий неправильно переданный в функцию аргумент
@@ -76,6 +91,11 @@ define([], function() {
          * @type {module:Errors~PathNotFoundError}
          */
         PathNotFoundError: PathNotFoundError,
+        /**
+         * Класс ошибки, означающий, что функция интерфейса еще не реализована
+         * @type {module:Errors~NotRealizedError}
+         */
+        NotRealizedError: NotRealizedError,
         /**
          * Класс ошибки, означающий критическую ошибку логики
          * @type {module:Errors~FatalError}

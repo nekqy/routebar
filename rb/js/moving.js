@@ -204,7 +204,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
      * @property {number} [hideArrowsTime] - Через какой промежуток времени скрывать стрелки перемещения
      * @property {boolean} [showArrowsOutside] - Показывать ли стрелки перемещения снаружи от панели (иначе показывать внутри панели)
      * @property {boolean} [showArrowsOnHover] - Показывать ли стрелки при наведении мыши (иначе показывать всегда)
-     * @property {string} [loadingHtml] - Верстка ожидания, показываемая во время, пока контент еще не был вставлен в панель
+     * @property {string|null} [loadingHtml] - Верстка ожидания, показываемая во время, пока контент еще не был вставлен в панель
      * @property {(string|number|Array.<string|number>)} [leftKey] - Клавиши, при нажатии на которые будет сделан переход влево.
      * Могут использоваться строковые или числовые нотации клавиш.<br>
      * http://www.javascripter.net/faq/keycodes.htm<br>
@@ -244,7 +244,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
 
         if (config.loadingHtml) {
             config.loadingDiv = '<div class="rb__loading">' + config.loadingHtml + '</div>';
-        } else if (typeof config.loadingHtml !== 'undefined') {
+        } else if (config.loadingHtml === null) {
             config.loadingDiv = '';
         }
 

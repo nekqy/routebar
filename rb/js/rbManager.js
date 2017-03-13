@@ -17,7 +17,7 @@ define(['moving'], function(Moving) {
      * @param {module:RbManager~initCallback} [callback] функция, которая будет выполнена после инициализации панелей
      * @memberOf module:RbManager
      */
-    function initLayout(startScreens, callback) {
+    function init(startScreens, callback) {
         if (typeof startScreens === 'function') {
             callback = startScreens;
             startScreens = undefined;
@@ -183,7 +183,7 @@ define(['moving'], function(Moving) {
      * @module RbManager
      */
     return {
-        initLayout: initLayout,
+        init: init,
         remove: remove,
         /**
          * @type module:Batch

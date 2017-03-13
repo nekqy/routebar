@@ -109,6 +109,7 @@ define([], function() {
      * @returns {Object.<string, boolean>} Объект, сопоставляющий название экземпляра управления со значением,
      * был ли этот экземпляр включен перед применением функции.
      * @see {@link ControlManager#enableByValues}
+     * @memberOf ControlManager
      */
     ControlManager.prototype.disableAll = function() {
         return this._doAll(false);

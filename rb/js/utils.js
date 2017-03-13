@@ -48,7 +48,7 @@ define(['errors'], function(Errors) {
      * @param {Object} mixin - миксин
      * @memberOf module:Utils
      */
-    function setMixin(base, mixin) {
+    function mixin(base, mixin) {
         for(var key in mixin) {
             if (mixin.hasOwnProperty(key)) {
                 base.prototype[key] = mixin[key];
@@ -123,7 +123,7 @@ define(['errors'], function(Errors) {
         oppositeSide: oppositeSide,
         getStartSide: getStartSide,
         capitalizeFirstLetter: capitalizeFirstLetter,
-        setMixin: setMixin,
+        mixin: mixin,
         inherite: inherite
     };
 });

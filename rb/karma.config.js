@@ -15,7 +15,7 @@ module.exports = function(config) {
         singleRun: false,
         autoWatchBatchDelay: 300,
         files: [
-            'css/rb.css',
+            'css/rb.scss',
             'vendor/jquery-3.1.1.js',
             'tests/**/*.spec.js'
         ],

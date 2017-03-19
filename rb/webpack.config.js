@@ -1,4 +1,5 @@
 var webpack = require("webpack"),
+    ExtractTextPlugin = require('extract-text-webpack-plugin'),
     NODE_ENV = process.env.NODE_ENV || 'development';
 
 var postLoaders = [];
@@ -21,23 +22,27 @@ module.exports = {
     },
     module: {
         loaders: [
-            { test: /\.css$/, loader: "style!css" }
-        ],
-        postLoaders: postLoaders
+            {
+                test: /\.scss$/,
+                loader: ExtractTextPlugin.extract(
+                    {
+                        fallback: 'style-loader',
+                        use: "css-loader?importLoaders=1!postcss-loader!sass-loader"
+                    })
+            }
+        ].concat(postLoaders)
     },
-    resolve: { // как ищутся модули
-        modulesDirectories: [ // если путь неотносительный, где искать
+    resolve: {
+        modules: [
             './js/',
             './vendor/',
             './node_modules/'
         ]
     },
-    devtool: NODE_ENV == 'development' || NODE_ENV == 'test' ? 'source-map' : null,
+    devtool: NODE_ENV == 'development' || NODE_ENV == 'test' ? 'source-map' : false,
 
     plugins: [
-        new webpack.NoErrorsPlugin(),
-        new webpack.DefinePlugin({
-            NODE_ENV: JSON.stringify(NODE_ENV)
-        })
+        new ExtractTextPlugin('rb.css'),
+        new webpack.NoErrorsPlugin()
     ]
 };

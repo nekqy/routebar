@@ -3,7 +3,7 @@
  * Объявляется глобально и доступен через переменную <b>rb</b>
  * @module MainModule
  */
-define(['screenModel', 'rbManager', 'IPlugin', 'IControl'], function(ScreenModel, RbManager, IPlugin, IControl) {
+define(['screenModel', 'rbManager', 'IPlugin', 'IControl', '../css/rb.scss'], function(ScreenModel, RbManager, IPlugin, IControl) {
     "use strict";
 
     return /** @alias module:MainModule */ Object.create(null, {

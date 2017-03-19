@@ -1,6 +1,5 @@
 var webpackConfig = require('./webpack.config.js');
 var webpack = require('karma-webpack');
-webpackConfig.entry = {};
 
 module.exports = function(config) {
     config.set({
@@ -15,8 +14,6 @@ module.exports = function(config) {
         singleRun: false,
         autoWatchBatchDelay: 300,
         files: [
-            'css/rb.scss',
-            'vendor/jquery-3.1.1.js',
             'tests/**/*.spec.js'
         ],
         preprocessors: {

@@ -7,14 +7,12 @@ if (NODE_ENV === 'test') {
     postLoaders.push({
         test: /\.js$/,
         exclude: /(test|node_modules)\//,
-        loader: 'istanbul-instrumenter'
+        loader: 'istanbul-instrumenter-loader'
     });
 }
 
 module.exports = {
-    entry: {
-        main: "./js/main"
-    },
+    entry: "./js/main",
     output: {
         path: __dirname + "/dist",
         filename: (NODE_ENV === "production" ? "rb.min.js" : "rb.js"),

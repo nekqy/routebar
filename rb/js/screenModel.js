@@ -65,12 +65,13 @@ define(['errors'], function(Errors) {
 
         this._id = 'screen_' + ScreenModel._length++;
         this._html = html;
-        this.resetChildren(children);
-        this.resetParents(parents);
         this._temporary = !isPermanent; // Todo на изменение тут менять и там где используется
         this._isDirectedGraph = !!isDirectedGraph; // Todo на изменение тут менять и там где используется
         this._defaultChildIndex = defaultChildIndex;
         this._defaultParentIndex = defaultParentIndex;
+
+        this.resetChildren(children);
+        this.resetParents(parents);
     }
 
     /**
@@ -221,7 +222,6 @@ define(['errors'], function(Errors) {
      * @memberOf ScreenModel
      */
     ScreenModel.prototype.getChildIndex = function(child, cyclic) {
-        //todo (screen + arr.length) % arr.length неправильный алгоритм. надо чтобы -11 % 5 было 4. а тут -1
         return this._getScreenIndex(child, this._children, cyclic);
     };
     /**

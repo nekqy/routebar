@@ -2,7 +2,7 @@
 var
     mainScreenHtml = '<div class="mainScreen">mainScreen</div>',
     firstHtml = '<div class="child1">child1</div>',
-    secondHtml = '<iframe width="100%" height="100%" frameborder="0" src="example1.html"></iframe>',
+    secondHtml = '<div class="child2">child2</div>',
     thirdHtml = '<iframe width="100%" height="100%" frameborder="0" src="example1.html"></iframe>';
 
 // main screen defining
@@ -55,25 +55,25 @@ $.get('example2.html', function(data) {
         rb2: secondScreen
     }, function(instances) {
         instances.rb1.beforeMoveDispatcher.add(action(), true);
-
-        // for testing
-        var sides = ['left', 'top', 'right', 'bottom'],
-            cfg = {
+        var cfg = {
                 wrongTime1: 1500,
                 wrongTime2: 1500,
                 correctTime: 3000
             };
         rb.Batch.configure(cfg);
-        function randomStep(side, curScreen, moving) {
-            var index = Math.floor(Math.random()*4);
-            moving.move(sides[index]).then(function(result){
-                console.log(result.how, result.isOk, 'moved to ' + sides[index], result.isOk ? 'successfully' : 'failed')
-            });
-        }
-        for (var id in instances) {
-            if (instances.hasOwnProperty(id)) {
-                instances[id].afterRenderDispatcher.add(randomStep);
-            }
-        }
+
+        // automatic moving for testing
+        // var sides = ['left', 'top', 'right', 'bottom'];
+        // function randomStep(side, curScreen, moving) {
+        //     var index = Math.floor(Math.random()*4);
+        //     moving.move(sides[index]).then(function(result){
+        //         console.log(result.how, result.isOk, 'moved to ' + sides[index], result.isOk ? 'successfully' : 'failed')
+        //     });
+        // }
+        // for (var id in instances) {
+        //     if (instances.hasOwnProperty(id)) {
+        //         instances[id].afterRenderDispatcher.add(randomStep);
+        //     }
+        // }
     });
 });

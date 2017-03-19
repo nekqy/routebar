@@ -47,6 +47,9 @@ define(['utils', 'screenModel', 'IPlugin', 'errors'], function(Utils, Screen, IP
             if (config.getBottom !== undefined) {
                 this._getBottom = config.getBottom;
             }
+            if (config.savePrevious !== undefined) {
+                this._savePrevious = config.savePrevious;
+            }
 
         }
     };
@@ -62,9 +65,10 @@ define(['utils', 'screenModel', 'IPlugin', 'errors'], function(Utils, Screen, IP
             var prevScreen = this._curScreen;
             this._curScreen = this.getRelativeScreen(side);
 
-            // if (prevScreen !== this._curScreen) {
             if (side !== 'center') {
-                this._setRelativeScreen(this._curScreen, Utils.oppositeSide(side), prevScreen);
+                if (this._savePrevious) {
+                    this._setRelativeScreen(this._curScreen, Utils.oppositeSide(side), prevScreen);
+                }
                 updated = true;
             }
         }

@@ -240,4 +240,65 @@ define(['./core-test', '../js/main'], function(core, rb) {
         [move('left'),   checkScreen('screen_1')]
     ]);
     t3.start(initEach3);
+
+    var t4 = new core.TestsWrapper('Routing4');
+    t4.addTestsSerial('test1', init3.bind(undefined, {savePrevious: false}), [
+        [move('right'),  checkScreen('screen_2')],
+        [move('right'),  checkScreen('screen_1')],
+        [move('bottom'), checkScreen('screen_1')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('bottom'), checkScreen('screen_3')],
+        [move('right'),  checkScreen('screen_1')],
+        [moveBack(),     checkScreen('screen_3')],
+        [moveBack(),     checkScreen('screen_2')],
+        [moveBack(),     checkScreen('screen_1')],
+        [moveBack(),     checkScreen('screen_1')],
+        [moveBack(),     checkScreen('screen_2')],
+        [moveBack(),     checkScreen('screen_1')],
+        [configure({maxHistoryLength: 2}), checkScreen('screen_1')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('bottom'), checkScreen('screen_3')],
+        [move('bottom'), checkScreen('screen_4')],
+        [moveBack(),     checkScreen('screen_3')],
+        [moveBack(),     checkScreen('screen_2')],
+        [moveBack(),     checkScreen('screen_2')],
+        [configure({maxHistoryLength: 0}), checkScreen('screen_2')],
+        [move('bottom'), checkScreen('screen_3')],
+        [move('bottom'), checkScreen('screen_4')],
+        [moveBack(),     checkScreen('screen_4')],
+        [moveBack(),     checkScreen('screen_4')]
+    ]);
+    t4.addTestsSerial('test2', init3.bind(undefined, {savePrevious: false}), [
+        [move('right'),  checkScreen('screen_2')],
+        [move('top'),    checkScreen('screen_4')],
+        [move('right'),  checkScreen('screen_1')]
+    ]);
+    t4.addTestsSerial('test3', init3.bind(undefined, {savePrevious: false}), [
+        [move('left'),   checkScreen('screen_2')],
+        [move('top'),    checkScreen('screen_4')],
+        [move('right'),  checkScreen('screen_1')],
+        [move('top'),    checkScreen('screen_1')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('left'),   checkScreen('screen_1')]
+    ]);
+    t4.addTestsSerial('test4', init3.bind(undefined, {savePrevious: false}), [
+        [move('left'),   checkScreen('screen_2')],
+        [move('bottom'), checkScreen('screen_3')],
+        [move('right'),  checkScreen('screen_1')],
+        [move('left'),   checkScreen('screen_2')]
+    ]);
+    t4.addTestsSerial('test5', init3.bind(undefined, {savePrevious: false}), [
+        [move('left'),   checkScreen('screen_2')],
+        [move('left'),   checkScreen('screen_1')],
+        [move('right'),  checkScreen('screen_2')],
+        [move('right'),  checkScreen('screen_1')]
+    ]);
+    t4.addTestsSerial('test6', init3.bind(undefined, {savePrevious: false}), [
+        [move('left'),   checkScreen('screen_2')],
+        [move('top'),    checkScreen('screen_4')],
+        [move('top'),    checkScreen('screen_3')],
+        [move('top'),    checkScreen('screen_2')],
+        [move('left'),   checkScreen('screen_1')]
+    ]);
+    t4.start(initEach3);
 });

@@ -100,6 +100,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             saveHistoryInPool: false,
             pointersForSwipe: 1,
             isDirectPath: true,
+            savePrevious: true,
 
             cyclicStep: true,
 
@@ -125,10 +126,15 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                     index = this._lastScreen.getChildIndex(screen);
                     return this._lastScreen.getChild(index - 1, cyclicStep);
                 }
-                var parent = screen.getParent(0);
+                var parent = this._getLeft(screen);
                 if (parent) {
                     index = parent.getChildIndex(screen);
                     return parent.getChild(index - 1, cyclicStep);
+                }
+                var child = this._getRight(screen);
+                if (child) {
+                    index = child.getParentIndex(screen);
+                    return child.getParent(index - 1, cyclicStep);
                 }
             },
             getBottom: function(screen, cyclicStep) {
@@ -141,10 +147,15 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                     index = this._lastScreen.getChildIndex(screen);
                     return this._lastScreen.getChild(index + 1, cyclicStep);
                 }
-                var parent = screen.getParent(0);
+                var parent = this._getLeft(screen);
                 if (parent) {
                     index = parent.getChildIndex(screen);
                     return parent.getChild(index + 1, cyclicStep);
+                }
+                var child = this._getRight(screen);
+                if (child) {
+                    index = child.getParentIndex(screen);
+                    return child.getParent(index + 1, cyclicStep);
                 }
             }
         });
@@ -165,7 +176,8 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
      * Если последним был переход влево, то берется модель, из которой был сделан шаг влево и в контексте ее предков
      * от текущего предка будет найден предыдущий предок и возвращен в качестве результата.
      * Если при этом стоит опция cyclicStep = true, то в случае самого верхнего предка следующим будет возвращен самый нижний предок.
-     * А если переходов влево-вправо не было, будет считаться, будто бы переход был вправо из первого предка данной модели.
+     * А если переходов влево-вправо не было, будет считаться, будто бы был сделан переход вправо, а если и это не помогло,
+     * будет считаться, будто был сделан переход влево.
      * Если у модели нет предков, следующая модель не будет найдена.
      * @param {ScreenModel} screen - текущая модель контента панели
      * @param {boolean} cyclicStep - делать ли цикличный переход в контексте массива моделей, в котором будет искаться новая модель.
@@ -186,7 +198,8 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
      * Если последним был переход влево, то берется модель, из которой был сделан шаг влево и в контексте ее предков
      * от текущего предка будет найден следующий предок и возвращен в качестве результата.
      * Если при этом стоит опция cyclicStep = true, то в случае самого нижнего предка следующим будет возвращен самый верхний предок.
-     * А если переходов влево-вправо не было, будет считаться, будто бы переход был вправо из первого предка данной модели.
+     * А если переходов влево-вправо не было, будет считаться, будто бы был сделан переход вправо, а если и это не помогло,
+     * будет считаться, будто был сделан переход влево.
      * Если у модели нет предков, следующая модель не будет найдена.
      * @param {ScreenModel} screen - текущая модель контента панели
      * @param {boolean} cyclicStep - делать ли цикличный переход в контексте массива моделей, в котором будет искаться новая модель.
@@ -213,12 +226,14 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
      * @property {(string|number|Array.<string|number>)} [rightKey] - Клавиши, при нажатии на которые будет сделан переход вправо.
      * @property {(string|number|Array.<string|number>)} [bottomKey] - Клавиши, при нажатии на которые будет сделан переход вниз.
      * @property {number} [maxHistoryLength] - Максимальная длина хранимой истории удачных переходов.
-     * @property {boolean} [lockControls] - Заблокированы ли элементы управления переходами (любые способы управления).
+     * @property {boolean} [lockControls] - Заблокированы ли элементы управления переходами, пока происходит анимация перехода (любые способы управления).
      * @property {boolean} [showAdjacentScreens] - Отображать ли старую ячейку при анимации перехода на новую ячейку панели.
      * @property {boolean} [saveHistoryInPool] - Хранить ли верстку ячеек панели, которые хранятся в истории переходов.
      * @property {number} [pointersForSwipe] - Количество пальцев, необходимых для свайпа при переходе на новую ячейку на мобильных устройствах.
      * @property {boolean} [isDirectPath] - Использовать ли при поиске кратчайшего пути до указанной модели только переходы
      * от потомков к предкам и от предков к потомкам (иначе переходы по массивам предков и по массивам потомков тоже будут считаться отдельными переходами)
+     * @property {boolean} [savePrevious] - сохранять ли предков (если шаг в сторону потомка) и потомков (если шаг в сторону предка), с которых был сделан переход,
+     * чтобы в дальнейшем вернутся в них при переходе обратно с ячейки, в которую был сделан переход.
      * @property {boolean} [cyclicStep] - делать ли цикличный переход в контексте массива моделей, в котором будет искаться новая модель.
      * @property {Moving~getRight} [getRight] - Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вправо
      * @property {Moving~getLeft} [getLeft] - Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход влево

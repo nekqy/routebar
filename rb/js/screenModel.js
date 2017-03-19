@@ -122,7 +122,7 @@ define(['errors'], function(Errors) {
      * @memberOf ScreenModel
      */
     ScreenModel.prototype.defaultChildIndex = function() {
-        return this._defaultChildIndex;
+        return this._defaultChildIndex; // todo нужен сеттер
     };
     /**
      * Возвращает индекс модели по умолчанию среди моделей-предков

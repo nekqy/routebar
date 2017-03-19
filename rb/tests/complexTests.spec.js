@@ -282,15 +282,17 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 screens: [screens[1]],
                 elementsBySide: {
                     center: screens[0].toString(),
-                    right: screens[1].toString()
+                    right: screens[1].toString(),
+                    top: screens[0].toString(),
+                    bottom: screens[0].toString()
                 },
                 sides: {
                     left: undefined,
                     top: undefined,
-                    topCycled: undefined,
+                    topCycled: screens[0],
                     right: screens[1],
                     bottom: undefined,
-                    bottomCycled: undefined
+                    bottomCycled: screens[0]
                 },
                 relativeScreens: {
                     'screen_1': {}
@@ -305,15 +307,17 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 screens: [screens[1]],
                 elementsBySide: {
                     center: screens[0].toString(),
-                    right: screens[1].toString()
+                    right: screens[1].toString(),
+                    top: screens[0].toString(),
+                    bottom: screens[0].toString()
                 },
                 sides: {
                     left: undefined,
                     top: undefined,
-                    topCycled: undefined, // todo а может должны появиться? мы же нажали влево могло бы и понять что теперь надо ориентироваться на потомка
+                    topCycled: screens[0],
                     right: screens[1],
                     bottom: undefined,
-                    bottomCycled: undefined
+                    bottomCycled: screens[0]
                 },
                 relativeScreens: {
                     'screen_1': { // todo почему пусто?
@@ -329,21 +333,29 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 screens: [screens[1]],
                 elementsBySide: {
                     center: screens[0].toString(),
-                    right: screens[1].toString()
+                    right: screens[1].toString(),
+                    top: screens[0].toString(),
+                    bottom: screens[0].toString()
                 },
                 sides: {
                     left: undefined,
                     top: undefined,
-                    topCycled: undefined,
+                    topCycled: screens[0],
                     right: screens[1],
                     bottom: undefined,
-                    bottomCycled: undefined
+                    bottomCycled: screens[0]
                 },
                 relativeScreens: {
                     'screen_1': {
+                        'bottom': screens[0]
                     }
                 },
-                history: []
+                history: [{
+                    lastScreen: undefined,
+                    lastSide: undefined,
+                    side: 'bottom',
+                    screen: screens[0]
+                }]
             }})
         ],
         [
@@ -366,10 +378,16 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottomCycled: screens[1]
                 },
                 relativeScreens: {
-                    'screen_1': {// todo пусто?
+                    'screen_1': {
+                        'bottom': screens[0]
                     }
                 },
                 history: [{
+                    lastScreen: undefined,
+                    lastSide: undefined,
+                    side: 'bottom',
+                    screen: screens[0]
+                }, {
                     lastScreen: screens[0],
                     lastSide: 'right',
                     side: 'left',
@@ -397,10 +415,16 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottomCycled: screens[1]
                 },
                 relativeScreens: {
-                    'screen_1': { // todo пусто?
+                    'screen_1': {
+                        'bottom': screens[0]
                     }
                 },
                 history: [{
+                    lastScreen: undefined,
+                    lastSide: undefined,
+                    side: 'bottom',
+                    screen: screens[0]
+                }, {
                     lastScreen: screens[0],
                     lastSide: 'right',
                     side: 'left',
@@ -626,15 +650,17 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 screens: [screens[1]],
                 elementsBySide: {
                     center: screens[0].toString(),
-                    right: screens[1].toString()
+                    right: screens[1].toString(),
+                    top: screens[0].toString(),
+                    bottom: screens[0].toString()
                 },
                 sides: {
                     left: undefined,
                     top: undefined,
-                    topCycled: undefined,
+                    topCycled: screens[0],
                     right: screens[1],
                     bottom: undefined,
-                    bottomCycled: undefined
+                    bottomCycled: screens[0]
                 },
                 relativeScreens: {
                     'screen_1': {}
@@ -649,15 +675,17 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 screens: [screens[1]],
                 elementsBySide: {
                     center: screens[0].toString(),
-                    right: screens[1].toString()
+                    right: screens[1].toString(),
+                    top: screens[0].toString(),
+                    bottom: screens[0].toString()
                 },
                 sides: {
                     left: undefined,
                     top: undefined,
-                    topCycled: undefined, // todo а может должны появиться? мы же нажали влево могло бы и понять что теперь надо ориентироваться на потомка
+                    topCycled: screens[0],
                     right: screens[1],
                     bottom: undefined,
-                    bottomCycled: undefined
+                    bottomCycled: screens[0]
                 },
                 relativeScreens: {
                     'screen_1': { // todo почему пусто?
@@ -673,21 +701,29 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 screens: [screens[1]],
                 elementsBySide: {
                     center: screens[0].toString(),
-                    right: screens[1].toString()
+                    right: screens[1].toString(),
+                    top: screens[0].toString(),
+                    bottom: screens[0].toString()
                 },
                 sides: {
                     left: undefined,
                     top: undefined,
-                    topCycled: undefined,
+                    topCycled: screens[0],
                     right: screens[1],
                     bottom: undefined,
-                    bottomCycled: undefined
+                    bottomCycled: screens[0]
                 },
                 relativeScreens: {
                     'screen_1': {
+                        'bottom': screens[0]
                     }
                 },
-                history: []
+                history: [{
+                    lastScreen: undefined,
+                    lastSide: undefined,
+                    side: 'bottom',
+                    screen: screens[0]
+                }]
             }})
         ],
         [
@@ -710,10 +746,16 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottomCycled: screens[1]
                 },
                 relativeScreens: {
-                    'screen_1': {// todo пусто?
+                    'screen_1': {
+                        'bottom': screens[0]
                     }
                 },
                 history: [{
+                    lastScreen: undefined,
+                    lastSide: undefined,
+                    side: 'bottom',
+                    screen: screens[0]
+                }, {
                     lastScreen: screens[0],
                     lastSide: 'right',
                     side: 'left',
@@ -741,10 +783,16 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottomCycled: screens[1]
                 },
                 relativeScreens: {
-                    'screen_1': { // todo пусто?
+                    'screen_1': {
+                        'bottom': screens[0]
                     }
                 },
                 history: [{
+                    lastScreen: undefined,
+                    lastSide: undefined,
+                    side: 'bottom',
+                    screen: screens[0]
+                }, {
                     lastScreen: screens[0],
                     lastSide: 'right',
                     side: 'left',
@@ -976,10 +1024,10 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 sides: {
                     left: undefined,
                     top: undefined,
-                    topCycled: undefined,
+                    topCycled: screens[0],
                     right: screens[2],
                     bottom: undefined,
-                    bottomCycled: undefined
+                    bottomCycled: screens[0]
                 },
                 relativeScreens: {
                     'screen_1': {}
@@ -999,10 +1047,10 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 sides: {
                     left: undefined,
                     top: undefined,
-                    topCycled: undefined, // todo а может должны появиться? мы же нажали влево могло бы и понять что теперь надо ориентироваться на потомка
+                    topCycled: screens[0],
                     right: screens[2],
                     bottom: undefined,
-                    bottomCycled: undefined
+                    bottomCycled: screens[0]
                 },
                 relativeScreens: {
                     'screen_1': { // todo почему пусто?
@@ -1023,10 +1071,10 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 sides: {
                     left: undefined,
                     top: undefined,
-                    topCycled: undefined,
+                    topCycled: screens[0],
                     right: screens[2],
                     bottom: undefined,
-                    bottomCycled: undefined
+                    bottomCycled: screens[0]
                 },
                 relativeScreens: {
                     'screen_1': {

@@ -1,8 +1,6 @@
 var webpack = require("webpack"),
     NODE_ENV = process.env.NODE_ENV || 'development';
 
-var JsDocPlugin = require('jsdoc-webpack-plugin');
-
 var postLoaders = [];
 if (NODE_ENV === 'test') {
     postLoaders.push({
@@ -18,7 +16,7 @@ module.exports = {
     },
     output: {
         path: __dirname + "/dist",
-        filename: "rb.js",
+        filename: (NODE_ENV === "production" ? "rb.min.js" : "rb.js"),
         library: 'rb'
     },
     module: {
@@ -40,9 +38,6 @@ module.exports = {
         new webpack.NoErrorsPlugin(),
         new webpack.DefinePlugin({
             NODE_ENV: JSON.stringify(NODE_ENV)
-        }),
-        new JsDocPlugin({
-            conf: './jsdoc.conf'
         })
     ]
 };

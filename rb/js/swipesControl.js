@@ -57,7 +57,6 @@ define(['utils', 'IControl', 'errors', 'hammer'], function(Utils, IControl, Erro
                 return val === defVal;
             });
             e.preventDefault();
-            e.stopPropagation();
         }
 
         var self = this;

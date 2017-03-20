@@ -13,13 +13,13 @@ var firstScreen = new rb.Screen(firstHtml),
     secondScreen = new rb.Screen(secondHtml),
     thirdScreen = new rb.Screen(thirdHtml, [mainScreen]);
 mainScreen
-    .pushChild(firstScreen)
-    .pushChild(secondScreen)
-    .pushChild(thirdScreen);
+    .pushChildren(firstScreen)
+    .pushChildren(secondScreen)
+    .pushChildren(thirdScreen);
 
 $.get('example2.html', function(data) {
     var lastScreen = new rb.Screen(data);
-    secondScreen.pushChild(lastScreen);
+    secondScreen.pushChildren(lastScreen);
 
     rb.Screen.setMainScreen(mainScreen);
 

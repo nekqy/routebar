@@ -74,16 +74,16 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
     ElementsPool.prototype.loadElements = function() {
         var self = this;
 
-        Object.keys(this._elements).forEach(function(id) {
+        Object.keys(this._elements).forEach(function(id) { // todo вынести forEach для объекта в utils
             var elem = self._elements[id];
 
-            if (self._elementsBySide['center'] === id
+            if (self._elementsBySide['center'] === id // todo стремная проверка, рефакторить
                 || self._elementsBySide['left'] === id
                 || self._elementsBySide['top'] === id
                 || self._elementsBySide['right'] === id
                 || self._elementsBySide['bottom'] === id) {
                 if (elem.state === 'loading') {
-                    elem.element.html(elem.screen.getHtml());
+                    elem.element.html(elem.screen.html());
                     elem.element.toggleClass('rb__loading', false);
                     elem.state = 'loaded';
                 }

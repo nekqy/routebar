@@ -33,6 +33,17 @@ define(['errors'], function(Errors) {
         if (side === 'center') return 'center';
         throw new Errors.ArgumentError('side', side);
     }
+
+    /**
+     * Возвращает модуль числа index в конечной группе порядка length.
+     * @param {number} index - исходное число
+     * @param {number} length - порядок группы
+     * @returns {number} модуль числа
+     * @memberOf module:Utils
+     */
+    function cycledNumber(index, length) {
+        return (index % length + length) % length;
+    }
     /**
      * Делает первую букву строки заглавной
      * @param {string} string - исходная строка
@@ -120,6 +131,7 @@ define(['errors'], function(Errors) {
          */
         isMobile: mobileCheck(),
         nop: nop,
+        cycledNumber: cycledNumber,
         oppositeSide: oppositeSide,
         getStartSide: getStartSide,
         capitalizeFirstLetter: capitalizeFirstLetter,

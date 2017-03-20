@@ -72,7 +72,7 @@ define(['./core-test', '../js/main'], function(core, rb) {
 
     var t = new core.TestsWrapper('Complex1');
     t.addTestsSerial('test1', init(function () {
-        screens[0].pushChild(screens[0]);
+        screens[0].pushChildren(screens[0]);
     }), [
         [
             core.nopDone,
@@ -273,7 +273,7 @@ define(['./core-test', '../js/main'], function(core, rb) {
 
     var t2 = new core.TestsWrapper('Complex2');
     t2.addTestsSerial('test2', init(function () {
-        screens[0].pushChild(screens[1]);
+        screens[0].pushChildren(screens[1]);
     }), [
         [
             core.nopDone,
@@ -638,7 +638,7 @@ define(['./core-test', '../js/main'], function(core, rb) {
         ]
     ]);
     t3.start(initEach(function () {
-        screens[0].pushChild(screens[0]);
+        screens[0].pushChildren(screens[0]);
     }, 5));
 
     var t4 = new core.TestsWrapper('Complex4');
@@ -807,12 +807,12 @@ define(['./core-test', '../js/main'], function(core, rb) {
         ]
     ]);
     t4.start(initEach(function () {
-        screens[0].pushChild(screens[1]);
+        screens[0].pushChildren(screens[1]);
     }, 5));
 
     var t5 = new core.TestsWrapper('Complex5');
     t5.addTestsSerial('test5', init(function () {
-        screens[0].pushChild(screens[1]);
+        screens[0].pushChildren(screens[1]);
     }), [
         [
             core.nopDone,
@@ -1150,11 +1150,11 @@ define(['./core-test', '../js/main'], function(core, rb) {
 
     var t7 = new core.TestsWrapper('Complex7');
     t7.addTestsSerial('test7', init(function () {
-        screens[0].pushChild(screens[1]);
-        screens[1].pushChild(screens[2]);
-        screens[2].pushChild(screens[3]);
-        screens[3].pushChild(screens[4]);
-        screens[4].pushChild(screens[0]);
+        screens[0].pushChildren(screens[1]);
+        screens[1].pushChildren(screens[2]);
+        screens[2].pushChildren(screens[3]);
+        screens[3].pushChildren(screens[4]);
+        screens[4].pushChildren(screens[0]);
     }, {
         maxHistoryLength: 2,
         saveHistoryInPool: true

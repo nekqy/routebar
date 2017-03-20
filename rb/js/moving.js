@@ -117,45 +117,51 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 return screen.getParent(parentIndex);
             },
             getTop: function(screen, cyclicStep) {
+                function getNextIndex(index, length) {
+                    return cyclicStep ? Utils.cycledNumber(index - 1, length) : (index - 1);
+                }
                 var index;
                 if (this._lastSide === 'left') {
                     index = this._lastScreen.getParentIndex(screen);
-                    return this._lastScreen.getParent(index - 1, cyclicStep);
+                    return this._lastScreen.getParent(getNextIndex(index, this._lastScreen.parentsLength()));
                 }
                 if (this._lastSide === 'right') {
                     index = this._lastScreen.getChildIndex(screen);
-                    return this._lastScreen.getChild(index - 1, cyclicStep);
+                    return this._lastScreen.getChild(getNextIndex(index, this._lastScreen.childrenLength()));
                 }
                 var parent = this._getLeft(screen);
                 if (parent) {
                     index = parent.getChildIndex(screen);
-                    return parent.getChild(index - 1, cyclicStep);
+                    return parent.getChild(getNextIndex(index, parent.childrenLength()));
                 }
                 var child = this._getRight(screen);
                 if (child) {
                     index = child.getParentIndex(screen);
-                    return child.getParent(index - 1, cyclicStep);
+                    return child.getParent(getNextIndex(index, child.parentsLength()));
                 }
             },
             getBottom: function(screen, cyclicStep) {
+                function getNextIndex(index, length) {
+                    return cyclicStep ? Utils.cycledNumber(index + 1, length) : (index + 1);
+                }
                 var index;
                 if (this._lastSide === 'left') {
                     index = this._lastScreen.getParentIndex(screen);
-                    return this._lastScreen.getParent(index + 1, cyclicStep);
+                    return this._lastScreen.getParent(getNextIndex(index, this._lastScreen.parentsLength()));
                 }
                 if (this._lastSide === 'right') {
                     index = this._lastScreen.getChildIndex(screen);
-                    return this._lastScreen.getChild(index + 1, cyclicStep);
+                    return this._lastScreen.getChild(getNextIndex(index, this._lastScreen.childrenLength()));
                 }
                 var parent = this._getLeft(screen);
                 if (parent) {
                     index = parent.getChildIndex(screen);
-                    return parent.getChild(index + 1, cyclicStep);
+                    return parent.getChild(getNextIndex(index, parent.childrenLength()));
                 }
                 var child = this._getRight(screen);
                 if (child) {
                     index = child.getParentIndex(screen);
-                    return child.getParent(index + 1, cyclicStep);
+                    return child.getParent(getNextIndex(index, child.parentsLength()));
                 }
             }
         });
@@ -465,7 +471,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         side = side || 'center';
         var rbSide = this._elementsPool.getElementBySide(side);
         var screen = this._screenManager.getRelativeScreen(side);
-        rbSide.html(screen.getHtml());
+        rbSide.html(screen.html());
     };
 
     Moving.prototype._renderHtml = function(side, moveResolve) {

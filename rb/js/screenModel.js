@@ -85,22 +85,18 @@ define(['errors'], function(Errors) {
 
     /**
      * Возвращает контент модели
+     * @param {string} [html] - если аргумент задан, он будет установлен в качестве контента модели
      * @returns {string} контент модели
      * @memberOf ScreenModel
      */
-    ScreenModel.prototype.getHtml = function () {
+    ScreenModel.prototype.html = function (html) {
+        if (typeof html === 'string') {
+            this._html = html;
+            // todo обновить все ячейки в которых лежит эта модель
+        }
         return this._html;
     };
 
-    /**
-     * Задать контент модели
-     * @param {string} html - контент модели
-     * @memberOf ScreenModel
-     */
-    ScreenModel.prototype.setHtml = function (html) {
-        this._html = html;
-        // todo обновить все ячейки в которых лежит эта модель
-    };
     /**
      * Возвращает опцию "временная модель". Если модель временная, она не будет храниться на странице, если не отображается.
      * @returns {boolean} опция "временная модель"
@@ -119,18 +115,26 @@ define(['errors'], function(Errors) {
     };
     /**
      * Возвращает индекс модели по умолчанию среди моделей-потомков
+     * @param {number} [index] - если задан индекс, он будет установлен как значение по умолчанию
      * @returns {number} индекс модели по умолчанию среди моделей-потомков
      * @memberOf ScreenModel
      */
-    ScreenModel.prototype.defaultChildIndex = function() {
-        return this._defaultChildIndex; // todo нужен сеттер
+    ScreenModel.prototype.defaultChildIndex = function(index) {
+        if (typeof index === 'number') {
+            this._defaultChildIndex = index;
+        }
+        return this._defaultChildIndex;
     };
     /**
      * Возвращает индекс модели по умолчанию среди моделей-предков
+     * @param {number} [index] - если задан индекс, он будет установлен как значение по умолчанию
      * @returns {number} индекс модели по умолчанию среди моделей-предков
      * @memberOf ScreenModel
      */
-    ScreenModel.prototype.defaultParentIndex = function() {
+    ScreenModel.prototype.defaultParentIndex = function(index) {
+        if (typeof index === 'number') {
+            this._defaultParentIndex = index;
+        }
         return this._defaultParentIndex;
     };
 
@@ -158,15 +162,13 @@ define(['errors'], function(Errors) {
             }
         }
 
-        ScreenModel._runUpdateFn(this);
         return this;
     };
-
-    ScreenModel.prototype._getScreenIndex = function(screen, arr, cyclic) {
+    ScreenModel.prototype._getScreenIndex = function(screen, arr) {
         var index = -1;
         if (typeof screen === 'number') {
-            if (cyclic) {
-                screen = (screen % arr.length + arr.length) % arr.length;
+            if (isNaN(screen)) {
+                throw new Errors.ArgumentError('screen', screen);
             }
             index = screen;
         } else if (typeof screen === 'string') {
@@ -183,9 +185,9 @@ define(['errors'], function(Errors) {
         }
         return index;
     };
-    ScreenModel.prototype._removeScreen = function(screen, isChild, cyclic) {
+    ScreenModel.prototype._removeScreen = function(screen, isChild) {
         var arr = isChild ? this._children : this._parents,
-            index = this._getScreenIndex(screen, arr, cyclic);
+            index = this._getScreenIndex(screen, arr);
 
         if (index !== -1) {
             var removed = arr.splice(index, 1)[0];
@@ -201,161 +203,182 @@ define(['errors'], function(Errors) {
             removed._removeScreen(this, isChild);
         }
 
+        return this;
+    };
+
+    /**
+     * Сортирует набор потомков. Сортировка происходит по правилам сортировки массива.
+     * @param {function} [compareFn] - Если задана функция сравнения, она будет использована при сортировке.
+     * @returns {ScreenModel} текущая модель
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.sortChildren = function(compareFn) {
+        this._children = this._children.sort(compareFn);
         ScreenModel._runUpdateFn(this);
         return this;
     };
 
     /**
-     * Добавляет модель-потомка в конец набора потомков
-     * @param {ScreenModel} child - добавляемая модель
-     * @returns {ScreenModel} данная модель
+     * Возвращает количество потомков.
+     * @returns {Number} количество потомков
      * @memberOf ScreenModel
      */
-    ScreenModel.prototype.pushChild = function(child) {
-        return this._addScreen(child, true);
+    ScreenModel.prototype.childrenLength = function () {
+        return this._children.length;
     };
+
     /**
      * Находит индекс модели среди набора потомков
      * @param {ScreenModel|string|number} child - искомая модель, ее идентификатор или порядковый номер в наборе
-     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
      * @returns {number} искомый индекс модели
      * @memberOf ScreenModel
      */
-    ScreenModel.prototype.getChildIndex = function(child, cyclic) {
-        return this._getScreenIndex(child, this._children, cyclic);
+    ScreenModel.prototype.getChildIndex = function(child) {
+        return this._getScreenIndex(child, this._children);
     };
     /**
      * Находит модель среди набора потомков
      * @param {ScreenModel|string|number} child - искомая модель, ее идентификатор или порядковый номер в наборе
-     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
      * @returns {ScreenModel} искомая модель
      * @memberOf ScreenModel
      */
-    ScreenModel.prototype.getChild = function(child, cyclic) {
-        var index = this.getChildIndex(child, cyclic);
+    ScreenModel.prototype.getChild = function(child) {
+        var index = this.getChildIndex(child);
         return this._children[index];
     };
     /**
      * Удаляет модель из набора потомков
      * @param {ScreenModel|string|number} child - удаляемая модель, ее идентификатор или порядковый номер в наборе
-     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
-     * @returns {ScreenModel} данная модель
+     * @returns {ScreenModel} текущая модель
      * @memberOf ScreenModel
      */
-    ScreenModel.prototype.removeChild = function(child, cyclic) {
-        return this._removeScreen(child, true, cyclic);
+    ScreenModel.prototype.removeChild = function(child) {
+        this._removeScreen(child, true);
+        ScreenModel._runUpdateFn(this);
+        return this;
     };
     /**
      * Добавить набор моделей в конец к набору потомков
-     * @param {ScreenModel[]} children - набор добавляемый моделей
-     * @returns {ScreenModel} данная модель
+     * @param {ScreenModel[]|ScreenModel} children - набор добавляемый моделей
+     * @returns {ScreenModel} текущая модель
      * @memberOf ScreenModel
      */
     ScreenModel.prototype.pushChildren = function(children) {
-        if (children && Array.isArray(children)) {
+        if (Array.isArray(children)) {
             for (var i = 0; i < children.length; i++) {
-                this.pushChild(children[i]);
+                this._addScreen(children[i], true);
             }
+        } else if (children instanceof ScreenModel) {
+            this._addScreen(children, true);
+        } else {
+            ScreenModel._runUpdateFn(this);
+            throw new Errors.ArgumentError('children', children);
         }
         ScreenModel._runUpdateFn(this);
         return this;
     };
     /**
      * Переопределить набор моделей потомков, то есть удалить старые и установить новые
-     * @param {ScreenModel[]} children - набор добавляемый моделей
-     * @returns {ScreenModel} данная модель
+     * @param {ScreenModel[]} [children] - набор добавляемый моделей
+     * @returns {ScreenModel} текущая модель
      * @memberOf ScreenModel
      */
     ScreenModel.prototype.resetChildren = function(children) {
-        return this.clearChildren().pushChildren(children);
+        this._clearChildren().pushChildren(children || []);
+        return this;
     };
-    /**
-     * Очищает набор потомков
-     * @returns {ScreenModel} данная модель
-     * @memberOf ScreenModel
-     */
-    ScreenModel.prototype.clearChildren = function() {
+    ScreenModel.prototype._clearChildren = function() {
         for (var i = this._children.length - 1; i >= 0; i--) {
-            this.removeChild(this._children[i]);
+            this._removeScreen(this._children[i], true);
         }
-        ScreenModel._runUpdateFn(this);
         return this;
     };
 
     /**
-     * Добавляет модель-предка в конец набора предков
-     * @param {ScreenModel} parent - добавляемая модель
-     * @returns {ScreenModel} данная модель
+     * Сортирует набор предков. Сортировка происходит по правилам сортировки массива.
+     * @param {function} [compareFn] - Если задана функция сравнения, она будет использована при сортировке.
+     * @returns {ScreenModel} текущая модель
      * @memberOf ScreenModel
      */
-    ScreenModel.prototype.pushParent = function(parent) {
-        return this._addScreen(parent, false);
+    ScreenModel.prototype.sortParents = function(compareFn) {
+        this._parents = this._parents.sort(compareFn);
+        ScreenModel._runUpdateFn(this);
+        return this;
     };
+    /**
+     * Возвращает количество предков.
+     * @returns {Number} количество предков
+     * @memberOf ScreenModel
+     */
+    ScreenModel.prototype.parentsLength = function () {
+        return this._parents.length;
+    };
+
     /**
      * Находит индекс модели среди набора предков
      * @param {ScreenModel|string|number} parent - искомая модель, ее идентификатор или порядковый номер в наборе
-     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
      * @returns {number} искомый индекс модели
      * @memberOf ScreenModel
      */
-    ScreenModel.prototype.getParentIndex = function(parent, cyclic) {
-        return this._getScreenIndex(parent, this._parents, cyclic);
+    ScreenModel.prototype.getParentIndex = function(parent) {
+        return this._getScreenIndex(parent, this._parents);
     };
     /**
      * Находит модель среди набора предков
      * @param {ScreenModel|string|number} parent - искомая модель, ее идентификатор или порядковый номер в наборе
-     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
      * @returns {ScreenModel} искомая модель
      * @memberOf ScreenModel
      */
-    ScreenModel.prototype.getParent = function(parent, cyclic) {
-        var index = this.getParentIndex(parent, cyclic);
+    ScreenModel.prototype.getParent = function(parent) {
+        var index = this.getParentIndex(parent);
         return this._parents[index];
     };
     /**
      * Удаляет модель из набора предков
      * @param {ScreenModel|string|number} parent - удаляемая модель, ее идентификатор или порядковый номер в наборе
-     * @param {boolean} [cyclic] - воспринимать ли порядковый номер модели циклически, то есть по принципу (index % length + length) % length
-     * @returns {ScreenModel} данная модель
+     * @returns {ScreenModel} текущая модель
      * @memberOf ScreenModel
      */
-    ScreenModel.prototype.removeParent = function(parent, cyclic) {
-        return this._removeScreen(parent, false, cyclic);
+    ScreenModel.prototype.removeParent = function(parent) {
+        this._removeScreen(parent, false);
+        ScreenModel._runUpdateFn(this);
+        return this;
     };
     /**
      * Добавить набор моделей в конец к набору предков
-     * @param {ScreenModel[]} parents - набор добавляемый моделей
-     * @returns {ScreenModel} данная модель
+     * @param {ScreenModel[]|ScreenModel} parents - набор добавляемый моделей
+     * @returns {ScreenModel} текущая модель
      * @memberOf ScreenModel
      */
     ScreenModel.prototype.pushParents = function(parents) {
-        if (parents && Array.isArray(parents)) {
+        if (Array.isArray(parents)) {
             for (var i = 0; i < parents.length; i++) {
-                this.pushParent(parents[i]);
+                this._addScreen(parents[i], false);
             }
+        } else if (parents instanceof ScreenModel) {
+            this._addScreen(parents, false);
+        } else {
+            ScreenModel._runUpdateFn(this);
+            throw new Errors.ArgumentError('parents', parents);
         }
+
         ScreenModel._runUpdateFn(this);
         return this;
     };
     /**
      * Переопределить набор моделей предков, то есть удалить старые и установить новые
-     * @param {ScreenModel[]} parents - набор добавляемый моделей
-     * @returns {ScreenModel} данная модель
+     * @param {ScreenModel[]} [parents] - набор добавляемый моделей
+     * @returns {ScreenModel} текущая модель
      * @memberOf ScreenModel
      */
     ScreenModel.prototype.resetParents = function(parents) {
-        return this.clearParents().pushParents(parents);
+        this._clearParents().pushParents(parents || []);
+        return this;
     };
-    /**
-     * Очищает набор предков
-     * @returns {ScreenModel} данная модель
-     * @memberOf ScreenModel
-     */
-    ScreenModel.prototype.clearParents = function() {
+    ScreenModel.prototype._clearParents = function() {
         for (var i = this._parents.length - 1; i >= 0; i--) {
-            this.removeParent(this._parents[i]);
+            this._removeScreen(this._parents[i], false);
         }
-        ScreenModel._runUpdateFn(this);
         return this;
     };
 

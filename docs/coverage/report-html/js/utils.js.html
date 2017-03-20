@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">51.02% </span>
+        <span class="strong">52% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>25/49</span>
+        <span class='fraction'>26/50</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">51.35% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>19/37</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">70% </span>
+        <span class="strong">72.73% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>7/10</span>
+        <span class='fraction'>8/11</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">43.24% </span>
+        <span class="strong">44.74% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>16/37</span>
+        <span class='fraction'>17/38</span>
       </div>
     </div>
   </div>
@@ -171,7 +171,19 @@
 126
 127
 128
-129</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -185,10 +197,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">481×</span>
-<span class="cline-any cline-yes">338×</span>
-<span class="cline-any cline-yes">162×</span>
-<span class="cline-any cline-yes">84×</span>
+<span class="cline-any cline-yes">563×</span>
+<span class="cline-any cline-yes">400×</span>
+<span class="cline-any cline-yes">200×</span>
+<span class="cline-any cline-yes">100×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -199,12 +211,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">399×</span>
-<span class="cline-any cline-yes">279×</span>
-<span class="cline-any cline-yes">141×</span>
-<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-yes">473×</span>
+<span class="cline-any cline-yes">329×</span>
+<span class="cline-any cline-yes">167×</span>
+<span class="cline-any cline-yes">79×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1434×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -280,6 +303,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -334,6 +358,17 @@ define(['errors'], function(Errors) {
 <span class="cstat-no" title="statement not covered" >        if (side === 'center') <span class="cstat-no" title="statement not covered" >return 'center';</span></span>
 <span class="cstat-no" title="statement not covered" >        throw new Errors.ArgumentError('side', side);</span>
     }
+&nbsp;
+    /**
+     * Возвращает модуль числа index в конечной группе порядка length.
+     * @param {number} index - исходное число
+     * @param {number} length - порядок группы
+     * @returns {number} модуль числа
+     * @memberOf module:Utils
+     */
+    function cycledNumber(index, length) {
+        return (index % length + length) % length;
+    }
     /**
      * Делает первую букву строки заглавной
      * @param {string} string - исходная строка
@@ -349,7 +384,7 @@ define(['errors'], function(Errors) {
      * @param {Object} mixin - миксин
      * @memberOf module:Utils
      */
-    function setMixin(base, mixin) <span class="fstat-no" title="function not covered" >{</span>
+    function mixin(base, mixin) <span class="fstat-no" title="function not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >        for(var key in mixin) {</span>
 <span class="cstat-no" title="statement not covered" >            if (mixin.hasOwnProperty(key)) {</span>
 <span class="cstat-no" title="statement not covered" >                base.prototype[key] = mixin[key];</span>
@@ -421,10 +456,11 @@ define(['errors'], function(Errors) {
          */
         isMobile: mobileCheck(),
         nop: nop,
+        cycledNumber: cycledNumber,
         oppositeSide: oppositeSide,
         getStartSide: getStartSide,
         capitalizeFirstLetter: capitalizeFirstLetter,
-        setMixin: setMixin,
+        mixin: mixin,
         inherite: inherite
     };
 });</pre></td></tr>
@@ -433,7 +469,7 @@ define(['errors'], function(Errors) {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 13 2017 01:57:49 GMT+0300 (MSK)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Mar 21 2017 02:25:20 GMT+0300 (MSK)
 </div>
 </div>
 <script src="../prettify.js"></script>

@@ -56,9 +56,9 @@ $.get('example2.html', function(data) {
     }, function(instances) {
         instances.rb1.beforeMoveDispatcher.add(action(), true);
         var cfg = {
-                wrongTime1: 1500,
-                wrongTime2: 1500,
-                correctTime: 3000
+                wrongTime1: 500,
+                wrongTime2: 500,
+                correctTime: 1000
             };
         rb.Batch.configure(cfg);
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Errors - Documentation</title>
+    <title>NotRealizedError - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Errors</h1>
+    <h1 class="page-title">NotRealizedError</h1>
     
 
     
@@ -40,8 +40,13 @@
 
 <header>
     
+        <h2>
+            <span class="ancestors"><a href="module-Errors.html">module:Errors</a>~</span>
         
-            
+        NotRealizedError
+        </h2>
+        
+            <div class="class-description"><p>Класс ошибки, означающий, что функция интерфейса еще не реализована</p></div>
         
     
 </header>
@@ -50,20 +55,95 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Модуль, содержащий всякие полезные переменные и функции</p></div>
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="NotRealizedError"><span class="type-signature"></span>new NotRealizedError<span class="signature">(module, functionName)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
         
 
         
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>module</code></td>
             
 
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>название интерфейса</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>functionName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
+            
+            </td>
 
+            
 
+            
 
+            <td class="description last"><p>название функции</p></td>
+        </tr>
 
+    
+    </tbody>
+</table>
 
 
 
@@ -99,7 +179,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="errors.js.html">errors.js</a>, <a href="errors.js.html#line1">line 1</a>
+        <a href="errors.js.html">errors.js</a>, <a href="errors.js.html#line68">line 68</a>
     </li></ul></dd>
     
 
@@ -125,7 +205,6 @@
 
 
 
-        
     
     </div>
 
@@ -134,319 +213,11 @@
     
 
     
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-Errors-ArgumentError.html">ArgumentError</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-Errors-FatalError.html">FatalError</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-Errors-NotRealizedError.html">NotRealizedError</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-Errors-PathNotFoundError.html">PathNotFoundError</a></dt>
-            <dd></dd>
-        </dl>
-    
 
      
 
     
 
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id=".ArgumentError"><span class="type-signature">(static) </span>ArgumentError<span class="type-signature"> :<a href="module-Errors-ArgumentError.html">module:Errors~ArgumentError</a></span></h4>
-
-
-
-
-<div class="description">
-    <p>Класс ошибки, означающий неправильно переданный в функцию аргумент</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><a href="module-Errors-ArgumentError.html">module:Errors~ArgumentError</a></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="errors.js.html">errors.js</a>, <a href="errors.js.html#line88">line 88</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id=".FatalError"><span class="type-signature">(static) </span>FatalError<span class="type-signature"> :<a href="module-Errors-FatalError.html">module:Errors~FatalError</a></span></h4>
-
-
-
-
-<div class="description">
-    <p>Класс ошибки, означающий критическую ошибку логики</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><a href="module-Errors-FatalError.html">module:Errors~FatalError</a></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="errors.js.html">errors.js</a>, <a href="errors.js.html#line103">line 103</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id=".NotRealizedError"><span class="type-signature">(static) </span>NotRealizedError<span class="type-signature"> :<a href="module-Errors-NotRealizedError.html">module:Errors~NotRealizedError</a></span></h4>
-
-
-
-
-<div class="description">
-    <p>Класс ошибки, означающий, что функция интерфейса еще не реализована</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><a href="module-Errors-NotRealizedError.html">module:Errors~NotRealizedError</a></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="errors.js.html">errors.js</a>, <a href="errors.js.html#line98">line 98</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id=".PathNotFoundError"><span class="type-signature">(static) </span>PathNotFoundError<span class="type-signature"> :<a href="module-Errors-PathNotFoundError.html">module:Errors~PathNotFoundError</a></span></h4>
-
-
-
-
-<div class="description">
-    <p>Класс ошибки, означающий, что путь от одной модели до другой модели не был найден</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><a href="module-Errors-PathNotFoundError.html">module:Errors~PathNotFoundError</a></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="errors.js.html">errors.js</a>, <a href="errors.js.html#line93">line 93</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
     
 
     

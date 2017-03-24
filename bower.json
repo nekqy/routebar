@@ -1,0 +1,23 @@
+{
+  "name": "routebar",
+  "description": "A visual component for navigating between panel cells containing user content.",
+  "main": [
+    "dist/rb.js",
+    "dist/rb.min.js",
+    "dist/rb.css"
+  ],
+  "authors": [
+    "Andrey Shipin"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "navigation",
+    "component",
+    "panel",
+    "pageslide"
+  ],
+  "homepage": "https://github.com/nekqy/routebar",
+  "ignore": [
+    "bower_components"
+  ]
+}

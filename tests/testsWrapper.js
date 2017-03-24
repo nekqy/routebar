@@ -1,4 +1,4 @@
-define(['../js/main', 'lodash'], function(rb, _) {
+define(['../js/main', 'lodash', 'jquery-3.1.1'], function(rb, _, $) {
     'use strict';
 
     function TestsWrapper(name) {

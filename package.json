@@ -32,7 +32,7 @@
     "build-production": "./node_modules/.bin/cross-env NODE_ENV=production webpack --optimize-minimize",
     "build": "npm run jsdoc && npm run build-development && npm run build-production",
     "test": "npm run del-coverage && ./node_modules/.bin/cross-env NODE_ENV=test ./node_modules/karma/bin/karma start ./karma.config.js",
-    "start": "./node_modules/.bin/http-server ../"
+    "start": "./node_modules/.bin/http-server ./"
   },
   "devDependencies": {
     "cross-env": "^3.2.4",

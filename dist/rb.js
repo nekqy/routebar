@@ -64,7 +64,7 @@ var rb =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 18);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -877,7 +877,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(13)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Moving) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(14)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Moving) {
     "use strict";
 
     /**
@@ -1082,7 +1082,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(2), __webpack_require__(0), __webpack_require__(17)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Utils, IPlugin, Errors) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(2), __webpack_require__(0), __webpack_require__(18)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Utils, IPlugin, Errors) {
     "use strict";
 
     /**
@@ -2056,7 +2056,83 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0), __webpack_require__(2), __webpack_require__(4), __webpack_require__(7), __webpack_require__(14), __webpack_require__(9), __webpack_require__(10), __webpack_require__(15), __webpack_require__(8), __webpack_require__(12), __webpack_require__(11), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_RESULT__ = function(
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * Основной модуль, предоставляющий элементы для настройки и управления панелями<br>
+ * Объявляется глобально и доступен через переменную <b>rb</b>
+ * @module MainModule
+ */
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4), __webpack_require__(5), __webpack_require__(2), __webpack_require__(3), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ScreenModel, RbManager, IPlugin, IControl) {
+    "use strict";
+
+    return /** @alias module:MainModule */ Object.create(null, {
+        /**
+         * Класс модели отображаемого внутри панели контента, модели связываются в граф зависимостей,
+         * по которому осуществляется перемещение в панели.
+         * @type {ScreenModel}
+         */
+        Screen: {
+            value: ScreenModel
+        },
+        /**
+         * Функция, инициализирующая расположенные в данный момент на странице панели.
+         * @type {function}
+         * @see {@link module:RbManager.init}
+         */
+        start: {
+            value: RbManager.init
+        },
+        /**
+         * Функция, удаляющая панель со страницы.
+         * @type {function}
+         * @see {@link module:RbManager.remove}
+         */
+        remove: {
+            value: RbManager.remove
+        },
+        /**
+         * Набор панелей, действующих в данный момент на странице.
+         * @type {Moving[]}
+         */
+        Instances: {
+            value: {}
+        },
+        /**
+         * Модуль, позволяющий управлять панелями на странице пакетированно, то есть запускать действия для всех панеляй сразу.
+         * @type {module:Batch}
+         */
+        Batch: {
+            value: RbManager.Batch
+        },
+        /**
+         * Интерфейс плагина панели, который можно добавить в панель для расширения ее фунционала.
+         * Добавляемые плагины должны быть именно такого типа.
+         * @type {IPlugin}
+         * @see {@link Moving#addPlugin}
+         * @see {@link Moving#removePlugin}
+         */
+        IPlugin: {
+            value: IPlugin
+        },
+        /**
+         * Интерфейс управления панелью. Позволяет переключаться в соседние ячейки панели.
+         * Добавляемые плагины управления панелью должны быть именно такого типа.
+         * @type {IControl}
+         * @see {@link ControlManager#add}
+         * @see {@link ControlManager#remove}
+         */
+        IControl: {
+            value: IControl
+        }
+    });
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0), __webpack_require__(2), __webpack_require__(4), __webpack_require__(7), __webpack_require__(15), __webpack_require__(9), __webpack_require__(10), __webpack_require__(16), __webpack_require__(8), __webpack_require__(12), __webpack_require__(11), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_RESULT__ = function(
     Errors, IPlugin, ScreenModel, Animation, ScreenManager, BaseDispatcher, ControlManager, SwipesControl, ArrowsControl, KeydownControl, ElementsPool, Utils) {
     "use strict";
 
@@ -2703,7 +2779,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(4), __webpack_require__(2), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Utils, Screen, IPlugin, Errors) {
@@ -3012,10 +3088,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(3), __webpack_require__(0), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Utils, IControl, Errors, Hammer) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(3), __webpack_require__(0), __webpack_require__(17)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Utils, IControl, Errors, Hammer) {
     "use strict";
 
     /**
@@ -3107,7 +3183,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! Hammer.JS - v2.0.8 - 2016-04-23
@@ -5757,7 +5833,7 @@ if (true) {
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 if (typeof jQuery !== 'undefined') {
@@ -6006,82 +6082,6 @@ function init() {
 
 
 }
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
- * Основной модуль, предоставляющий элементы для настройки и управления панелями<br>
- * Объявляется глобально и доступен через переменную <b>rb</b>
- * @module MainModule
- */
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4), __webpack_require__(5), __webpack_require__(2), __webpack_require__(3), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ScreenModel, RbManager, IPlugin, IControl) {
-    "use strict";
-
-    return /** @alias module:MainModule */ Object.create(null, {
-        /**
-         * Класс модели отображаемого внутри панели контента, модели связываются в граф зависимостей,
-         * по которому осуществляется перемещение в панели.
-         * @type {ScreenModel}
-         */
-        Screen: {
-            value: ScreenModel
-        },
-        /**
-         * Функция, инициализирующая расположенные в данный момент на странице панели.
-         * @type {function}
-         * @see {@link module:RbManager.init}
-         */
-        start: {
-            value: RbManager.init
-        },
-        /**
-         * Функция, удаляющая панель со страницы.
-         * @type {function}
-         * @see {@link module:RbManager.remove}
-         */
-        remove: {
-            value: RbManager.remove
-        },
-        /**
-         * Набор панелей, действующих в данный момент на странице.
-         * @type {Moving[]}
-         */
-        Instances: {
-            value: {}
-        },
-        /**
-         * Модуль, позволяющий управлять панелями на странице пакетированно, то есть запускать действия для всех панеляй сразу.
-         * @type {module:Batch}
-         */
-        Batch: {
-            value: RbManager.Batch
-        },
-        /**
-         * Интерфейс плагина панели, который можно добавить в панель для расширения ее фунционала.
-         * Добавляемые плагины должны быть именно такого типа.
-         * @type {IPlugin}
-         * @see {@link Moving#addPlugin}
-         * @see {@link Moving#removePlugin}
-         */
-        IPlugin: {
-            value: IPlugin
-        },
-        /**
-         * Интерфейс управления панелью. Позволяет переключаться в соседние ячейки панели.
-         * Добавляемые плагины управления панелью должны быть именно такого типа.
-         * @type {IControl}
-         * @see {@link ControlManager#add}
-         * @see {@link ControlManager#remove}
-         */
-        IControl: {
-            value: IControl
-        }
-    });
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
 
 /***/ })
 /******/ ]);

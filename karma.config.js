@@ -34,7 +34,7 @@ module.exports = function(config) {
         ],
         // конфигурация репортов о покрытии кода тестами
         coverageReporter: {
-            dir:'../docs/coverage/',
+            dir:'./docs/coverage/',
             reporters: [
                 { type:'html', subdir: 'report-html' },
                 { type:'lcov', subdir: 'report-lcov' }

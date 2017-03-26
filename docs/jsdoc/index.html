@@ -62,7 +62,7 @@
 <p>1) Clone the repository</p>
 <pre class="prettyprint source"><code>git clone https://github.com/nekqy/routebar.git</code></pre><p>2) Go inside the RouteBar folder that you fetched and install Node dependencies. I use Node v.5.11
 because of node v.6 show me &quot;fs: re-evaluating native module sources is not supported&quot;.</p>
-<pre class="prettyprint source"><code>cd routebar/rb && npm install</code></pre><p>3) Run <code>npm run build</code> to generate the JS and CSS files in the <code>rb/dist</code> folder. Also it generates jsdoc in the <code>docs/jsdoc</code> folder. </p>
+<pre class="prettyprint source"><code>cd routebar && npm install</code></pre><p>3) Run <code>npm run build</code> to generate the JS and CSS files in the <code>dist</code> folder. Also it generates jsdoc in the <code>docs/jsdoc</code> folder. </p>
 <pre class="prettyprint source"><code>npm run build</code></pre><p>4) Run <code>npm run test</code> to run tests and generate coverage in the <code>docs/coverage</code> folder.</p>
 <pre class="prettyprint source"><code>npm run test</code></pre><h2>User Guide</h2><p>Add an element with class 'rb-wrapper' to your page. 'data-id' or 'id' attribute contains name of adding panel.</p>
 <pre class="prettyprint source"><code>$('body').html('' +

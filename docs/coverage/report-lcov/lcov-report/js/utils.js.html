@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">52% </span>
+        <span class="strong">48.28% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>26/50</span>
+        <span class='fraction'>28/58</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">51.35% </span>
+        <span class="strong">48.78% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>19/37</span>
+        <span class='fraction'>20/41</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">72.73% </span>
+        <span class="strong">69.23% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>8/11</span>
+        <span class='fraction'>9/13</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">44.74% </span>
+        <span class="strong">42.22% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>17/38</span>
+        <span class='fraction'>19/45</span>
       </div>
     </div>
   </div>
-  <div class='status-line medium'></div>
+  <div class='status-line low'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -183,7 +183,19 @@
 138
 139
 140
-141</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -197,10 +209,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">563×</span>
-<span class="cline-any cline-yes">400×</span>
-<span class="cline-any cline-yes">200×</span>
-<span class="cline-any cline-yes">100×</span>
+<span class="cline-any cline-yes">405×</span>
+<span class="cline-any cline-yes">316×</span>
+<span class="cline-any cline-yes">138×</span>
+<span class="cline-any cline-yes">74×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -211,10 +223,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">473×</span>
-<span class="cline-any cline-yes">329×</span>
-<span class="cline-any cline-yes">167×</span>
-<span class="cline-any cline-yes">79×</span>
+<span class="cline-any cline-yes">483×</span>
+<span class="cline-any cline-yes">365×</span>
+<span class="cline-any cline-yes">163×</span>
+<span class="cline-any cline-yes">81×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -227,7 +239,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1434×</span>
+<span class="cline-any cline-yes">1490×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -297,6 +309,18 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -442,6 +466,18 @@ define(['errors'], function(Errors) {
         };
     }
 &nbsp;
+    (function(e){
+        e.closest = e.closest || <span class="branch-1 cbranch-no" title="branch not covered" >function(css)<span class="fstat-no" title="function not covered" >{</span></span>
+                var node = <span class="cstat-no" title="statement not covered" >this;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                while (node) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (node.matches(css)) <span class="cstat-no" title="statement not covered" >return node;</span></span>
+                    else <span class="cstat-no" title="statement not covered" >node = node.parentElement;</span>
+                }
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+    })(Element.prototype);
+&nbsp;
     return /** @alias module:Utils */ {
         /**
          * Массив из возможных сторон
@@ -469,7 +505,7 @@ define(['errors'], function(Errors) {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Mar 25 2017 02:28:21 GMT+0300 (MSK)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 27 2017 01:49:59 GMT+0300 (MSK)
 </div>
 </div>
 <script src="../prettify.js"></script>

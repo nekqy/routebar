@@ -301,6 +301,18 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
         };
     }
 
+    (function(e){
+        e.closest = e.closest || function(css){
+                var node = this;
+
+                while (node) {
+                    if (node.matches(css)) return node;
+                    else node = node.parentElement;
+                }
+                return null;
+            }
+    })(Element.prototype);
+
     return /** @alias module:Utils */ {
         /**
          * Массив из возможных сторон
@@ -1605,7 +1617,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     result = value.action.apply(undefined, actionArgs);
 
                 if (value.once) {
-                    delete this._actions[index];
+                    this.remove(index);
                 }
                 if (result instanceof Promise) {
                     actions.push(result);
@@ -2154,18 +2166,23 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
         /**
          * Диспетчер, выполняющий зарегистрированные функции до выполнения перехода к новой ячейке в панели
+         * Функциям в аргументы передается side, instance текущей панели и флаг isWrongStep - удачный переход или нет.
+         * Если флаг равен null, то осуществляется moveBack.
+         * Функция может вернуть флаг или Promise. Если флаг равен false или Promise возвращает false, то переход не будет осуществлен.
          * @name beforeMoveDispatcher
          * @memberOf Moving#
          */
         this.beforeMoveDispatcher = new BaseDispatcher(mainDiv);
         /**
-         * Диспетчер, выполняющий зарегистрированные функции до рендеринга контента моделей на странице после перехода
+         * Диспетчер, выполняющий зарегистрированные функции до рендеринга контента моделей на странице после перехода.
+         * Функциям в аргументы передается side и instance текущей панели.
          * @name beforeRenderDispatcher
          * @memberOf Moving#
          */
         this.beforeRenderDispatcher = new BaseDispatcher(mainDiv);
         /**
          * Диспетчер, выполняющий зарегистрированные функции после рендеринга контента моделей на странице после перехода
+         * Функциям в аргументы передается side и instance текущей панели.
          * @name afterRenderDispatcher
          * @memberOf Moving#
          */
@@ -2240,14 +2257,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
             getRight: function(screen) {
                 var childIndex = screen.defaultChildIndex();
-                //this._lastScreen = screen; // todo эта логика нужна здесь а не так где она сейчас, чтобы все было инкапсулировано в эти функции
-                //this._lastSide = 'right';
                 return screen.getChild(childIndex);
             },
             getLeft: function(screen) {
                 var parentIndex = screen.defaultParentIndex();
-                //this._lastScreen = screen;
-                //this._lastSide = 'left';
                 return screen.getParent(parentIndex);
             },
             getTop: function(screen, cyclicStep) {
@@ -2302,13 +2315,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     };
     /**
      * @typedef {function} Moving~getLeft
-     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход влево.
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход влево, то есть в сторону предка.
      * По умолчанию берет опцию defaultParentIndex у экземпляра ScreenModel и ищет предка модели с этим индексом.
      * @param {ScreenModel} screen - текущая модель контента панели
      */
     /**
      * @typedef {function} Moving~getTop
-     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вверх.
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вверх, то есть в сторону соседа сверху.
      * По умолчанию смотрит, осуществлялись ли переходы влево-вправо,
      * если последним таким был переход вправо, то берется модель, из которой был сделан шаг вправо и в контексте ее потомков
      * от текущего потомка будет найден предыдущий потомок и возвращен в качестве результата.
@@ -2324,13 +2337,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
      */
     /**
      * @typedef {function} Moving~getRight
-     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вправо.
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вправо, то есть в сторону потомка.
      * По умолчанию берет опцию defaultChildIndex у экземпляра ScreenModel и ищет потомка модели с этим индексом.
      * @param {ScreenModel} screen - текущая модель контента панели
      */
     /**
      * @typedef {function} Moving~getBottom
-     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вниз.
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вниз, то есть в сторону соседа снизу.
      * По умолчанию смотрит, осуществлялись ли переходы влево-вправо,
      * если последним таким был переход вправо, то берется модель, из которой был сделан шаг вправо и в контексте ее потомков
      * от текущего потомка будет найден следующий потомок и возвращен в качестве результата.
@@ -2440,7 +2453,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     /**
      * Осуществить переход в указанную сторону.
      * @param {string} side - сторона, в которую осуществляется переход
-     * @param {Boolean} [isSaveHistory] - сохранять ли осуществляемый переход в историю переходов
+     * @param {Boolean} [isSaveHistory=true] - сохранять ли осуществляемый переход в историю переходов
      * @returns {Promise|undefined} promise о завершении действия, либо undefined, если переход не требуется
      * @memberOf Moving
      */
@@ -2448,14 +2461,17 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         var self = this,
             screen = this._screenManager.getCurScreen();
         if (side) {
+            var nextScreen = self._screenManager.getRelativeScreen(side),
+                isWrongStep = !nextScreen;
             return Promise.race([ this.beforeMoveDispatcher.runActions(
                 self._moveInner.bind(self, side, screen, isSaveHistory),
-                [side, self._screenManager.getCurScreen(), self]
+                [side, self, isWrongStep] // todo может расширить isWrongStep до енама со всеми вариантами которые могут быть
             ) ]);
         }
     };
     Moving.prototype._moveInner = function(side, screen, isSaveHistory) {
         var self = this;
+        isSaveHistory = isSaveHistory !== false;
 
         if (this._lockControls && !this._locks) {
             this._locks = this._controlManager.disableAll();
@@ -2465,7 +2481,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
         return new Promise(function (moveResolve, moveReject) {
 
-            if (!self._screenManager.getRelativeScreen(side)) {
+            var nextScreen = self._screenManager.getRelativeScreen(side),
+                curScreen = self._screenManager.getCurScreen();
+
+            if (!nextScreen) {
                 self._animation.goToWrongSide(side).then(function(result) {
                     if (result) {
                         self._renderHtml(side, moveResolve.bind(undefined, {
@@ -2484,8 +2503,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             } else if (sides.indexOf(side) !== -1) {
                 if (side === 'left' || side === 'right') {
                     self._screenManager._lastSide = side; // todo надо инкапсулировать
-                    self._screenManager._lastScreen = self._screenManager.getCurScreen();
+                    self._screenManager._lastScreen = curScreen;
                 }
+
+                self.getScreenManager()._setRelativeScreen(side, nextScreen, curScreen, true, true);
 
                 self._screenManager._updateScreens(side, undefined, isSaveHistory);
                 self._elementsPool.prepareSide();
@@ -2538,7 +2559,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 nextScreen = lastStep.screen,
                 side = lastStep.side,
                 mustUpdate = false;
-            if (side === 'left' && curScreen.getParent(nextScreen)) { // todo неправильно! нельзя затачиваться на структуру
+            if (side === 'left' && curScreen.getParent(nextScreen)) {
                 mustUpdate = true;
             } else if (side === 'right' && curScreen.getChild(nextScreen)) {
                 mustUpdate = true;
@@ -2550,14 +2571,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 return null;
             }
             if (mustUpdate) {
-                this._screenManager._setRelativeScreen(this._screenManager.getCurScreen(), side, nextScreen);
+                this.getScreenManager()._setRelativeScreen(side, curScreen, nextScreen);
             }
 
             var self = this;
             if (side) {
                 return Promise.race([ this.beforeMoveDispatcher.runActions(
                     self._moveInner.bind(self, lastStep.side, curScreen, false),
-                    [side, self._screenManager.getCurScreen(), self]
+                    [side, self, null]
                 ) ]);
             }
         }
@@ -2583,11 +2604,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
      * @memberOf Moving
      */
     Moving.prototype.setScreen = function(screen, isSaveHistory) {
-        var self = this;
-        return Promise.race([ this.beforeMoveDispatcher.runActions(
-            self._moveInner.bind(self, 'center', screen, isSaveHistory),
-            ['center', self._screenManager.getCurScreen(), self]
-        ) ]);
+        // var self = this;
+        return this._moveInner('center', screen, isSaveHistory);
+        // return Promise.race([ this.beforeMoveDispatcher.runActions( // todo как то beforeMoveDispatcher тут не в тему совсем
+        //     self._moveInner.bind(self, 'center', screen, isSaveHistory),
+        //     ['center', self, false]
+        // ) ]);
     };
     // todo это слишком много, нужно выделить тот функционал который реально релоадит, и вызывать его везде в том числе в ините где сейчас дергается move
     Moving.prototype._reloadScreen = function() {
@@ -2610,7 +2632,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
     Moving.prototype._renderHtml = function(side, moveResolve) {
         var self = this,
-            args = [side, self._screenManager.getCurScreen(), self];
+            args = [side, self];
 
         function afterRender() {
             self.activate();
@@ -2686,10 +2708,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 nextScreen = path[i+1],
                 side;
 
-            if (curScreen.getParent(nextScreen)) { // todo неправильно! нельзя затачиваться на структуру
-                side = 'left';
-            } else if (curScreen.getChild(nextScreen)) {
+            if (curScreen.getChild(nextScreen)) { // todo почему сначала смотрю на потомков а потом на предков? раньше было наоборот и падало, но от того что я их поменял логика лучше не стала
                 side = 'right';
+            } else if (curScreen.getParent(nextScreen)) {
+                side = 'left';
             } else if (self._screenManager._getBottom(curScreen, self._screenManager._cyclicStep) === nextScreen) {
                 side = 'bottom';
             } else if (self._screenManager._getTop(curScreen, self._screenManager._cyclicStep) === nextScreen) {
@@ -2699,7 +2721,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 reject(new Errors.FatalError('goToScreen : side not found'));
             }
 
-            self._screenManager._setRelativeScreen(self._screenManager.getCurScreen(), side, nextScreen);
+            self.getScreenManager()._setRelativeScreen(side, curScreen, nextScreen, true);
 
             self.afterRenderDispatcher.add(function() {
                 self.afterRenderDispatcher.add(function() {
@@ -2794,7 +2816,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     function ScreenManager() {
         this._history = [];
         this._curScreen = null;
-        this._relativeScreens = {};
         this._relativeUpdateFn = this._updateRelativeScreen.bind(this);
         Screen.registerUpdateFn(this._relativeUpdateFn);
     }
@@ -2809,6 +2830,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             if (config.maxHistoryLength !== undefined) {
                 if (typeof config.maxHistoryLength === 'number' && config.maxHistoryLength >= 0) {
                     this._maxHistoryLength = config.maxHistoryLength;
+                    if (this._history.length > this._maxHistoryLength) {
+                        this._history = this._history.slice(this._history.length - this._maxHistoryLength);
+                    }
                 } else {
                     throw new Errors.ArgumentError('maxHistoryLength', config.maxHistoryLength);
                 }
@@ -2850,9 +2874,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             this._curScreen = this.getRelativeScreen(side);
 
             if (side !== 'center') {
-                if (this._savePrevious) {
-                    this._setRelativeScreen(this._curScreen, Utils.oppositeSide(side), prevScreen);
-                }
                 updated = true;
             }
         }
@@ -2880,63 +2901,56 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             throw new Errors.ArgumentError('side', side);
         }
 
-        var id = screen.toString();
-        if (!this._relativeScreens[id]) {
-            this._relativeScreens[id] = {};
-        }
-
         if (side === 'center') {
             return screen;
         } else if (side === 'left') {
-            return this._relativeScreens[id]['left'] || this._getLeft(screen);
+            return this._getLeft(screen);
         } else if (side === 'top') {
-            return this._relativeScreens[id]['top'] || this._getTop(screen, this._cyclicStep);
+            return this._getTop(screen, this._cyclicStep);
         } else if (side === 'right') {
-            return this._relativeScreens[id]['right'] || this._getRight(screen);
+            return this._getRight(screen);
         } else if (side === 'bottom') {
-            return this._relativeScreens[id]['bottom'] || this._getBottom(screen, this._cyclicStep);
+            return this._getBottom(screen, this._cyclicStep);
         }
         return null;
     };
-    ScreenManager.prototype._setRelativeScreen = function(baseScreen, side, screen) {
-        if (Utils.sides.indexOf(side) === -1) {
-            throw new Errors.ArgumentError('side', side);
+    ScreenManager.prototype._setRelativeScreen = function(side, baseScreen, targetScreen, isCheckSave, reverse) {
+        if (!(targetScreen instanceof Screen)) {
+            throw new Errors.ArgumentError('targetScreen', targetScreen);
         }
         if (!(baseScreen instanceof Screen)) {
             throw new Errors.ArgumentError('baseScreen', baseScreen);
         }
-        if (!(screen instanceof Screen)) {
-            throw new Errors.ArgumentError('screen', screen);
-        }
 
-        var id = baseScreen.toString();
-        if (!this._relativeScreens[id]) {
-            this._relativeScreens[id] = {};
-        }
+        var savePrevious = isCheckSave ? this._savePrevious : true;
 
-        this._relativeScreens[id][side] = screen;
+        if (side === (reverse ? 'left' : 'right') && savePrevious) {
+            var childIndex = baseScreen.getChildIndex(targetScreen);
+            if (childIndex !== -1) {
+                baseScreen.defaultChildIndex(childIndex);
+            } else {
+                throw new Errors.FatalError('Base screen is ' + baseScreen.toString() + '. Child screen not found: ', targetScreen.toString());
+            }
+        }
+        if (side === (reverse ? 'right' : 'left') && savePrevious) {
+            var parentIndex = baseScreen.getParentIndex(targetScreen);
+            if (parentIndex !== -1) {
+                baseScreen.defaultParentIndex(parentIndex);
+            } else {
+                throw new Errors.FatalError('Base screen is ' + baseScreen.toString() + '. Parent screen not found: ', targetScreen.toString());
+            }
+        }
     };
     ScreenManager.prototype._updateRelativeScreen = function(screen) {
         if (!(screen instanceof Screen)) {
             throw new Errors.ArgumentError('screen', screen);
         }
-        var id = screen.toString();
-
-        if (!this._relativeScreens[id]) {
-            this._relativeScreens[id] = {};
-        }
 
         if (!this._getRight(screen)) {
-            this._relativeScreens[id]['right'] = undefined;
+            screen.defaultChildIndex(0);
         }
         if (!this._getLeft(screen)) {
-            this._relativeScreens[id]['left'] = undefined;
-        }
-        if (!this._getBottom(screen, this._cyclicStep)) {
-            this._relativeScreens[id]['bottom'] = undefined;
-        }
-        if (!this._getTop(screen, this._cyclicStep)) {
-            this._relativeScreens[id]['top'] = undefined;
+            screen.defaultParentIndex(0);
         }
     };
 
@@ -3080,7 +3094,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         Screen.unregisterUpdateFn(this._relativeUpdateFn);
         this._history = null;
         this._curScreen = null;
-        this._relativeScreens = null;
     };
 
     return ScreenManager;
@@ -3146,10 +3159,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         if (this._isEnable) return;
 
         function swipeHandler(e) {
-            self._actionFn(e.direction, [Hammer.DIRECTION_RIGHT, Hammer.DIRECTION_DOWN, Hammer.DIRECTION_LEFT, Hammer.DIRECTION_UP], function(val, defVal) {
-                return val === defVal;
-            });
+            if (self._mainDiv.is(e.target.closest('.rb'))) {
+                self._actionFn(e.direction, [Hammer.DIRECTION_RIGHT, Hammer.DIRECTION_DOWN, Hammer.DIRECTION_LEFT, Hammer.DIRECTION_UP], function(val, defVal) {
+                    return val === defVal;
+                });
+            }
             e.preventDefault();
+            e.srcEvent.stopPropagation();
         }
 
         var self = this;

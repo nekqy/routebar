@@ -227,7 +227,8 @@
 
 
 <div class="description">
-    <p>Диспетчер, выполняющий зарегистрированные функции после рендеринга контента моделей на странице после перехода</p>
+    <p>Диспетчер, выполняющий зарегистрированные функции после рендеринга контента моделей на странице после перехода
+Функциям в аргументы передается side и instance текущей панели.</p>
 </div>
 
 
@@ -265,7 +266,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line33">line 33</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line37">line 37</a>
     </li></ul></dd>
     
 
@@ -289,7 +290,10 @@
 
 
 <div class="description">
-    <p>Диспетчер, выполняющий зарегистрированные функции до выполнения перехода к новой ячейке в панели</p>
+    <p>Диспетчер, выполняющий зарегистрированные функции до выполнения перехода к новой ячейке в панели
+Функциям в аргументы передается side, instance текущей панели и флаг isWrongStep - удачный переход или нет.
+Если флаг равен null, то осуществляется moveBack.
+Функция может вернуть флаг или Promise. Если флаг равен false или Promise возвращает false, то переход не будет осуществлен.</p>
 </div>
 
 
@@ -351,7 +355,8 @@
 
 
 <div class="description">
-    <p>Диспетчер, выполняющий зарегистрированные функции до рендеринга контента моделей на странице после перехода</p>
+    <p>Диспетчер, выполняющий зарегистрированные функции до рендеринга контента моделей на странице после перехода.
+Функциям в аргументы передается side и instance текущей панели.</p>
 </div>
 
 
@@ -389,7 +394,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line27">line 27</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line30">line 30</a>
     </li></ul></dd>
     
 
@@ -467,7 +472,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line518">line 518</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line528">line 528</a>
     </li></ul></dd>
     
 
@@ -598,7 +603,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line592">line 592</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line602">line 602</a>
     </li></ul></dd>
     
 
@@ -730,7 +735,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line440">line 440</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line449">line 449</a>
     </li></ul></dd>
     
 
@@ -883,7 +888,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line254">line 254</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line255">line 255</a>
     </li></ul></dd>
     
 
@@ -965,7 +970,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line616">line 616</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line626">line 626</a>
     </li></ul></dd>
     
 
@@ -1047,7 +1052,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line294">line 294</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line295">line 295</a>
     </li></ul></dd>
     
 
@@ -1151,7 +1156,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line302">line 302</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line303">line 303</a>
     </li></ul></dd>
     
 
@@ -1304,7 +1309,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line528">line 528</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line538">line 538</a>
     </li></ul></dd>
     
 
@@ -1392,6 +1397,8 @@
         
 
         
+        <th>Default</th>
+        
 
         <th class="last">Description</th>
     </tr>
@@ -1425,6 +1432,10 @@
             
 
             
+                <td class="default">
+                
+                </td>
+            
 
             <td class="description last"><p>сторона, в которую осуществляется переход</p></td>
         </tr>
@@ -1457,6 +1468,12 @@
                 </td>
             
 
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
             
 
             <td class="description last"><p>сохранять ли осуществляемый переход в историю переходов</p></td>
@@ -1500,7 +1517,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line313">line 313</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line314">line 314</a>
     </li></ul></dd>
     
 
@@ -1607,7 +1624,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line399">line 399</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line408">line 408</a>
     </li></ul></dd>
     
 
@@ -1768,7 +1785,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line470">line 470</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line480">line 480</a>
     </li></ul></dd>
     
 
@@ -1899,7 +1916,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line604">line 604</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line614">line 614</a>
     </li></ul></dd>
     
 
@@ -1981,7 +1998,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line78">line 78</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line83">line 83</a>
     </li></ul></dd>
     
 
@@ -2155,7 +2172,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line451">line 451</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line460">line 460</a>
     </li></ul></dd>
     
 
@@ -3165,7 +3182,7 @@ https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes</p></
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line213">line 213</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line214">line 214</a>
     </li></ul></dd>
     
 
@@ -3193,7 +3210,7 @@ https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes</p></
 
 
 <div class="description">
-    <p>Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вниз.
+    <p>Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вниз, то есть в сторону соседа снизу.
 По умолчанию смотрит, осуществлялись ли переходы влево-вправо,
 если последним таким был переход вправо, то берется модель, из которой был сделан шаг вправо и в контексте ее потомков
 от текущего потомка будет найден следующий потомок и возвращен в качестве результата.
@@ -3319,7 +3336,7 @@ https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes</p></
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line197">line 197</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line198">line 198</a>
     </li></ul></dd>
     
 
@@ -3357,7 +3374,7 @@ https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes</p></
 
 
 <div class="description">
-    <p>Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход влево.
+    <p>Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход влево, то есть в сторону предка.
 По умолчанию берет опцию defaultParentIndex у экземпляра ScreenModel и ищет предка модели с этим индексом.</p>
 </div>
 
@@ -3451,7 +3468,7 @@ https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes</p></
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line169">line 169</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line170">line 170</a>
     </li></ul></dd>
     
 
@@ -3489,7 +3506,7 @@ https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes</p></
 
 
 <div class="description">
-    <p>Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вправо.
+    <p>Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вправо, то есть в сторону потомка.
 По умолчанию берет опцию defaultChildIndex у экземпляра ScreenModel и ищет потомка модели с этим индексом.</p>
 </div>
 
@@ -3583,7 +3600,7 @@ https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes</p></
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line191">line 191</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line192">line 192</a>
     </li></ul></dd>
     
 
@@ -3621,7 +3638,7 @@ https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes</p></
 
 
 <div class="description">
-    <p>Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вверх.
+    <p>Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вверх, то есть в сторону соседа сверху.
 По умолчанию смотрит, осуществлялись ли переходы влево-вправо,
 если последним таким был переход вправо, то берется модель, из которой был сделан шаг вправо и в контексте ее потомков
 от текущего потомка будет найден предыдущий потомок и возвращен в качестве результата.
@@ -3747,7 +3764,7 @@ https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes</p></
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line175">line 175</a>
+        <a href="moving.js.html">moving.js</a>, <a href="moving.js.html#line176">line 176</a>
     </li></ul></dd>
     
 

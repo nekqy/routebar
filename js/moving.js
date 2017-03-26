@@ -20,18 +20,23 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
 
         /**
          * Диспетчер, выполняющий зарегистрированные функции до выполнения перехода к новой ячейке в панели
+         * Функциям в аргументы передается side, instance текущей панели и флаг isWrongStep - удачный переход или нет.
+         * Если флаг равен null, то осуществляется moveBack.
+         * Функция может вернуть флаг или Promise. Если флаг равен false или Promise возвращает false, то переход не будет осуществлен.
          * @name beforeMoveDispatcher
          * @memberOf Moving#
          */
         this.beforeMoveDispatcher = new BaseDispatcher(mainDiv);
         /**
-         * Диспетчер, выполняющий зарегистрированные функции до рендеринга контента моделей на странице после перехода
+         * Диспетчер, выполняющий зарегистрированные функции до рендеринга контента моделей на странице после перехода.
+         * Функциям в аргументы передается side и instance текущей панели.
          * @name beforeRenderDispatcher
          * @memberOf Moving#
          */
         this.beforeRenderDispatcher = new BaseDispatcher(mainDiv);
         /**
          * Диспетчер, выполняющий зарегистрированные функции после рендеринга контента моделей на странице после перехода
+         * Функциям в аргументы передается side и instance текущей панели.
          * @name afterRenderDispatcher
          * @memberOf Moving#
          */
@@ -310,9 +315,11 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         var self = this,
             screen = this._screenManager.getCurScreen();
         if (side) {
+            var nextScreen = self._screenManager.getRelativeScreen(side),
+                isWrongStep = !nextScreen;
             return Promise.race([ this.beforeMoveDispatcher.runActions(
                 self._moveInner.bind(self, side, screen, isSaveHistory),
-                [side, self._screenManager.getCurScreen(), self]
+                [side, self, isWrongStep] // todo может расширить isWrongStep до енама со всеми вариантами которые могут быть
             ) ]);
         }
     };
@@ -425,7 +432,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             if (side) {
                 return Promise.race([ this.beforeMoveDispatcher.runActions(
                     self._moveInner.bind(self, lastStep.side, curScreen, false),
-                    [side, self._screenManager.getCurScreen(), self]
+                    [side, self, null]
                 ) ]);
             }
         }
@@ -451,11 +458,12 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
      * @memberOf Moving
      */
     Moving.prototype.setScreen = function(screen, isSaveHistory) {
-        var self = this;
-        return Promise.race([ this.beforeMoveDispatcher.runActions(
-            self._moveInner.bind(self, 'center', screen, isSaveHistory),
-            ['center', self._screenManager.getCurScreen(), self]
-        ) ]);
+        // var self = this;
+        return this._moveInner('center', screen, isSaveHistory);
+        // return Promise.race([ this.beforeMoveDispatcher.runActions( // todo как то beforeMoveDispatcher тут не в тему совсем
+        //     self._moveInner.bind(self, 'center', screen, isSaveHistory),
+        //     ['center', self, false]
+        // ) ]);
     };
     // todo это слишком много, нужно выделить тот функционал который реально релоадит, и вызывать его везде в том числе в ините где сейчас дергается move
     Moving.prototype._reloadScreen = function() {
@@ -478,7 +486,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
 
     Moving.prototype._renderHtml = function(side, moveResolve) {
         var self = this,
-            args = [side, self._screenManager.getCurScreen(), self];
+            args = [side, self];
 
         function afterRender() {
             self.activate();

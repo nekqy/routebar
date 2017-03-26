@@ -76,7 +76,7 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
                     result = value.action.apply(undefined, actionArgs);
 
                 if (value.once) {
-                    delete this._actions[index];
+                    this.remove(index);
                 }
                 if (result instanceof Promise) {
                     actions.push(result);

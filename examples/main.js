@@ -12,59 +12,54 @@ var mainScreen = new rb.Screen(mainScreenHtml);
 var firstScreen = new rb.Screen(firstHtml),
     secondScreen = new rb.Screen(secondHtml),
     thirdScreen = new rb.Screen(thirdHtml, [mainScreen]);
-mainScreen
-    .pushChildren(firstScreen)
-    .pushChildren(secondScreen)
-    .pushChildren(thirdScreen);
 
-// dynamic control of screens example
-function action() {
-    var newScreen = mainScreen.getChild(0);
-    //var count = 0;
-    function loadPage(resolve, reject) {
-        $.get('example2.html', function(data) {
+mainScreen.pushChildren([firstScreen, secondScreen, thirdScreen]);
 
-            newScreen.pushChildren(newScreen = new rb.Screen(data));
-
-            //if (++count >= 5) {
-            //    inst.beforeMoveDispatcher.remove(index);
-            //}
-            resolve(true);
-        }).fail(function() {
-            var error = new Error('Данные не загружены');
-            reject(error);
-        });
-    }
-    return function (side, curScreen) {
-        var promise;
-        if (side === 'right' && curScreen === newScreen) {
-            promise = new Promise(loadPage);
-        }
-        return promise;
-    }
-}
-
-$.get('example2.html', function(data) {
+// dynamic markup loading
+$.get('example3.html', function(data) {
+    // attach loaded content as child for secondScreen
     var lastScreen = new rb.Screen(data);
     secondScreen.pushChildren(lastScreen);
 
-    rb.Screen.setMainScreen(mainScreen);
-
+    // panel initializing
     rb.start({
-        rb1: firstScreen,
-        rb2: secondScreen
+        rb1: firstScreen
     }, function(instances) {
-        instances.rb1.beforeMoveDispatcher.add(action(), true);
+        // panel configuring
         var cfg = {
-                wrongTime1: 500,
-                wrongTime2: 500,
-                correctTime: 1000
-            };
+            wrongTime1: 500,
+            wrongTime2: 500,
+            correctTime: 1000
+        };
         rb.Batch.configure(cfg);
 
-        // automatic moving for testing
+        // dynamic control of screens example
+        function action() {
+            var newScreen = mainScreen.getChild(0);
+            function loadPage(resolve, reject) {
+                $.get('example2.html', function(data) {
+                    newScreen.pushChildren(newScreen = new rb.Screen(data));
+                    resolve(true);
+                }).fail(function() {
+                    var error = new Error('Data not loaded');
+                    reject(error);
+                });
+            }
+            return function (side, moving, isWrongStep) {
+                var promise;
+                if (side === 'right' && isWrongStep) {
+                    promise = new Promise(loadPage);
+                }
+                return promise;
+            }
+        }
+        // register html loading function as handler. move function will start when handler is ended.
+        // 'true' argument means that handler is executed only once.
+        instances.rb1.beforeMoveDispatcher.add(action(), true);
+
+        // // automatic moving for testing
         // var sides = ['left', 'top', 'right', 'bottom'];
-        // function randomStep(side, curScreen, moving) {
+        // function randomStep(side, moving) {
         //     var index = Math.floor(Math.random()*4);
         //     moving.move(sides[index]).then(function(result){
         //         console.log(result.how, result.isOk, 'moved to ' + sides[index], result.isOk ? 'successfully' : 'failed')

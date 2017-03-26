@@ -34,7 +34,7 @@ $.get('example2.html', function(data) {
                 wrongTime2: 1500,
                 correctTime: 3000
             };
-        function randomStep(side, curScreen, moving) {
+        function randomStep(side, moving) {
             var index = Math.floor(Math.random()*4);
             moving.move(sides[index]).then(function(result){
                 console.log(result.how, result.isOk, 'moved to ' + sides[index], result.isOk ? 'successfully' : 'failed')

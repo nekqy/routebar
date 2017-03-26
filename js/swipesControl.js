@@ -53,10 +53,13 @@ define(['utils', 'IControl', 'errors', 'hammer'], function(Utils, IControl, Erro
         if (this._isEnable) return;
 
         function swipeHandler(e) {
-            self._actionFn(e.direction, [Hammer.DIRECTION_RIGHT, Hammer.DIRECTION_DOWN, Hammer.DIRECTION_LEFT, Hammer.DIRECTION_UP], function(val, defVal) {
-                return val === defVal;
-            });
+            if (self._mainDiv.is(e.target.closest('.rb'))) {
+                self._actionFn(e.direction, [Hammer.DIRECTION_RIGHT, Hammer.DIRECTION_DOWN, Hammer.DIRECTION_LEFT, Hammer.DIRECTION_UP], function(val, defVal) {
+                    return val === defVal;
+                });
+            }
             e.preventDefault();
+            e.srcEvent.stopPropagation();
         }
 
         var self = this;

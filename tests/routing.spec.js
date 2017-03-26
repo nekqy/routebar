@@ -239,6 +239,19 @@ define(['./core-test', '../js/main'], function(core, rb) {
         [move('top'),    checkScreen('screen_2')],
         [move('left'),   checkScreen('screen_1')]
     ]);
+    t3.addTestsSerial('test6', init3, [
+        [move('right'),   checkScreen('screen_2')],
+        [move('bottom'),  checkScreen('screen_3')],
+        [move('left'),    checkScreen('screen_1')],
+        [function (done) { screen_1.removeChild(screen_4); done(); }, checkScreen('screen_1')],
+        [move('right'), checkScreen('screen_3')],
+        [move('left'),    checkScreen('screen_1')],
+        [function (done) { screen_1.removeChild(screen_3); done(); }, checkScreen('screen_1')],
+        [move('right'), checkScreen('screen_2')],
+        [move('left'),    checkScreen('screen_1')],
+        [function (done) { screen_1.removeChild(screen_2); done(); }, checkScreen('screen_1')],
+        [move('right'), checkScreen('screen_1')]
+    ]);
     t3.start(initEach3);
 
     var t4 = new core.TestsWrapper('Routing4');

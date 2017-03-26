@@ -106,14 +106,10 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
 
             getRight: function(screen) {
                 var childIndex = screen.defaultChildIndex();
-                //this._lastScreen = screen; // todo эта логика нужна здесь а не так где она сейчас, чтобы все было инкапсулировано в эти функции
-                //this._lastSide = 'right';
                 return screen.getChild(childIndex);
             },
             getLeft: function(screen) {
                 var parentIndex = screen.defaultParentIndex();
-                //this._lastScreen = screen;
-                //this._lastSide = 'left';
                 return screen.getParent(parentIndex);
             },
             getTop: function(screen, cyclicStep) {
@@ -168,13 +164,13 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
     };
     /**
      * @typedef {function} Moving~getLeft
-     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход влево.
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход влево, то есть в сторону предка.
      * По умолчанию берет опцию defaultParentIndex у экземпляра ScreenModel и ищет предка модели с этим индексом.
      * @param {ScreenModel} screen - текущая модель контента панели
      */
     /**
      * @typedef {function} Moving~getTop
-     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вверх.
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вверх, то есть в сторону соседа сверху.
      * По умолчанию смотрит, осуществлялись ли переходы влево-вправо,
      * если последним таким был переход вправо, то берется модель, из которой был сделан шаг вправо и в контексте ее потомков
      * от текущего потомка будет найден предыдущий потомок и возвращен в качестве результата.
@@ -190,13 +186,13 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
      */
     /**
      * @typedef {function} Moving~getRight
-     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вправо.
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вправо, то есть в сторону потомка.
      * По умолчанию берет опцию defaultChildIndex у экземпляра ScreenModel и ищет потомка модели с этим индексом.
      * @param {ScreenModel} screen - текущая модель контента панели
      */
     /**
      * @typedef {function} Moving~getBottom
-     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вниз.
+     * Функция, задающая алгоритм поиска ячейки, в которую должен быть осуществлен переход вниз, то есть в сторону соседа снизу.
      * По умолчанию смотрит, осуществлялись ли переходы влево-вправо,
      * если последним таким был переход вправо, то берется модель, из которой был сделан шаг вправо и в контексте ее потомков
      * от текущего потомка будет найден следующий потомок и возвращен в качестве результата.
@@ -306,7 +302,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
     /**
      * Осуществить переход в указанную сторону.
      * @param {string} side - сторона, в которую осуществляется переход
-     * @param {Boolean} [isSaveHistory] - сохранять ли осуществляемый переход в историю переходов
+     * @param {Boolean} [isSaveHistory=true] - сохранять ли осуществляемый переход в историю переходов
      * @returns {Promise|undefined} promise о завершении действия, либо undefined, если переход не требуется
      * @memberOf Moving
      */
@@ -322,6 +318,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
     };
     Moving.prototype._moveInner = function(side, screen, isSaveHistory) {
         var self = this;
+        isSaveHistory = isSaveHistory !== false;
 
         if (this._lockControls && !this._locks) {
             this._locks = this._controlManager.disableAll();
@@ -331,7 +328,10 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
 
         return new Promise(function (moveResolve, moveReject) {
 
-            if (!self._screenManager.getRelativeScreen(side)) {
+            var nextScreen = self._screenManager.getRelativeScreen(side),
+                curScreen = self._screenManager.getCurScreen();
+
+            if (!nextScreen) {
                 self._animation.goToWrongSide(side).then(function(result) {
                     if (result) {
                         self._renderHtml(side, moveResolve.bind(undefined, {
@@ -350,8 +350,10 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
             } else if (sides.indexOf(side) !== -1) {
                 if (side === 'left' || side === 'right') {
                     self._screenManager._lastSide = side; // todo надо инкапсулировать
-                    self._screenManager._lastScreen = self._screenManager.getCurScreen();
+                    self._screenManager._lastScreen = curScreen;
                 }
+
+                self.getScreenManager()._setRelativeScreen(side, nextScreen, curScreen, true, true);
 
                 self._screenManager._updateScreens(side, undefined, isSaveHistory);
                 self._elementsPool.prepareSide();
@@ -404,7 +406,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 nextScreen = lastStep.screen,
                 side = lastStep.side,
                 mustUpdate = false;
-            if (side === 'left' && curScreen.getParent(nextScreen)) { // todo неправильно! нельзя затачиваться на структуру
+            if (side === 'left' && curScreen.getParent(nextScreen)) {
                 mustUpdate = true;
             } else if (side === 'right' && curScreen.getChild(nextScreen)) {
                 mustUpdate = true;
@@ -416,7 +418,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 return null;
             }
             if (mustUpdate) {
-                this._screenManager._setRelativeScreen(this._screenManager.getCurScreen(), side, nextScreen);
+                this.getScreenManager()._setRelativeScreen(side, curScreen, nextScreen);
             }
 
             var self = this;
@@ -552,10 +554,10 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 nextScreen = path[i+1],
                 side;
 
-            if (curScreen.getParent(nextScreen)) { // todo неправильно! нельзя затачиваться на структуру
-                side = 'left';
-            } else if (curScreen.getChild(nextScreen)) {
+            if (curScreen.getChild(nextScreen)) { // todo почему сначала смотрю на потомков а потом на предков? раньше было наоборот и падало, но от того что я их поменял логика лучше не стала
                 side = 'right';
+            } else if (curScreen.getParent(nextScreen)) {
+                side = 'left';
             } else if (self._screenManager._getBottom(curScreen, self._screenManager._cyclicStep) === nextScreen) {
                 side = 'bottom';
             } else if (self._screenManager._getTop(curScreen, self._screenManager._cyclicStep) === nextScreen) {
@@ -565,7 +567,7 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 reject(new Errors.FatalError('goToScreen : side not found'));
             }
 
-            self._screenManager._setRelativeScreen(self._screenManager.getCurScreen(), side, nextScreen);
+            self.getScreenManager()._setRelativeScreen(side, curScreen, nextScreen, true);
 
             self.afterRenderDispatcher.add(function() {
                 self.afterRenderDispatcher.add(function() {

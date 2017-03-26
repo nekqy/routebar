@@ -42,10 +42,10 @@ define(['../js/main', './testsWrapper'], function(rb, TestsWrapper) {
             res = res && Object.keys(elements).length === count;
             !res && console.log('fail: Object.keys(elements).length === count', Object.keys(elements), Object.keys(elements).length, count);
             res = res && elements[mainScreenName];
-            !res && console.log('fail: elements[mainScreenName]', Object.keys(elements), mainScreenName);
+            !res && console.log('fail: curScreen: elements[' + mainScreenName + '] not found', Object.keys(elements));
             screens.forEach(function (screen) {
                 res = res && elements[screen.toString()];
-                !res && console.log('fail: elements[screen.toString()]', Object.keys(elements), screen && screen.toString());
+                !res && console.log('fail: elements[' + screen.toString() + '] not found', Object.keys(elements));
             });
 
             var element = elements[mainScreenName];
@@ -98,33 +98,6 @@ define(['../js/main', './testsWrapper'], function(rb, TestsWrapper) {
             res = res && screenManager._getBottom(screen, true) === sides.bottomCycled;
             !res && console.log('fail: screenManager._getBottom(screen, true) === sides.bottomCycled', screenManager._getBottom(screen, true) && screenManager._getBottom(screen, true).toString(), sides.bottomCycled && sides.bottomCycled.toString());
 
-            return res;
-        };
-    }
-    function checkRelativeScreens(relativeScreens) {
-        return function() {
-            var curRb = rb.Instances.rb1;
-            var screenManager = curRb._screenManager;
-            var curRelativeScreens = screenManager._relativeScreens;
-
-            var res = true;
-            res = res && relativeScreens.length === curRelativeScreens.length;
-            !res && console.log('fail: relativeScreens.length === curRelativeScreens.length', relativeScreens.length, curRelativeScreens.length);
-            for (var relativeScreenName in relativeScreens) {
-                if (relativeScreens.hasOwnProperty(relativeScreenName)) {
-                    var relativeScreen = relativeScreens[relativeScreenName];
-                    res = res && curRelativeScreens[relativeScreenName];
-                    !res && console.log('fail: curRelativeScreens[' + relativeScreenName + ']', relativeScreenName, curRelativeScreens[relativeScreenName] && curRelativeScreens[relativeScreenName].toString());
-                    res = res && curRelativeScreens[relativeScreenName]['left'] === relativeScreen['left'];
-                    !res && console.log('fail: curRelativeScreens[' + relativeScreenName + ']["left"] === relativeScreen["left"]', curRelativeScreens[relativeScreenName]['left'] && curRelativeScreens[relativeScreenName]['left'].toString(), relativeScreen['left'] && relativeScreen['left'].toString());
-                    res = res && curRelativeScreens[relativeScreenName]['top'] === relativeScreen['top'];
-                    !res && console.log('fail: curRelativeScreens[' + relativeScreenName + ']["top"] === relativeScreen["top"]', curRelativeScreens[relativeScreenName]['top'] && curRelativeScreens[relativeScreenName]['top'].toString(), relativeScreen['top'] && relativeScreen['top'].toString());
-                    res = res && curRelativeScreens[relativeScreenName]['right'] === relativeScreen['right'];
-                    !res && console.log('fail: curRelativeScreens[' + relativeScreenName + ']["right"] === relativeScreen["right"]', curRelativeScreens[relativeScreenName]['right'] && curRelativeScreens[relativeScreenName]['right'].toString(), relativeScreen['right'] && relativeScreen['right'].toString());
-                    res = res && curRelativeScreens[relativeScreenName]['bottom'] === relativeScreen['bottom'];
-                    !res && console.log('fail: curRelativeScreens[' + relativeScreenName + ']["bottom"] === relativeScreen["bottom"]', curRelativeScreens[relativeScreenName]['bottom'] && curRelativeScreens[relativeScreenName]['bottom'].toString(), relativeScreen['bottom'] && relativeScreen['bottom'].toString());
-                }
-            }
             return res;
         };
     }
@@ -228,7 +201,6 @@ define(['../js/main', './testsWrapper'], function(rb, TestsWrapper) {
         checkMarkup: checkMarkup,
         checkElementsPool: checkElementsPool,
         checkScreenManager: checkScreenManager,
-        checkRelativeScreens: checkRelativeScreens,
         checkHistory: checkHistory,
         checkError: checkError,
         nop: nop,

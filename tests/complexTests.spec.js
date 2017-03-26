@@ -57,14 +57,12 @@ define(['./core-test', '../js/main'], function(core, rb) {
             var screens = cfg.screens;
             var elementsBySide = cfg.elementsBySide;
             var sides = cfg.sides;
-            var relativeScreens = cfg.relativeScreens;
             var history = cfg.history;
 
             var res = true;
             res = res && core.checkScreen(curScreen.toString())();
             res = res && core.checkElementsPool(curScreen, screens, elementsBySide)();
             res = res && core.checkScreenManager(curScreen, sides)();
-            res = res && core.checkRelativeScreens(relativeScreens)();
             res = res && core.checkHistory(history)();
             return res;
         };
@@ -94,9 +92,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': {}
-                },
                 history: []
             }})
         ],
@@ -119,11 +114,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        right: screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -152,12 +142,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        right: screens[0],
-                        bottom: screens[0] //todo откуда это берется?
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -191,13 +175,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        right: screens[0],
-                        bottom: screens[0],
-                        left: screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -236,14 +213,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        right: screens[0],
-                        bottom: screens[0],
-                        left: screens[0],
-                        top: screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -294,9 +263,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': {}
-                },
                 history: []
             }})
         ],
@@ -319,10 +285,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': { // todo почему пусто?
-                    }
-                },
                 history: []
             }})
         ],
@@ -344,11 +306,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[1],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        'bottom': screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: undefined,
@@ -376,11 +333,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: undefined,
                     bottom: undefined,
                     bottomCycled: screens[1]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        'bottom': screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: undefined,
@@ -413,11 +365,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: undefined,
                     bottom: undefined,
                     bottomCycled: screens[1]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        'bottom': screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: undefined,
@@ -462,9 +409,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': {}
-                },
                 history: []
             }})
         ],
@@ -487,11 +431,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        right: screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -520,12 +459,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        right: screens[0],
-                        bottom: screens[0] //todo откуда это берется?
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -559,13 +492,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        right: screens[0],
-                        bottom: screens[0],
-                        left: screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -604,14 +530,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        right: screens[0],
-                        bottom: screens[0],
-                        left: screens[0],
-                        top: screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -662,9 +580,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': {}
-                },
                 history: []
             }})
         ],
@@ -687,10 +602,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': { // todo почему пусто?
-                    }
-                },
                 history: []
             }})
         ],
@@ -712,11 +623,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[1],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        'bottom': screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: undefined,
@@ -744,11 +650,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: undefined,
                     bottom: undefined,
                     bottomCycled: screens[1]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        'bottom': screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: undefined,
@@ -781,11 +682,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: undefined,
                     bottom: undefined,
                     bottomCycled: screens[1]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        'bottom': screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: undefined,
@@ -834,9 +730,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': {}
-                },
                 history: []
             }})
         ],
@@ -859,10 +752,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[1]
-                },
-                relativeScreens: {
-                    'screen_1': { // todo почему пусто?
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -891,10 +780,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[1]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -928,11 +813,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[1],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        left: screens[1]
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -971,12 +851,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[1],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        left: screens[1],
-                        top: screens[0]
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1029,9 +903,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': {}
-                },
                 history: []
             }})
         ],
@@ -1051,10 +922,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[2],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': { // todo почему пусто?
-                    }
                 },
                 history: []
             }})
@@ -1076,10 +943,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': {
-                    }
-                },
                 history: []
             }})
         ],
@@ -1100,10 +963,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: undefined,
                     bottom: undefined,
                     bottomCycled: screens[1]
-                },
-                relativeScreens: {
-                    'screen_1': {// todo пусто?
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1130,10 +989,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: undefined,
                     bottom: undefined,
                     bottomCycled: screens[1]
-                },
-                relativeScreens: {
-                    'screen_1': { // todo пусто?
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1179,9 +1034,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': {}
-                },
                 history: []
             }})
         ],
@@ -1204,10 +1056,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[4]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1236,10 +1084,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[4]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1274,12 +1118,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_5': {
-                        right: screens[0],
-                        bottom: screens[4] // todo да откуда это берется то??
-                    }
-                },
                 history: [{
                     lastScreen: screens[0],
                     lastSide: 'left',
@@ -1312,15 +1150,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[2],
                     bottom: undefined,
                     bottomCycled: screens[1]
-                },
-                relativeScreens: {
-                    'screen_5': {
-                        right: screens[0],
-                        bottom: screens[4] // todo да откуда это берется то??
-                    },
-                    'screen_1': {
-                        left: screens[4]
-                    }
                 },
                 history: [{
                     lastScreen: screens[4],
@@ -1355,11 +1184,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[2]
                 },
-                relativeScreens: {
-                    'screen_1': { // todo а куда делся то screen_5 ??
-                        left: screens[4]
-                    }
-                },
                 history: [{
                     lastScreen: screens[0],
                     lastSide: 'right',
@@ -1392,11 +1216,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[4],
                     bottom: undefined,
                     bottomCycled: screens[3]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        left: screens[4]
-                    }
                 },
                 history: [{
                     lastScreen: screens[1],
@@ -1431,11 +1250,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[4]
                 },
-                relativeScreens: {
-                    'screen_1': {
-                        left: screens[4]
-                    }
-                },
                 history: [{
                     lastScreen: screens[2],
                     lastSide: 'right',
@@ -1468,11 +1282,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[1],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        left: screens[4]
-                    }
                 },
                 history: [{
                     lastScreen: screens[3],
@@ -1515,9 +1324,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': {}
-                },
                 history: []
             }})
         ],[
@@ -1538,9 +1344,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: undefined,
                     bottom: screens[2],
                     bottomCycled: screens[2]
-                },
-                relativeScreens: {
-                    'screen_1': {}
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1567,9 +1370,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: undefined,
                     bottom: screens[2],
                     bottomCycled: screens[2]
-                },
-                relativeScreens: {
-                    'screen_1': {}
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1596,9 +1396,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: undefined,
                     bottom: screens[3],
                     bottomCycled: screens[3]
-                },
-                relativeScreens: {
-                    'screen_1': {}
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1630,9 +1427,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: undefined,
                     bottom: screens[3],
                     bottomCycled: screens[3]
-                },
-                relativeScreens: {
-                    'screen_1': {}
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1664,9 +1458,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: undefined,
                     bottom: screens[4],
                     bottomCycled: screens[4]
-                },
-                relativeScreens: {
-                    'screen_1': {}
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1704,9 +1495,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[1]
-                },
-                relativeScreens: {
-                    'screen_1': {}
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1750,11 +1538,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[0]
                 },
-                relativeScreens: {
-                    'screen_1': {
-                        left: screens[4]
-                    }
-                },
                 history: [{
                     lastScreen: screens[0],
                     lastSide: 'right',
@@ -1786,11 +1569,11 @@ define(['./core-test', '../js/main'], function(core, rb) {
             move('left'),
             checkComplex(function() { return {
                 curScreen: screens[4],
-                screens: [screens[0], screens[3]],
+                screens: [screens[0]],
                 elementsBySide: {
                     center: screens[4].toString(),
                     left: screens[0].toString(),
-                    top: screens[3].toString(), //todo почему 3 а не 4 ? для 0 парент только один 4
+                    top: screens[4].toString(),
                     right: screens[0].toString(),
                     bottom: screens[4].toString()
                 },
@@ -1801,11 +1584,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     right: screens[0],
                     bottom: undefined,
                     bottomCycled: screens[4]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        left: screens[4]
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1847,7 +1625,7 @@ define(['./core-test', '../js/main'], function(core, rb) {
                 elementsBySide: {
                     center: screens[0].toString(),
                     left: screens[4].toString(),
-                    top: screens[0].toString(), //todo почему 3 а не 4 ? для 0 парент только один 4
+                    top: screens[0].toString(),
                     right: screens[4].toString(),
                     bottom: screens[0].toString()
                 },
@@ -1855,15 +1633,9 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     left: screens[4],
                     top: undefined,
                     topCycled: screens[0],
-                    right: screens[1],
+                    right: screens[4],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        left: screens[4],
-                        right: screens[4]
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],
@@ -1922,12 +1694,6 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     bottom: undefined,
                     bottomCycled: screens[1]
                 },
-                relativeScreens: {
-                    'screen_1': {
-                        left: screens[4],
-                        right: screens[4]
-                    }
-                },
                 history: [{
                     lastScreen: screens[0],
                     lastSide: 'right',
@@ -1986,15 +1752,9 @@ define(['./core-test', '../js/main'], function(core, rb) {
                     left: screens[4],
                     top: undefined,
                     topCycled: screens[0],
-                    right: screens[1],
+                    right: screens[4],
                     bottom: undefined,
                     bottomCycled: screens[0]
-                },
-                relativeScreens: {
-                    'screen_1': {
-                        left: screens[4],
-                        right: screens[4]
-                    }
                 },
                 history: [{
                     lastScreen: screens[0],

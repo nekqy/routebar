@@ -23,9 +23,9 @@ To compile RouteBar by yourself:
 2) Go inside the RouteBar folder that you fetched and install Node dependencies. I use Node v.5.11
 because of node v.6 show me "fs: re-evaluating native module sources is not supported".
 
-	cd routebar/rb && npm install
+	cd routebar && npm install
 
-3) Run `npm run build` to generate the JS and CSS files in the `rb/dist` folder. Also it generates jsdoc in the `docs/jsdoc` folder. 
+3) Run `npm run build` to generate the JS and CSS files in the `dist` folder. Also it generates jsdoc in the `docs/jsdoc` folder. 
 
 	npm run build
 	

@@ -54,6 +54,21 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                 .add('keyboard', new KeydownControl(mainDiv, this._moveByActionValue.bind(this)));
         }
 
+        /**
+         * Диспетчер, выполняющий зарегистрированные функции после вставки элемента модели в DOM
+         * Функциям в аргументы передается вставленная модель и jQuery-элемент.
+         * @name elementLoadedDispatcher
+         * @memberOf Moving#
+         */
+        this.elementLoadedDispatcher = this._elementsPool.elementLoadedDispatcher;
+        /**
+         * Диспетчер, выполняющий зарегистрированные функции после удаления элемента модели в DOM
+         * Функциям в аргументы передается удаленная модель и jQuery-элемент.
+         * @name elementUnloadedDispatcher
+         * @memberOf Moving#
+         */
+        this.elementUnloadedDispatcher = this._elementsPool.elementUnloadedDispatcher;
+
         this._plugins = [];
 
         this.resetConfig();
@@ -273,6 +288,8 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
         this.beforeMoveDispatcher.configure(config);
         this.beforeRenderDispatcher.configure(config);
         this.afterRenderDispatcher.configure(config);
+        this.elementLoadedDispatcher.configure(config);
+        this.elementUnloadedDispatcher.configure(config);
 
         if (typeof config === 'object') {
             if (config.lockControls !== undefined) {
@@ -355,14 +372,16 @@ define(['errors', 'IPlugin', 'screenModel', 'animation', 'screenManager', 'baseD
                     isOk: true
                 }));
             } else if (sides.indexOf(side) !== -1) {
-                if (side === 'left' || side === 'right') {
-                    self._screenManager._lastSide = side; // todo надо инкапсулировать
-                    self._screenManager._lastScreen = curScreen;
-                }
-
                 self.getScreenManager()._setRelativeScreen(side, nextScreen, curScreen, true, true);
 
                 self._screenManager._updateScreens(side, undefined, isSaveHistory);
+                if (isSaveHistory) {
+                    if (side === 'left' || side === 'right') {
+                        self._screenManager._lastSide = side; // todo надо инкапсулировать
+                        self._screenManager._lastScreen = curScreen;
+                    }
+                }
+
                 self._elementsPool.prepareSide();
 
                 self._animation.goToCorrectSide(side).then(function(result) {

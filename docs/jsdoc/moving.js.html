@@ -94,6 +94,9 @@
                 .add('keyboard', new KeydownControl(mainDiv, this._moveByActionValue.bind(this)));
         }
 
+        this.elementLoadedDispatcher = this._elementsPool.elementLoadedDispatcher;
+        this.elementUnloadedDispatcher = this._elementsPool.elementUnloadedDispatcher;
+
         this._plugins = [];
 
         this.resetConfig();
@@ -313,6 +316,8 @@
         this.beforeMoveDispatcher.configure(config);
         this.beforeRenderDispatcher.configure(config);
         this.afterRenderDispatcher.configure(config);
+        this.elementLoadedDispatcher.configure(config);
+        this.elementUnloadedDispatcher.configure(config);
 
         if (typeof config === 'object') {
             if (config.lockControls !== undefined) {
@@ -395,14 +400,16 @@
                     isOk: true
                 }));
             } else if (sides.indexOf(side) !== -1) {
-                if (side === 'left' || side === 'right') {
-                    self._screenManager._lastSide = side; // todo надо инкапсулировать
-                    self._screenManager._lastScreen = curScreen;
-                }
-
                 self.getScreenManager()._setRelativeScreen(side, nextScreen, curScreen, true, true);
 
                 self._screenManager._updateScreens(side, undefined, isSaveHistory);
+                if (isSaveHistory) {
+                    if (side === 'left' || side === 'right') {
+                        self._screenManager._lastSide = side; // todo надо инкапсулировать
+                        self._screenManager._lastScreen = curScreen;
+                    }
+                }
+
                 self._elementsPool.prepareSide();
 
                 self._animation.goToCorrectSide(side).then(function(result) {

@@ -1,4 +1,4 @@
-define(['utils', 'IPlugin'], function(Utils, IPlugin) {
+define(['utils', 'IPlugin', 'baseDispatcher'], function(Utils, IPlugin, BaseDispatcher) {
     "use strict";
 
     function ElementsPool(mainDiv, screenManager) {
@@ -6,6 +6,9 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
         this._screenManager = screenManager;
         this._elements = {};
         this._elementsBySide = {};
+
+        this.elementLoadedDispatcher = new BaseDispatcher(mainDiv);
+        this.elementUnloadedDispatcher = new BaseDispatcher(mainDiv);
     }
     Utils.inherite(ElementsPool, IPlugin);
     ElementsPool.prototype.configure = function(config) {
@@ -86,11 +89,14 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
                     elem.element.html(elem.screen.html());
                     elem.element.toggleClass('rb__loading', false);
                     elem.state = 'loaded';
+                    self.elementLoadedDispatcher.runActions(undefined, [elem.screen, elem.element]);
                 }
             } else {
                 if (elem.screen.isTemporary()) {
-                    if (!(self._saveHistoryInPool && self._screenManager._containsHistory(self._elements[id].screen))) {
-                        self._elements[id].element.remove();
+                    var removingElem = self._elements[id];
+                    if (!(self._saveHistoryInPool && self._screenManager._containsHistory(removingElem.screen))) {
+                        removingElem.element.remove();
+                        self.elementUnloadedDispatcher.runActions(undefined, [removingElem.screen, removingElem.element]);
                         delete self._elements[id];
                     }
                 }
@@ -101,11 +107,18 @@ define(['utils', 'IPlugin'], function(Utils, IPlugin) {
     ElementsPool.prototype.destroy = function() {
         var self = this;
         Object.keys(this._elements).forEach(function(id) {
-            self._elements[id].element.remove();
+            var removingElem = self._elements[id];
+            removingElem.element.remove();
+            self.elementUnloadedDispatcher.runActions(undefined, [removingElem.screen, removingElem.element]);
         });
         this._elements = null;
         this._elementsBySide = null;
         this._screenManager = null;
+
+        this.elementLoadedDispatcher.destroy();
+        this.elementUnloadedDispatcher.destroy();
+        this.elementLoadedDispatcher = null;
+        this.elementUnloadedDispatcher = null;
     };
 
     return ElementsPool;

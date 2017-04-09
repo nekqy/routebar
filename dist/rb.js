@@ -889,6 +889,134 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Utils, IPlugin) {
+    "use strict";
+
+    //todo может например перейти на https://github.com/component/emitter
+    /**
+     * @class
+     * Класс диспетчера, инкапсулирует событийную модель, каждый экземпляр представляет собой событие.
+     * @param {JQuery} mainDiv - элемент, в котором располагается панель. Должен содержать класс rb-wrapper.
+     * @constructor BaseDispatcher
+     * @extends IPlugin
+     */
+    function BaseDispatcher(mainDiv) {
+        this._actions = {};
+        this._index = 0;
+        this._mainDiv = mainDiv;
+    }
+    Utils.inherite(BaseDispatcher, IPlugin);
+    BaseDispatcher.prototype.configure = function(config) {
+        if (typeof config === 'object') {
+            if (config.loadingDiv !== undefined) {
+                this._loadingDiv = $(config.loadingDiv);
+            }
+        }
+    };
+
+    // todo сделать не once, а дать возможность указать число - количество срабатываний,
+    // или функцию которая если вернет true - не отписываться, false - отписываться
+    /**
+     * Зарегистрировать действие, которое выполнится при запуске действий
+     * @param {function} action - регистрируемое действие
+     * @param {boolean} [once] - выполнить действие только в первый раз
+     * @returns {number|null} индекс зарегистрированного действия (null, если действие не было зарегистрировано)
+     * @memberOf BaseDispatcher
+     */
+    BaseDispatcher.prototype.add = function(action, once) {
+        if (typeof action === 'function') {
+            this._actions[this._index++] = {
+                action: action,
+                once: once
+            };
+            return this._index-1;
+        }
+        return null;
+    };
+    // todo отписка не по индексу, а по функции
+    /**
+     * Удалить действие из списка зарегистрированных действий
+     * @param {number} index - индекс удаляемого действия
+     * @memberOf BaseDispatcher
+     */
+    BaseDispatcher.prototype.remove = function(index) {
+        if (this._actions.hasOwnProperty(index)) {
+            delete this._actions[index];
+        }
+    };
+    /**
+     * Запустить зарегистрированные действия
+     * @param {function|undefined} [fn] - функция, которая будет выполнена после того, как выполнятся все зарегистрированные действия.
+     * Если зарегистрированные функции возвращают Promise, функция выполнится после завершения этих Promise.
+     * Если хотя бы одна из зарегистрированных функций (или их Promise) вернет false, фунция fn не будет вызвана.
+     * @param {Array} [actionArgs] - аргументы для зарегистрированных функций (для всех функций будут переданы одни и те же аргументы).
+     * @returns {*} Результат выполнения функции fn, либо undefined если функция fn не была вызвана
+     * @memberOf BaseDispatcher
+     */
+    BaseDispatcher.prototype.runActions = function(fn, actionArgs) {
+        var
+            actions = [],
+            results = [],
+            self = this;
+
+        if (Object.keys(this._actions).length) {
+            this._mainDiv.append(this._loadingDiv); // todo вынести это в moving, а здесь просто вызывать функцию
+
+            Object.keys(this._actions).map(function(index) {
+                var value = this._actions[index],
+                    result = value.action.apply(undefined, actionArgs);
+
+                if (value.once) {
+                    this.remove(index);
+                }
+                if (result instanceof Promise) {
+                    actions.push(result);
+                } else {
+                    results.push(result);
+                }
+            }.bind(this));
+
+            return Promise.all(actions).then(function(promiseResult) {
+                self._loadingDiv.remove();
+
+                var isOk = results.concat(promiseResult).every(function(res) {
+                    return res !== false;
+                });
+                if (isOk) {
+                    return fn && fn();
+                }
+            }, function(error) {
+                self._loadingDiv.remove();
+                console.error(error);
+
+                var isOk = results.every(function(res) {
+                    return res !== false;
+                });
+                if (isOk) {
+                    return fn && fn();
+                }
+            });
+        } else {
+            return fn && fn();
+        }
+    };
+
+    /**
+     * Уничтожить экземпляр класса
+     * @memberOf BaseDispatcher
+     */
+    BaseDispatcher.prototype.destroy = function() {
+        this._actions = null;
+    };
+
+    return BaseDispatcher;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(14)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Moving) {
     "use strict";
 
@@ -1085,13 +1213,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(2), __webpack_require__(0), __webpack_require__(18)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Utils, IPlugin, Errors) {
@@ -1353,7 +1481,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(3), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Utils, IControl, Errors) {
@@ -1536,134 +1664,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Utils, IPlugin) {
-    "use strict";
-
-    //todo может например перейти на https://github.com/component/emitter
-    /**
-     * @class
-     * Класс диспетчера, инкапсулирует событийную модель, каждый экземпляр представляет собой событие.
-     * @param {JQuery} mainDiv - элемент, в котором располагается панель. Должен содержать класс rb-wrapper.
-     * @constructor BaseDispatcher
-     * @extends IPlugin
-     */
-    function BaseDispatcher(mainDiv) {
-        this._actions = {};
-        this._index = 0;
-        this._mainDiv = mainDiv;
-    }
-    Utils.inherite(BaseDispatcher, IPlugin);
-    BaseDispatcher.prototype.configure = function(config) {
-        if (typeof config === 'object') {
-            if (config.loadingDiv !== undefined) {
-                this._loadingDiv = $(config.loadingDiv);
-            }
-        }
-    };
-
-    // todo сделать не once, а дать возможность указать число - количество срабатываний,
-    // или функцию которая если вернет true - не отписываться, false - отписываться
-    /**
-     * Зарегистрировать действие, которое выполнится при запуске действий
-     * @param {function} action - регистрируемое действие
-     * @param {boolean} [once] - выполнить действие только в первый раз
-     * @returns {number|null} индекс зарегистрированного действия (null, если действие не было зарегистрировано)
-     * @memberOf BaseDispatcher
-     */
-    BaseDispatcher.prototype.add = function(action, once) {
-        if (typeof action === 'function') {
-            this._actions[this._index++] = {
-                action: action,
-                once: once
-            };
-            return this._index-1;
-        }
-        return null;
-    };
-    // todo отписка не по индексу, а по функции
-    /**
-     * Удалить действие из списка зарегистрированных действий
-     * @param {number} index - индекс удаляемого действия
-     * @memberOf BaseDispatcher
-     */
-    BaseDispatcher.prototype.remove = function(index) {
-        if (this._actions.hasOwnProperty(index)) {
-            delete this._actions[index];
-        }
-    };
-    /**
-     * Запустить зарегистрированные действия
-     * @param {function} [fn] - функция, которая будет выполнена после того, как выполнятся все зарегистрированные действия.
-     * Если зарегистрированные функции возвращают Promise, функция выполнится после завершения этих Promise.
-     * Если хотя бы одна из зарегистрированных функций (или их Promise) вернет false, фунция fn не будет вызвана.
-     * @param {Array} [actionArgs] - аргументы для зарегистрированных функций (для всех функций будут переданы одни и те же аргументы).
-     * @returns {*} Результат выполнения функции fn, либо undefined если функция fn не была вызвана
-     * @memberOf BaseDispatcher
-     */
-    BaseDispatcher.prototype.runActions = function(fn, actionArgs) {
-        var
-            actions = [],
-            results = [],
-            self = this;
-
-        if (Object.keys(this._actions).length) {
-            this._mainDiv.append(this._loadingDiv); // todo вынести это в moving, а здесь просто вызывать функцию
-
-            Object.keys(this._actions).map(function(index) {
-                var value = this._actions[index],
-                    result = value.action.apply(undefined, actionArgs);
-
-                if (value.once) {
-                    this.remove(index);
-                }
-                if (result instanceof Promise) {
-                    actions.push(result);
-                } else {
-                    results.push(result);
-                }
-            }.bind(this));
-
-            return Promise.all(actions).then(function(promiseResult) {
-                self._loadingDiv.remove();
-
-                var isOk = results.concat(promiseResult).every(function(res) {
-                    return res !== false;
-                });
-                if (isOk) {
-                    return fn && fn();
-                }
-            }, function(error) {
-                self._loadingDiv.remove();
-                console.error(error);
-
-                var isOk = results.every(function(res) {
-                    return res !== false;
-                });
-                if (isOk) {
-                    return fn && fn();
-                }
-            });
-        } else {
-            return fn && fn();
-        }
-    };
-
-    /**
-     * Уничтожить экземпляр класса
-     * @memberOf BaseDispatcher
-     */
-    BaseDispatcher.prototype.destroy = function() {
-        this._actions = null;
-    };
-
-    return BaseDispatcher;
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1843,7 +1843,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Utils, IPlugin) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(2), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Utils, IPlugin, BaseDispatcher) {
     "use strict";
 
     function ElementsPool(mainDiv, screenManager) {
@@ -1851,6 +1851,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         this._screenManager = screenManager;
         this._elements = {};
         this._elementsBySide = {};
+
+        this.elementLoadedDispatcher = new BaseDispatcher(mainDiv);
+        this.elementUnloadedDispatcher = new BaseDispatcher(mainDiv);
     }
     Utils.inherite(ElementsPool, IPlugin);
     ElementsPool.prototype.configure = function(config) {
@@ -1931,11 +1934,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     elem.element.html(elem.screen.html());
                     elem.element.toggleClass('rb__loading', false);
                     elem.state = 'loaded';
+                    self.elementLoadedDispatcher.runActions(undefined, [elem.screen, elem.element]);
                 }
             } else {
                 if (elem.screen.isTemporary()) {
-                    if (!(self._saveHistoryInPool && self._screenManager._containsHistory(self._elements[id].screen))) {
-                        self._elements[id].element.remove();
+                    var removingElem = self._elements[id];
+                    if (!(self._saveHistoryInPool && self._screenManager._containsHistory(removingElem.screen))) {
+                        removingElem.element.remove();
+                        self.elementUnloadedDispatcher.runActions(undefined, [removingElem.screen, removingElem.element]);
                         delete self._elements[id];
                     }
                 }
@@ -1946,11 +1952,18 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     ElementsPool.prototype.destroy = function() {
         var self = this;
         Object.keys(this._elements).forEach(function(id) {
-            self._elements[id].element.remove();
+            var removingElem = self._elements[id];
+            removingElem.element.remove();
+            self.elementUnloadedDispatcher.runActions(undefined, [removingElem.screen, removingElem.element]);
         });
         this._elements = null;
         this._elementsBySide = null;
         this._screenManager = null;
+
+        this.elementLoadedDispatcher.destroy();
+        this.elementUnloadedDispatcher.destroy();
+        this.elementLoadedDispatcher = null;
+        this.elementUnloadedDispatcher = null;
     };
 
     return ElementsPool;
@@ -2073,7 +2086,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
  * Объявляется глобально и доступен через переменную <b>rb</b>
  * @module MainModule
  */
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4), __webpack_require__(5), __webpack_require__(2), __webpack_require__(3), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ScreenModel, RbManager, IPlugin, IControl) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4), __webpack_require__(6), __webpack_require__(2), __webpack_require__(3), __webpack_require__(7)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ScreenModel, RbManager, IPlugin, IControl) {
     "use strict";
 
     return /** @alias module:MainModule */ Object.create(null, {
@@ -2144,7 +2157,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0), __webpack_require__(2), __webpack_require__(4), __webpack_require__(7), __webpack_require__(15), __webpack_require__(9), __webpack_require__(10), __webpack_require__(16), __webpack_require__(8), __webpack_require__(12), __webpack_require__(11), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_RESULT__ = function(
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0), __webpack_require__(2), __webpack_require__(4), __webpack_require__(8), __webpack_require__(15), __webpack_require__(5), __webpack_require__(10), __webpack_require__(16), __webpack_require__(9), __webpack_require__(12), __webpack_require__(11), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_RESULT__ = function(
     Errors, IPlugin, ScreenModel, Animation, ScreenManager, BaseDispatcher, ControlManager, SwipesControl, ArrowsControl, KeydownControl, ElementsPool, Utils) {
     "use strict";
 
@@ -2199,6 +2212,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 .add('arrows', new ArrowsControl(mainDiv, this._moveByActionValue.bind(this), this.afterRenderDispatcher))
                 .add('keyboard', new KeydownControl(mainDiv, this._moveByActionValue.bind(this)));
         }
+
+        this.elementLoadedDispatcher = this._elementsPool.elementLoadedDispatcher;
+        this.elementUnloadedDispatcher = this._elementsPool.elementUnloadedDispatcher;
 
         this._plugins = [];
 
@@ -2419,6 +2435,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         this.beforeMoveDispatcher.configure(config);
         this.beforeRenderDispatcher.configure(config);
         this.afterRenderDispatcher.configure(config);
+        this.elementLoadedDispatcher.configure(config);
+        this.elementUnloadedDispatcher.configure(config);
 
         if (typeof config === 'object') {
             if (config.lockControls !== undefined) {
@@ -2501,14 +2519,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     isOk: true
                 }));
             } else if (sides.indexOf(side) !== -1) {
-                if (side === 'left' || side === 'right') {
-                    self._screenManager._lastSide = side; // todo надо инкапсулировать
-                    self._screenManager._lastScreen = curScreen;
-                }
-
                 self.getScreenManager()._setRelativeScreen(side, nextScreen, curScreen, true, true);
 
                 self._screenManager._updateScreens(side, undefined, isSaveHistory);
+                if (isSaveHistory) {
+                    if (side === 'left' || side === 'right') {
+                        self._screenManager._lastSide = side; // todo надо инкапсулировать
+                        self._screenManager._lastScreen = curScreen;
+                    }
+                }
+
                 self._elementsPool.prepareSide();
 
                 self._animation.goToCorrectSide(side).then(function(result) {
